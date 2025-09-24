@@ -4,184 +4,201 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
 
-interface Wallet {
-  id: string;
-  name: string;
-  balance: number;
-  currency: string;
-  type: 'individual' | 'joint';
-  status: 'active' | 'inactive';
-  isDefault: boolean;
-  owners: string[];
-}
-
-interface OverviewMetrics {
-  collections: {
-    liters: number;
-    value: number;
-    transactions: number;
-  };
-  sales: {
-    liters: number;
-    value: number;
-    transactions: number;
-  };
-  suppliers: {
-    active: number;
-    inactive: number;
-  };
-  customers: {
-    active: number;
-    inactive: number;
-  };
-}
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule, FeatherIconComponent],
   template: `
     <div class="dashboard-container">
-      <!-- Stats Cards Grid -->
+      <!-- Stats Cards -->
       <div class="stats-grid">
-        <!-- Wallet Cards -->
-        <div class="stat-card wallet-card" *ngFor="let wallet of wallets; let i = index" 
-             [class.active]="wallet.isDefault"
-             (click)="navigateToTransactions(wallet)">
-          <div class="card-header">
-            <div class="card-icon">
-              <app-feather-icon name="wallet" class="icon-md"></app-feather-icon>
-            </div>
-            <button class="balance-toggle" (click)="toggleBalanceVisibility(wallet.id, $event)">
-              <app-feather-icon [name]="walletBalanceVisibility[wallet.id] ? 'eye' : 'eye-off'" class="icon-sm"></app-feather-icon>
-            </button>
+        <!-- Milk Collections -->
+        <div class="stat-card collections">
+          <div class="stat-icon">
+            <app-feather-icon name="truck" size="28px"></app-feather-icon>
           </div>
-          <div class="card-content">
-            <h3 class="card-title">{{ wallet.name }}</h3>
-            <div class="card-value">
-              <span *ngIf="walletBalanceVisibility[wallet.id]">
-                {{ formatCurrency(wallet.balance) }} {{ wallet.currency }}
-              </span>
-              <span *ngIf="!walletBalanceVisibility[wallet.id]">
-                ••••• {{ wallet.currency }}
-              </span>
+          <div class="stat-details">
+            <div class="stat-title">Milk Collections</div>
+            <div class="stat-numbers">
+              <div class="main-stat">1,250L</div>
+              <div class="sub-stats">
+                <span class="success">45 Collections</span>
+                <span class="volume">187,500 RWF</span>
+              </div>
             </div>
-            <div class="card-subtitle">{{ wallet.type | titlecase }} • {{ wallet.status | titlecase }}</div>
-        </div>
-      </div>
-
-        <!-- Quick Actions Cards -->
-        <div class="stat-card action-card" (click)="navigateToCollect()">
-          <div class="card-header">
-            <div class="card-icon">
-              <app-feather-icon name="truck" class="icon-md"></app-feather-icon>
-            </div>
-          </div>
-          <div class="card-content">
-            <h3 class="card-title">Collect Milk</h3>
-            <div class="card-value">Record Collection</div>
-            <div class="card-subtitle">From suppliers</div>
           </div>
         </div>
 
-        <div class="stat-card action-card" (click)="navigateToSell()">
-          <div class="card-header">
-            <div class="card-icon">
-              <app-feather-icon name="shopping-cart" class="icon-md"></app-feather-icon>
-            </div>
+        <!-- Milk Sales -->
+        <div class="stat-card sales">
+          <div class="stat-icon">
+            <app-feather-icon name="shopping-cart" size="28px"></app-feather-icon>
           </div>
-          <div class="card-content">
-            <h3 class="card-title">Sell Milk</h3>
-            <div class="card-value">Record Sale</div>
-            <div class="card-subtitle">To customers</div>
+          <div class="stat-details">
+            <div class="stat-title">Milk Sales</div>
+            <div class="stat-numbers">
+              <div class="main-stat">980L</div>
+              <div class="sub-stats">
+                <span class="success">32 Sales</span>
+                <span class="volume">147,000 RWF</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="stat-card action-card" (click)="navigateToSuppliers()">
-          <div class="card-header">
-            <div class="card-icon">
-              <app-feather-icon name="user-plus" class="icon-md"></app-feather-icon>
-            </div>
+        <!-- Active Suppliers -->
+        <div class="stat-card suppliers">
+          <div class="stat-icon">
+            <app-feather-icon name="user-plus" size="28px"></app-feather-icon>
           </div>
-          <div class="card-content">
-            <h3 class="card-title">Suppliers</h3>
-            <div class="card-value">{{ overviewMetrics?.suppliers?.active || 0 }}</div>
-            <div class="card-subtitle">Active suppliers</div>
+          <div class="stat-details">
+            <div class="stat-title">Active Suppliers</div>
+            <div class="stat-numbers">
+              <div class="main-stat">12</div>
+              <div class="sub-stats">
+                <span class="success">3 Inactive</span>
+                <span class="volume">15 Total</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="stat-card action-card" (click)="navigateToCustomers()">
-          <div class="card-header">
-            <div class="card-icon">
-              <app-feather-icon name="users" class="icon-md"></app-feather-icon>
-            </div>
+        <!-- Active Customers -->
+        <div class="stat-card customers">
+          <div class="stat-icon">
+            <app-feather-icon name="users" size="28px"></app-feather-icon>
           </div>
-          <div class="card-content">
-            <h3 class="card-title">Customers</h3>
-            <div class="card-value">{{ overviewMetrics?.customers?.active || 0 }}</div>
-            <div class="card-subtitle">Active customers</div>
+          <div class="stat-details">
+            <div class="stat-title">Active Customers</div>
+            <div class="stat-numbers">
+              <div class="main-stat">28</div>
+              <div class="sub-stats">
+                <span class="success">5 Inactive</span>
+                <span class="volume">33 Total</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Overview Metrics Section -->
-      <div class="overview-section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <app-feather-icon name="bar-chart-2" class="icon-sm"></app-feather-icon>
-            Business Overview
-          </h2>
+      <!-- Charts Section -->
+      <div class="charts-section">
+        <div class="chart-container">
+          <div class="chart-header">
+            <h3>Milk Collection Trends</h3>
+            <div class="chart-controls">
+              <button class="btn-small active">7D</button>
+              <button class="btn-small">30D</button>
+              <button class="btn-small">90D</button>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            <div class="chart-mock">
+              <div class="chart-bars">
+                <div class="bar" style="height: 60%"></div>
+                <div class="bar" style="height: 80%"></div>
+                <div class="bar" style="height: 45%"></div>
+                <div class="bar" style="height: 90%"></div>
+                <div class="bar" style="height: 70%"></div>
+                <div class="bar" style="height: 85%"></div>
+                <div class="bar" style="height: 95%"></div>
+              </div>
+              <div class="chart-labels">
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span>Sun</span>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <div class="metrics-grid" *ngIf="overviewMetrics; else loadingMetrics">
-          <div class="metric-card" (click)="navigateToCollections()">
-            <div class="metric-header">
-              <app-feather-icon name="truck" class="metric-icon"></app-feather-icon>
-              <span class="metric-title">Collections</span>
-            </div>
-            <div class="metric-value">{{ formatNumber(overviewMetrics.collections.liters) }} L</div>
-            <div class="metric-details">
-              {{ formatCurrency(overviewMetrics.collections.value) }} • {{ overviewMetrics.collections.transactions }} txns
+
+        <div class="chart-container">
+          <div class="chart-header">
+            <h3>Revenue Overview</h3>
+            <div class="chart-controls">
+              <button class="btn-small active">7D</button>
+              <button class="btn-small">30D</button>
+              <button class="btn-small">90D</button>
             </div>
           </div>
-
-          <div class="metric-card" (click)="navigateToSales()">
-            <div class="metric-header">
-              <app-feather-icon name="shopping-cart" class="metric-icon"></app-feather-icon>
-              <span class="metric-title">Sales</span>
+          <div class="chart-placeholder">
+            <div class="chart-mock">
+              <div class="chart-line">
+                <div class="line-point" style="left: 10%; top: 80%"></div>
+                <div class="line-point" style="left: 25%; top: 60%"></div>
+                <div class="line-point" style="left: 40%; top: 70%"></div>
+                <div class="line-point" style="left: 55%; top: 40%"></div>
+                <div class="line-point" style="left: 70%; top: 50%"></div>
+                <div class="line-point" style="left: 85%; top: 30%"></div>
+                <div class="line-point" style="left: 100%; top: 20%"></div>
+              </div>
+              <div class="chart-labels">
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span>Sun</span>
+              </div>
             </div>
-            <div class="metric-value">{{ formatNumber(overviewMetrics.sales.liters) }} L</div>
-            <div class="metric-details">
-              {{ formatCurrency(overviewMetrics.sales.value) }} • {{ overviewMetrics.sales.transactions }} txns
             </div>
           </div>
         </div>
 
-        <ng-template #loadingMetrics>
-          <div class="loading-metrics">
-            <div class="loading-spinner"></div>
-            <p>Loading overview data...</p>
-          </div>
-        </ng-template>
-      </div>
-
-      <!-- Recent Activity Section -->
-      <div class="recent-activity-section">
-        <div class="section-header">
-          <h2 class="section-title">Recent Activity</h2>
+      <!-- Recent Activity -->
+      <div class="recent-activity">
+        <div class="activity-header">
+          <h3>Recent Activity</h3>
+          <button class="btn-link">View All</button>
         </div>
         <div class="activity-list">
-          <div class="activity-item" *ngFor="let activity of recentActivities">
-            <div class="activity-icon">
-              <app-feather-icon [name]="activity.icon" class="icon-sm"></app-feather-icon>
+          <div class="activity-item">
+            <div class="activity-icon collections">
+              <app-feather-icon name="truck" size="16px"></app-feather-icon>
             </div>
             <div class="activity-content">
-              <p class="activity-title">{{ activity.title }}</p>
-              <p class="activity-time">{{ activity.time }}</p>
-          </div>
-            <div class="activity-amount" *ngIf="activity.amount">
-              {{ formatCurrency(activity.amount) }}
+              <div class="activity-title">Milk collection from John Doe</div>
+              <div class="activity-time">2 hours ago</div>
             </div>
+            <div class="activity-amount">+15,000 RWF</div>
+        </div>
+
+          <div class="activity-item">
+            <div class="activity-icon sales">
+              <app-feather-icon name="shopping-cart" size="16px"></app-feather-icon>
+            </div>
+            <div class="activity-content">
+              <div class="activity-title">Milk sale to ABC Store</div>
+              <div class="activity-time">4 hours ago</div>
+            </div>
+            <div class="activity-amount">+25,000 RWF</div>
+        </div>
+
+          <div class="activity-item">
+            <div class="activity-icon suppliers">
+              <app-feather-icon name="user-plus" size="16px"></app-feather-icon>
+            </div>
+            <div class="activity-content">
+              <div class="activity-title">New supplier registered</div>
+              <div class="activity-time">1 day ago</div>
+            </div>
+            <div class="activity-amount">-</div>
+        </div>
+
+          <div class="activity-item">
+            <div class="activity-icon customers">
+              <app-feather-icon name="users" size="16px"></app-feather-icon>
+            </div>
+            <div class="activity-content">
+              <div class="activity-title">New customer added</div>
+              <div class="activity-time">2 days ago</div>
+            </div>
+            <div class="activity-amount">-</div>
           </div>
         </div>
       </div>
@@ -190,158 +207,10 @@ interface OverviewMetrics {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  wallets: Wallet[] = [];
-  walletBalanceVisibility: { [key: string]: boolean } = {};
-  overviewMetrics: OverviewMetrics | null = null;
-  recentActivities: any[] = [];
-  isLoading = false;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.loadDashboardData();
-  }
-
-  loadDashboardData() {
-    this.isLoading = true;
-    
-    // Mock data - replace with actual API calls
-    this.wallets = [
-      {
-        id: 'WALLET-1',
-        name: 'Main Ikofi',
-        balance: 250000,
-        currency: 'RWF',
-        type: 'individual',
-        status: 'active',
-        isDefault: true,
-        owners: ['You']
-      },
-      {
-        id: 'WALLET-2',
-        name: 'Joint Ikofi',
-        balance: 1200000,
-        currency: 'RWF',
-        type: 'joint',
-        status: 'active',
-        isDefault: false,
-        owners: ['You', 'Alice', 'Eric']
-      }
-    ];
-
-    this.overviewMetrics = {
-      collections: {
-        liters: 1250.5,
-        value: 187500,
-        transactions: 45
-      },
-      sales: {
-        liters: 980.2,
-        value: 147000,
-        transactions: 32
-      },
-      suppliers: {
-        active: 12,
-        inactive: 3
-      },
-      customers: {
-        active: 28,
-        inactive: 5
-      }
-    };
-
-    this.recentActivities = [
-      {
-        icon: 'truck',
-        title: 'Milk collection from John Doe',
-        time: '2 hours ago',
-        amount: 15000
-      },
-      {
-        icon: 'shopping-cart',
-        title: 'Milk sale to ABC Store',
-        time: '4 hours ago',
-        amount: 25000
-      },
-      {
-        icon: 'user-plus',
-        title: 'New supplier registered',
-        time: '1 day ago',
-        amount: null
-      },
-      {
-        icon: 'users',
-        title: 'New customer added',
-        time: '2 days ago',
-        amount: null
-      }
-    ];
-
-    // Initialize balance visibility
-    this.wallets.forEach(wallet => {
-      this.walletBalanceVisibility[wallet.id] = true;
-    });
-
-    this.isLoading = false;
-  }
-
-  refreshData() {
-    this.loadDashboardData();
-  }
-
-  toggleBalanceVisibility(walletId: string, event: Event) {
-    event.stopPropagation();
-    this.walletBalanceVisibility[walletId] = !this.walletBalanceVisibility[walletId];
-  }
-
-  formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-RW', {
-      style: 'currency',
-      currency: 'RWF',
-      minimumFractionDigits: 0
-    }).format(amount);
-  }
-
-  formatNumber(value: number): string {
-    return new Intl.NumberFormat('en-RW', {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1
-    }).format(value);
-  }
-
-  // Navigation methods
-  navigateToTransactions(wallet: Wallet) {
-    // Navigate to transactions page
-    console.log('Navigate to transactions for wallet:', wallet.id);
-  }
-
-  navigateToCollect() {
-    // Navigate to collect milk page
-    console.log('Navigate to collect milk');
-  }
-
-  navigateToSell() {
-    // Navigate to sell milk page
-    console.log('Navigate to sell milk');
-  }
-
-  navigateToSuppliers() {
-    // Navigate to suppliers page
-    console.log('Navigate to suppliers');
-  }
-
-  navigateToCustomers() {
-    // Navigate to customers page
-    console.log('Navigate to customers');
-  }
-
-  navigateToCollections() {
-    // Navigate to collections page
-    console.log('Navigate to collections');
-  }
-
-  navigateToSales() {
-    // Navigate to sales page
-    console.log('Navigate to sales');
+    // Initialize dashboard data
   }
 }
