@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gemura Web Application
 
-## Getting Started
+A comprehensive dairy farming management system built with Angular, designed to match the functionality of the Flutter mobile app.
 
-First, run the development server:
+## Features
 
+- **Authentication System**: Login with email/phone, registration with account types
+- **User Management**: Support for multiple account types (Farmer, Veterinarian, Supplier, etc.)
+- **API Integration**: Connected to the same API as the Flutter app (`https://api.gemura.rw/v2`)
+- **Responsive Design**: Works on desktop and mobile devices
+- **cPanel Deployment**: Optimized for shared hosting
+
+## Account Types
+
+- **Farmer**: Dairy farmers managing their livestock
+- **Veterinarian**: Animal health professionals
+- **Supplier**: Feed and equipment suppliers
+- **Customer**: Milk buyers
+- **Agent**: Field agents
+- **Collector**: Milk collectors
+- **MCC**: Milk Collection Centers
+
+## Development
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development Server
+```bash
+npm start
+```
+Navigate to `http://localhost:4200/`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for Production
+```bash
+npm run build:prod
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment to cPanel
 
-## Learn More
+### Automatic Deployment
+```bash
+npm run deploy
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Manual Deployment
+1. Build the application:
+   ```bash
+   ng build --configuration production
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Upload the contents of `dist/frontend/browser/` to your cPanel `public_html` directory
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Upload the `.htaccess` file to the same directory
 
-## Deploy on Vercel
+4. Ensure your domain is properly configured
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### cPanel Configuration
+- **Document Root**: `public_html`
+- **PHP Version**: 8.0 or higher (if using PHP features)
+- **SSL Certificate**: Recommended for production
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## API Configuration
+
+The application is configured to use the Gemura API at `https://api.gemura.rw/v2`. All authentication and data operations use the same endpoints as the Flutter mobile app.
+
+### Environment Variables
+No environment variables are required as the API URL is hardcoded to match the Flutter app configuration.
+
+## Authentication Flow
+
+1. **Login**: Users can login with either email or phone number
+2. **Registration**: New users can register with account type selection
+3. **Password Reset**: Available through the API
+4. **Profile Management**: Users can update their profiles
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Troubleshooting
+
+### Build Issues
+- Ensure Node.js version is 18 or higher
+- Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+
+### Deployment Issues
+- Check that all files are uploaded to the correct directory
+- Verify .htaccess file is present
+- Ensure mod_rewrite is enabled on your server
+
+### API Issues
+- Check browser console for network errors
+- Verify API endpoint is accessible
+- Check CORS configuration if needed
+
+## Support
+
+For technical support, contact the development team or refer to the Flutter app documentation for API details.
