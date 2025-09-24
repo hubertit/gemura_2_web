@@ -3,11 +3,45 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import {
+  ApexNonAxisChartSeries,
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexStroke,
+  ApexYAxis,
+  ApexTitleSubtitle,
+  ApexLegend,
+  ApexFill,
+  ApexTooltip,
+  ApexPlotOptions,
+  ChartComponent
+} from 'ng-apexcharts';
+
+export interface ChartOptions {
+  plotOptions?: ApexPlotOptions;
+  markers?: any;
+  grid?: any;
+  series: ApexNonAxisChartSeries | ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  dataLabels: ApexDataLabels;
+  stroke: ApexStroke;
+  yaxis: ApexYAxis | ApexYAxis[];
+  title: ApexTitleSubtitle;
+  labels?: string[];
+  legend: ApexLegend;
+  fill: ApexFill;
+  tooltip: ApexTooltip;
+  colors: string[];
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FeatherIconComponent],
+  imports: [CommonModule, RouterModule, FeatherIconComponent, NgApexchartsModule],
   template: `
     <div class="dashboard-container">
       <!-- Stats Cards -->
@@ -87,32 +121,24 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
           <div class="chart-header">
             <h3>Milk Collection Trends</h3>
             <div class="chart-controls">
-              <button class="btn-small active">7D</button>
-              <button class="btn-small">30D</button>
-              <button class="btn-small">90D</button>
+              <button class="btn-small active" (click)="updateCollectionChart('7D')">7D</button>
+              <button class="btn-small" (click)="updateCollectionChart('30D')">30D</button>
+              <button class="btn-small" (click)="updateCollectionChart('90D')">90D</button>
             </div>
           </div>
-          <div class="chart-placeholder">
-            <div class="chart-mock">
-              <div class="chart-bars">
-                <div class="bar" style="height: 60%"></div>
-                <div class="bar" style="height: 80%"></div>
-                <div class="bar" style="height: 45%"></div>
-                <div class="bar" style="height: 90%"></div>
-                <div class="bar" style="height: 70%"></div>
-                <div class="bar" style="height: 85%"></div>
-                <div class="bar" style="height: 95%"></div>
-              </div>
-              <div class="chart-labels">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span>Sun</span>
-              </div>
-            </div>
+          <div class="chart-wrapper">
+            <apx-chart
+              [series]="collectionChartOptions.series"
+              [chart]="collectionChartOptions.chart"
+              [xaxis]="collectionChartOptions.xaxis"
+              [yaxis]="collectionChartOptions.yaxis"
+              [dataLabels]="collectionChartOptions.dataLabels"
+              [stroke]="collectionChartOptions.stroke"
+              [fill]="collectionChartOptions.fill"
+              [colors]="collectionChartOptions.colors"
+              [tooltip]="collectionChartOptions.tooltip"
+              [grid]="collectionChartOptions.grid">
+            </apx-chart>
           </div>
         </div>
 
@@ -120,34 +146,26 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
           <div class="chart-header">
             <h3>Revenue Overview</h3>
             <div class="chart-controls">
-              <button class="btn-small active">7D</button>
-              <button class="btn-small">30D</button>
-              <button class="btn-small">90D</button>
+              <button class="btn-small active" (click)="updateRevenueChart('7D')">7D</button>
+              <button class="btn-small" (click)="updateRevenueChart('30D')">30D</button>
+              <button class="btn-small" (click)="updateRevenueChart('90D')">90D</button>
             </div>
           </div>
-          <div class="chart-placeholder">
-            <div class="chart-mock">
-              <div class="chart-line">
-                <div class="line-point" style="left: 10%; top: 80%"></div>
-                <div class="line-point" style="left: 25%; top: 60%"></div>
-                <div class="line-point" style="left: 40%; top: 70%"></div>
-                <div class="line-point" style="left: 55%; top: 40%"></div>
-                <div class="line-point" style="left: 70%; top: 50%"></div>
-                <div class="line-point" style="left: 85%; top: 30%"></div>
-                <div class="line-point" style="left: 100%; top: 20%"></div>
-              </div>
-              <div class="chart-labels">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span>Sun</span>
-              </div>
-            </div>
-            </div>
+          <div class="chart-wrapper">
+            <apx-chart
+              [series]="revenueChartOptions.series"
+              [chart]="revenueChartOptions.chart"
+              [xaxis]="revenueChartOptions.xaxis"
+              [yaxis]="revenueChartOptions.yaxis"
+              [dataLabels]="revenueChartOptions.dataLabels"
+              [stroke]="revenueChartOptions.stroke"
+              [fill]="revenueChartOptions.fill"
+              [colors]="revenueChartOptions.colors"
+              [tooltip]="revenueChartOptions.tooltip"
+              [grid]="revenueChartOptions.grid">
+            </apx-chart>
           </div>
+        </div>
         </div>
 
       <!-- Recent Activity -->
@@ -207,10 +225,165 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  collectionChartOptions: ChartOptions;
+  revenueChartOptions: ChartOptions;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    this.initializeCharts();
+  }
 
   ngOnInit() {
     // Initialize dashboard data
+  }
+
+  initializeCharts() {
+    // Milk Collection Trends Chart
+    this.collectionChartOptions = {
+      series: [{
+        name: 'Milk Collected (L)',
+        data: [120, 180, 95, 210, 160, 195, 230]
+      }],
+      chart: {
+        type: 'bar',
+        height: 300,
+        toolbar: {
+          show: false
+        }
+      },
+      xaxis: {
+        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yaxis: {
+        title: {
+          text: 'Liters'
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        show: true,
+        width: 2,
+        colors: ['transparent']
+      },
+      fill: {
+        opacity: 1
+      },
+      colors: ['#004AAD'],
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val + " L"
+          }
+        }
+      },
+      grid: {
+        borderColor: '#f1f5f9'
+      }
+    };
+
+    // Revenue Overview Chart
+    this.revenueChartOptions = {
+      series: [{
+        name: 'Revenue (RWF)',
+        data: [15000, 22000, 18000, 25000, 20000, 28000, 32000]
+      }],
+      chart: {
+        type: 'line',
+        height: 300,
+        toolbar: {
+          show: false
+        }
+      },
+      xaxis: {
+        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yaxis: {
+        title: {
+          text: 'RWF'
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 3
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.3,
+          stops: [0, 90, 100]
+        }
+      },
+      colors: ['#059669'],
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val.toLocaleString() + " RWF"
+          }
+        }
+      },
+      grid: {
+        borderColor: '#f1f5f9'
+      }
+    };
+  }
+
+  updateCollectionChart(period: string) {
+    // Update active button
+    document.querySelectorAll('.chart-controls button').forEach(btn => btn.classList.remove('active'));
+    event?.target?.classList.add('active');
+
+    // Update chart data based on period
+    let newData: number[];
+    switch(period) {
+      case '7D':
+        newData = [120, 180, 95, 210, 160, 195, 230];
+        break;
+      case '30D':
+        newData = [150, 200, 120, 250, 180, 220, 280, 160, 190, 240, 170, 210, 260, 140, 180, 230, 160, 200, 250, 130, 170, 220, 150, 190, 240, 160, 200, 250, 140, 180];
+        break;
+      case '90D':
+        newData = [100, 150, 200, 120, 180, 220, 160, 190, 240, 140, 170, 210, 180, 220, 260, 160, 200, 240, 140, 180, 220, 160, 200, 240, 180, 220, 260, 160, 200, 240];
+        break;
+      default:
+        newData = [120, 180, 95, 210, 160, 195, 230];
+    }
+    
+    this.collectionChartOptions.series = [{
+      name: 'Milk Collected (L)',
+      data: newData
+    }];
+  }
+
+  updateRevenueChart(period: string) {
+    // Update active button
+    document.querySelectorAll('.chart-controls button').forEach(btn => btn.classList.remove('active'));
+    event?.target?.classList.add('active');
+
+    // Update chart data based on period
+    let newData: number[];
+    switch(period) {
+      case '7D':
+        newData = [15000, 22000, 18000, 25000, 20000, 28000, 32000];
+        break;
+      case '30D':
+        newData = [18000, 25000, 22000, 30000, 26000, 35000, 40000, 24000, 28000, 36000, 26000, 32000, 38000, 22000, 26000, 34000, 24000, 30000, 36000, 20000, 24000, 32000, 22000, 28000, 36000, 24000, 30000, 38000, 22000, 26000];
+        break;
+      case '90D':
+        newData = [12000, 18000, 25000, 15000, 22000, 30000, 20000, 26000, 35000, 18000, 24000, 32000, 22000, 30000, 40000, 20000, 28000, 36000, 18000, 26000, 34000, 20000, 28000, 36000, 22000, 30000, 38000, 20000, 28000, 36000];
+        break;
+      default:
+        newData = [15000, 22000, 18000, 25000, 20000, 28000, 32000];
+    }
+    
+    this.revenueChartOptions.series = [{
+      name: 'Revenue (RWF)',
+      data: newData
+    }];
   }
 }
