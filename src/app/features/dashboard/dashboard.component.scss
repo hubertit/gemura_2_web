@@ -37,37 +37,37 @@
   }
 
   &.collections {
-    border-left: 4px solid #059669;
+    border-left: 4px solid #004AAD;
     
     .stat-icon {
-      background: linear-gradient(135deg, #059669, #10b981);
+      background: linear-gradient(135deg, #004AAD, #0066CC);
       color: white;
     }
   }
 
   &.sales {
-    border-left: 4px solid #dc2626;
+    border-left: 4px solid #004AAD;
     
     .stat-icon {
-      background: linear-gradient(135deg, #dc2626, #ef4444);
+      background: linear-gradient(135deg, #004AAD, #0066CC);
       color: white;
     }
   }
 
   &.suppliers {
-    border-left: 4px solid #d97706;
+    border-left: 4px solid #004AAD;
     
     .stat-icon {
-      background: linear-gradient(135deg, #d97706, #f59e0b);
+      background: linear-gradient(135deg, #004AAD, #0066CC);
       color: white;
     }
   }
 
   &.customers {
-    border-left: 4px solid #7c3aed;
+    border-left: 4px solid #004AAD;
     
     .stat-icon {
-      background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+      background: linear-gradient(135deg, #004AAD, #0066CC);
       color: white;
     }
   }
@@ -250,23 +250,23 @@
   flex-shrink: 0;
 
   &.collections {
-    background: #dcfce7;
-    color: #059669;
+    background: rgba(0, 74, 173, 0.1);
+    color: #004AAD;
   }
 
   &.sales {
-    background: #fef2f2;
-    color: #dc2626;
+    background: rgba(0, 74, 173, 0.1);
+    color: #004AAD;
   }
 
   &.suppliers {
-    background: #fef3c7;
-    color: #d97706;
+    background: rgba(0, 74, 173, 0.1);
+    color: #004AAD;
   }
 
   &.customers {
-    background: #f3e8ff;
-    color: #7c3aed;
+    background: rgba(0, 74, 173, 0.1);
+    color: #004AAD;
   }
 }
 
@@ -289,7 +289,7 @@
 .activity-amount {
   font-size: 14px;
   font-weight: 600;
-  color: #059669;
+  color: #004AAD;
   text-align: right;
 }
 

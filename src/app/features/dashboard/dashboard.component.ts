@@ -127,7 +127,7 @@ export interface ChartOptions {
             </div>
           </div>
           <div class="chart-wrapper">
-            <apx-chart
+              <apx-chart
               [series]="collectionChartOptions.series"
               [chart]="collectionChartOptions.chart"
               [xaxis]="collectionChartOptions.xaxis"
@@ -152,7 +152,7 @@ export interface ChartOptions {
             </div>
           </div>
           <div class="chart-wrapper">
-            <apx-chart
+              <apx-chart
               [series]="revenueChartOptions.series"
               [chart]="revenueChartOptions.chart"
               [xaxis]="revenueChartOptions.xaxis"
@@ -165,7 +165,7 @@ export interface ChartOptions {
               [grid]="revenueChartOptions.grid">
             </apx-chart>
           </div>
-        </div>
+          </div>
         </div>
 
       <!-- Recent Activity -->
@@ -243,22 +243,22 @@ export class DashboardComponent implements OnInit {
         name: 'Milk Collected (L)',
         data: [120, 180, 95, 210, 160, 195, 230]
       }],
-      chart: {
+    chart: {
         type: 'bar',
         height: 300,
         toolbar: {
           show: false
         }
       },
-      xaxis: {
+    xaxis: {
         categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       },
       yaxis: {
         title: {
           text: 'Liters'
-        }
-      },
-      dataLabels: {
+      }
+    },
+    dataLabels: {
         enabled: false
       },
       stroke: {
@@ -270,8 +270,8 @@ export class DashboardComponent implements OnInit {
         opacity: 1
       },
       colors: ['#004AAD'],
-      tooltip: {
-        y: {
+    tooltip: {
+      y: {
           formatter: function (val) {
             return val + " L"
           }
@@ -319,7 +319,7 @@ export class DashboardComponent implements OnInit {
           stops: [0, 90, 100]
         }
       },
-      colors: ['#059669'],
+      colors: ['#0066CC'],
       tooltip: {
         y: {
           formatter: function (val) {
