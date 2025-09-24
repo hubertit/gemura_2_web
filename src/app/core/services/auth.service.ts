@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Observable, of, throwError, from } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 
 export interface User {
@@ -26,12 +26,17 @@ export interface User {
   village?: string;
   idNumber?: string;
   kycStatus?: string;
+  // Additional fields from Flutter app
+  token?: string;
+  permissions?: { [key: string]: boolean };
+  isAgentCandidate?: boolean;
 }
 
-// API Configuration
+// API Configuration - matching Flutter app exactly
 const API_BASE_URL = 'https://api.gemura.rw/v2';
+const AUTH_ENDPOINT = '/auth';
 
-// Account Types matching Flutter app
+// Account Types matching Flutter app exactly
 export const ACCOUNT_TYPES = {
   MCC: 'mcc',
   AGENT: 'agent', 
@@ -44,6 +49,20 @@ export const ACCOUNT_TYPES = {
 } as const;
 
 export type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
+
+// Registration request interface matching Flutter app
+export interface RegistrationRequest {
+  name: string;
+  account_name: string;
+  email?: string;
+  phone: string;
+  password: string;
+  nid?: string;
+  role: string;
+  account_type: string;
+  permissions?: { [key: string]: boolean };
+  is_agent_candidate?: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -60,73 +79,116 @@ export class AuthService {
   }
 
   login(identifier: string, password: string): Observable<User> {
+    // Use identifier field as per API specification - matching Flutter app exactly
     const loginData = {
       identifier: identifier, // Can be email or phone
       password: password
     };
 
-    return this.http.post<any>(`${API_BASE_URL}/auth/login`, loginData).pipe(
-      map(response => {
-        if (response.success && response.data) {
-          const { user, account, token } = response.data;
-          
-          // Create user object matching Flutter app structure
-          const userData: User = {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            phoneNumber: user.phoneNumber || user.phone,
-            role: account.type,
-            accountType: account.type,
-            accountCode: account.code,
-            accountName: account.name,
-            avatar: user.profilePicture || user.profile_img,
-            createdAt: new Date(user.createdAt || user.created_at),
-            lastLoginAt: new Date(),
-            isActive: user.isActive !== false,
-            about: user.about,
-            address: user.address,
-            province: user.province,
-            district: user.district,
-            sector: user.sector,
-            cell: user.cell,
-            village: user.village,
-            idNumber: user.idNumber || user.id_number,
-            kycStatus: user.kycStatus || user.kyc_status
-          };
+    console.log('🔧 AuthService: Attempting login with:', { identifier, password: '***' });
+    console.log('🔧 AuthService: API URL:', `${API_BASE_URL}${AUTH_ENDPOINT}/login`);
 
-          // Store user info
-          this.currentUser = userData;
-          localStorage.setItem('gemura.user', JSON.stringify(userData));
-          localStorage.setItem('gemura.token', token);
-          
-          return userData;
-        } else {
+    // Use fetch API to bypass CORS issues
+    return from(fetch(`${API_BASE_URL}${AUTH_ENDPOINT}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(loginData),
+      mode: 'cors'
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    })).pipe(
+      map((response: any) => {
+        console.log('🔧 AuthService: Full API response:', response);
+        console.log('🔧 AuthService: Response code:', response.code);
+        console.log('🔧 AuthService: Response status:', response.status);
+        
+        // Handle the actual API response structure from curl test
+        if (response.code === 200 && response.status === 'success') {
+          const data = response.data;
+          console.log('🔧 AuthService: Response data:', data);
+          if (data) {
+            const { user, account } = data;
+            
+            // Create user object matching the actual API response structure
+            const userData: User = {
+              id: user.id.toString(),
+              name: user.name,
+              email: user.email,
+              phoneNumber: user.phone,
+              role: account?.type || user.account_type,
+              accountType: account?.type || user.account_type || 'mcc',
+              accountCode: account?.code,
+              accountName: account?.name,
+              avatar: user.profilePicture || user.profile_img,
+              createdAt: new Date(),
+              lastLoginAt: new Date(),
+              isActive: user.status === 'active',
+              about: user.about,
+              address: user.address,
+              province: user.province,
+              district: user.district,
+              sector: user.sector,
+              cell: user.cell,
+              village: user.village,
+              idNumber: user.idNumber || user.id_number,
+              kycStatus: user.kycStatus || user.kyc_status,
+              token: user.token,
+              permissions: user.permissions,
+              isAgentCandidate: user.isAgentCandidate || false
+            };
+
+            // Store user info - matching Flutter app storage keys
+            this.currentUser = userData;
+            localStorage.setItem('gemura.user', JSON.stringify(userData));
+            localStorage.setItem('gemura.token', userData.token || '');
+            localStorage.setItem('gemura.isLoggedIn', 'true');
+            
+            return userData;
+          }
+        }
+        
+        // Handle error responses (401, 400, etc.)
+        if (response.code && response.status === 'error') {
           throw new Error(response.message || 'Login failed');
         }
+        
+        // Fallback for unexpected response structure
+        throw new Error('Unexpected response format');
       }),
       catchError(error => {
-        console.error('Login error:', error);
-        return throwError(() => error.error?.message || 'Login failed. Please try again.');
+        console.error('🔧 AuthService: Login error:', error);
+        console.error('🔧 AuthService: Error status:', error.status);
+        console.error('🔧 AuthService: Error message:', error.message);
+        console.error('🔧 AuthService: Error details:', error);
+        return throwError(() => this.handleHttpError(error));
       })
     );
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${API_BASE_URL}/auth/logout`, {}).pipe(
+    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/logout`, {}).pipe(
       map(() => {
-        this.currentUser = null;
-        localStorage.removeItem('gemura.user');
-        localStorage.removeItem('gemura.token');
+        this.clearLocalData();
       }),
       catchError(() => {
-        // Even if logout fails, clear local data
-        this.currentUser = null;
-        localStorage.removeItem('gemura.user');
-        localStorage.removeItem('gemura.token');
+        // Even if logout fails, clear local data - matching Flutter app behavior
+        this.clearLocalData();
         return of(null);
       })
     );
+  }
+
+  private clearLocalData(): void {
+    this.currentUser = null;
+    localStorage.removeItem('gemura.user');
+    localStorage.removeItem('gemura.token');
+    localStorage.removeItem('gemura.isLoggedIn');
   }
 
   isLoggedIn(): boolean {
@@ -146,71 +208,125 @@ export class AuthService {
   }
 
   register(userData: any): Observable<User> {
-    return this.http.post<any>(`${API_BASE_URL}/auth/register`, userData).pipe(
-      map(response => {
-        if (response.success && response.data) {
-          const { user, account, token } = response.data;
-          
-          const newUser: User = {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            phoneNumber: user.phoneNumber || user.phone,
-            role: account.type,
-            accountType: account.type,
-            accountCode: account.code,
-            accountName: account.name,
-            avatar: user.profilePicture || user.profile_img,
-            createdAt: new Date(user.createdAt || user.created_at),
-            isActive: user.isActive !== false,
-            about: user.about,
-            address: user.address,
-            province: user.province,
-            district: user.district,
-            sector: user.sector,
-            cell: user.cell,
-            village: user.village,
-            idNumber: user.idNumber || user.id_number,
-            kycStatus: user.kycStatus || user.kyc_status
-          };
+    // Transform userData to match Flutter app's RegistrationRequest structure
+    const registrationRequest: RegistrationRequest = {
+      name: userData.name,
+      account_name: userData.accountName,
+      email: userData.email,
+      phone: userData.phoneNumber,
+      password: userData.password,
+      nid: userData.idNumber,
+      role: userData.accountType,
+      account_type: userData.accountType,
+      permissions: userData.permissions || {},
+      is_agent_candidate: userData.isAgentCandidate || false
+    };
 
-          this.currentUser = newUser;
-          localStorage.setItem('gemura.user', JSON.stringify(newUser));
-          localStorage.setItem('gemura.token', token);
-          
-          return newUser;
-        } else {
-          throw new Error(response.message || 'Registration failed');
+    return this.http.post<any>(`${API_BASE_URL}${AUTH_ENDPOINT}/register`, registrationRequest).pipe(
+      map(response => {
+        // Handle response structure matching Flutter app
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          const data = response.data;
+          if (data) {
+            const { user, account, token } = data;
+            
+            const newUser: User = {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              phoneNumber: user.phoneNumber || user.phone,
+              role: account?.type || user.role,
+              accountType: account?.type || user.accountType || 'mcc',
+              accountCode: account?.code,
+              accountName: account?.name,
+              avatar: user.profilePicture || user.profile_img,
+              createdAt: new Date(user.createdAt || user.created_at),
+              isActive: user.isActive !== false,
+              about: user.about,
+              address: user.address,
+              province: user.province,
+              district: user.district,
+              sector: user.sector,
+              cell: user.cell,
+              village: user.village,
+              idNumber: user.idNumber || user.id_number,
+              kycStatus: user.kycStatus || user.kyc_status,
+              token: user.token || token,
+              permissions: user.permissions,
+              isAgentCandidate: user.isAgentCandidate || false
+            };
+
+            // Store user info - matching Flutter app storage keys
+            this.currentUser = newUser;
+            localStorage.setItem('gemura.user', JSON.stringify(newUser));
+            localStorage.setItem('gemura.token', newUser.token || token);
+            localStorage.setItem('gemura.isLoggedIn', 'true');
+            
+            return newUser;
+          }
         }
+        throw new Error(response.message || 'Registration failed');
       }),
       catchError(error => {
         console.error('Registration error:', error);
-        return throwError(() => error.error?.message || 'Registration failed. Please try again.');
+        return throwError(() => this.handleHttpError(error));
       })
     );
   }
 
   requestPasswordReset(email: string): Observable<any> {
-    return this.http.post(`${API_BASE_URL}/auth/request-password-reset`, { email }).pipe(
+    // Matching Flutter app's requestPasswordReset method
+    const data: any = {};
+    if (email && email.trim() !== '') {
+      data.email = email;
+    }
+
+    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/request_reset.php`, data).pipe(
       map(response => response),
       catchError(error => {
         console.error('Password reset request error:', error);
-        return throwError(() => error.error?.message || 'Failed to send reset email.');
+        return throwError(() => this.handleHttpError(error));
       })
     );
   }
 
-  resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post(`${API_BASE_URL}/auth/reset-password`, { 
-      token, 
-      password: newPassword 
+  resetPassword(userId: number, resetCode: string, newPassword: string): Observable<any> {
+    // Matching Flutter app's resetPasswordWithCode method
+    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/reset_password.php`, {
+      user_id: userId,
+      reset_code: resetCode,
+      new_password: newPassword
     }).pipe(
       map(response => response),
       catchError(error => {
         console.error('Password reset error:', error);
-        return throwError(() => error.error?.message || 'Password reset failed.');
+        return throwError(() => this.handleHttpError(error));
       })
     );
+  }
+
+  private handleHttpError(error: HttpErrorResponse): string {
+    // Error handling matching Flutter app's _handleDioError method
+    if (error.status === 0) {
+      return 'Please check your internet connection and try again.';
+    }
+    
+    switch (error.status) {
+      case 400:
+        return `Bad request: ${error.error?.message || 'Invalid request'}`;
+      case 401:
+        return 'Authentication failed. Please try again.';
+      case 403:
+        return `Access denied: ${error.error?.message || 'Insufficient permissions'}`;
+      case 404:
+        return `Resource not found: ${error.error?.message || 'Requested resource not found'}`;
+      case 422:
+        return `Validation error: ${error.error?.message || 'Please check your input'}`;
+      case 500:
+        return 'Something went wrong. Please try again later.';
+      default:
+        return `Error ${error.status}: ${error.error?.message || 'An unexpected error occurred'}`;
+    }
   }
 
   getProfile(): Observable<User> {
@@ -219,12 +335,11 @@ export class AuthService {
       return throwError(() => 'No authentication token found');
     }
 
-    return this.http.get<any>(`${API_BASE_URL}/auth/profile`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).pipe(
+    // Matching Flutter app's getProfile method - using POST with token in body
+    return this.http.post<any>(`${API_BASE_URL}/profile/get.php`, { token }).pipe(
       map(response => {
-        if (response.success && response.data) {
-          const user = response.data;
+        if (response.statusCode === 200 && response.data) {
+          const user = response.data.user;
           const userData: User = {
             id: user.id,
             name: user.name,
@@ -246,9 +361,13 @@ export class AuthService {
             cell: user.cell,
             village: user.village,
             idNumber: user.idNumber || user.id_number,
-            kycStatus: user.kycStatus || user.kyc_status
+            kycStatus: user.kycStatus || user.kyc_status,
+            token: user.token,
+            permissions: user.permissions,
+            isAgentCandidate: user.isAgentCandidate
           };
 
+          // Update cached user data
           this.currentUser = userData;
           localStorage.setItem('gemura.user', JSON.stringify(userData));
           return userData;
@@ -258,7 +377,14 @@ export class AuthService {
       }),
       catchError(error => {
         console.error('Profile fetch error:', error);
-        return throwError(() => error.error?.message || 'Failed to fetch profile.');
+        // If API call fails, try to get from cache as fallback - matching Flutter app
+        const cachedUserData = localStorage.getItem('gemura.user');
+        if (cachedUserData) {
+          const userData = JSON.parse(cachedUserData);
+          this.currentUser = userData;
+          return of(userData);
+        }
+        return throwError(() => this.handleHttpError(error));
       })
     );
   }
@@ -269,29 +395,34 @@ export class AuthService {
       return throwError(() => 'No authentication token found');
     }
 
-    return this.http.put<any>(`${API_BASE_URL}/auth/profile`, profileData, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).pipe(
+    // Matching Flutter app's updateProfile method - using POST with token in body
+    const body = {
+      token: token,
+      ...profileData
+    };
+
+    return this.http.post<any>(`${API_BASE_URL}/profile/update.php`, body).pipe(
       map(response => {
-        if (response.success && response.data) {
-          const user = response.data;
-          const updatedUser: User = {
+        if (response.statusCode === 200 && response.data) {
+          const updatedUser = response.data.user;
+          const userData: User = {
             ...this.currentUser!,
-            ...user,
-            id: user.id || this.currentUser!.id,
-            createdAt: user.createdAt ? new Date(user.createdAt) : this.currentUser!.createdAt
+            ...updatedUser,
+            id: updatedUser.id || this.currentUser!.id,
+            createdAt: updatedUser.createdAt ? new Date(updatedUser.createdAt) : this.currentUser!.createdAt
           };
 
-          this.currentUser = updatedUser;
-          localStorage.setItem('gemura.user', JSON.stringify(updatedUser));
-          return updatedUser;
+          // Update cached user data
+          this.currentUser = userData;
+          localStorage.setItem('gemura.user', JSON.stringify(userData));
+          return userData;
         } else {
           throw new Error(response.message || 'Profile update failed');
         }
       }),
       catchError(error => {
         console.error('Profile update error:', error);
-        return throwError(() => error.error?.message || 'Profile update failed.');
+        return throwError(() => this.handleHttpError(error));
       })
     );
   }

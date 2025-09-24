@@ -210,22 +210,22 @@ export class RegisterComponent implements OnInit {
   currentYear = new Date().getFullYear();
   errorMessage = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {
-    this.registerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      accountName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.email]], // Optional
-      phoneNumber: ['', [Validators.required, Validators.pattern(/^[+]?[0-9\s\-\(\)]+$/)]],
-      idNumber: [''], // Optional
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      accountType: ['', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
-  }
+      constructor(
+        private fb: FormBuilder,
+        private authService: AuthService,
+        private router: Router
+      ) {
+        this.registerForm = this.fb.group({
+          name: ['Test User', [Validators.required, Validators.minLength(2)]], // Pre-filled test data
+          accountName: ['Test Account', [Validators.required, Validators.minLength(2)]], // Pre-filled test data
+          email: ['test@example.com', [Validators.email]], // Pre-filled test data
+          phoneNumber: ['250788606766', [Validators.required, Validators.pattern(/^[+]?[0-9\s\-\(\)]+$/)]], // Pre-filled test data
+          idNumber: ['1234567890123456'], // Pre-filled test data
+          password: ['Pass123', [Validators.required, Validators.minLength(6)]], // Pre-filled test data
+          confirmPassword: ['Pass123', [Validators.required]], // Pre-filled test data
+          accountType: ['farmer', [Validators.required]] // Pre-filled test data
+        }, { validators: this.passwordMatchValidator });
+      }
 
   ngOnInit(): void {
     // Update time every second

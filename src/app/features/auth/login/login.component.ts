@@ -117,16 +117,16 @@ export class LoginComponent implements OnInit {
   currentYear = new Date().getFullYear();
   errorMessage = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {
-    this.loginForm = this.fb.group({
-      identifier: ['', [Validators.required]],
-      password: ['', Validators.required]
-    });
-  }
+      constructor(
+        private fb: FormBuilder,
+        private authService: AuthService,
+        private router: Router
+      ) {
+        this.loginForm = this.fb.group({
+          identifier: ['250788606765', [Validators.required]], // Pre-filled with test credentials
+          password: ['Pass123', Validators.required] // Pre-filled with test credentials
+        });
+      }
 
   ngOnInit(): void {
     // Update time every second
@@ -157,31 +157,33 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      this.errorMessage = '';
+      onSubmit(): void {
+        if (this.loginForm.valid) {
+          this.isLoading = true;
+          this.errorMessage = '';
 
-      const { identifier, password } = this.loginForm.value;
+          const { identifier, password } = this.loginForm.value;
 
-      this.authService.login(identifier, password).subscribe({
-        next: (user) => {
-          this.isLoading = false;
-          // Navigate to dashboard or home page
-          this.router.navigate(['/dashboard']);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = error;
+          // Use direct API call with HttpClient
+          this.authService.login(identifier, password).subscribe({
+            next: (user) => {
+              console.log('🔧 LoginComponent: Login successful:', user);
+              this.isLoading = false;
+              this.router.navigate(['/dashboard']);
+            },
+            error: (error) => {
+              console.log('🔧 LoginComponent: Login failed:', error);
+              this.isLoading = false;
+              this.errorMessage = error;
+            }
+          });
+        } else {
+          Object.keys(this.loginForm.controls).forEach(key => {
+            const control = this.loginForm.get(key);
+            if (control?.invalid) {
+              control.markAsTouched();
+            }
+          });
         }
-      });
-    } else {
-      Object.keys(this.loginForm.controls).forEach(key => {
-        const control = this.loginForm.get(key);
-        if (control?.invalid) {
-          control.markAsTouched();
-        }
-      });
-    }
-  }
+      }
 }

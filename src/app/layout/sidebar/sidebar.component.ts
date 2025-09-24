@@ -15,7 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
       <div class="sidebar-header">
         <div class="logo-container">
           <img src="assets/img/icon.png" alt="Logo" class="logo">
-          <span class="logo-text" *ngIf="!isCollapsed">SACCO ESB</span>
+          <span class="logo-text" *ngIf="!isCollapsed">Gemura</span>
         </div>
       </div>
 
