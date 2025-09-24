@@ -18,7 +18,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
         [isCollapsed]="isSidebarCollapsed"
         (toggleCollapse)="toggleSidebar()">
       </app-sidebar>
-      <div class="page-wrapper">
+      <div class="page-wrapper" (click)="onPageClick()">
         <router-outlet></router-outlet>
       </div>
     </div>
@@ -47,5 +47,12 @@ export class MainLayoutComponent implements OnInit {
 
   toggleSidebar(): void {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+
+  onPageClick(): void {
+    // Close sidebar on mobile when clicking outside
+    if (typeof window !== 'undefined' && window.innerWidth < this.MOBILE_BREAKPOINT && this.isSidebarCollapsed) {
+      this.isSidebarCollapsed = false;
+    }
   }
 }
