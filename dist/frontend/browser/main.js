@@ -1,10 +1,44 @@
-import {
-  __async,
-  __name,
-  __publicField,
-  __spreadProps,
-  __spreadValues
-} from "./chunk-DZPV3D5Z.js";
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b ||= {})
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 
 // node_modules/@angular/core/fesm2022/not_found.mjs
 var _currentInjector = void 0;
@@ -1380,79 +1414,6 @@ var _AsyncAction = class _AsyncAction extends Action {
 __name(_AsyncAction, "AsyncAction");
 var AsyncAction = _AsyncAction;
 
-// node_modules/rxjs/dist/esm/internal/util/Immediate.js
-var nextHandle = 1;
-var resolved;
-var activeHandles = {};
-function findAndClearHandle(handle) {
-  if (handle in activeHandles) {
-    delete activeHandles[handle];
-    return true;
-  }
-  return false;
-}
-__name(findAndClearHandle, "findAndClearHandle");
-var Immediate = {
-  setImmediate(cb) {
-    const handle = nextHandle++;
-    activeHandles[handle] = true;
-    if (!resolved) {
-      resolved = Promise.resolve();
-    }
-    resolved.then(() => findAndClearHandle(handle) && cb());
-    return handle;
-  },
-  clearImmediate(handle) {
-    findAndClearHandle(handle);
-  }
-};
-
-// node_modules/rxjs/dist/esm/internal/scheduler/immediateProvider.js
-var { setImmediate, clearImmediate } = Immediate;
-var immediateProvider = {
-  setImmediate(...args) {
-    const { delegate } = immediateProvider;
-    return ((delegate === null || delegate === void 0 ? void 0 : delegate.setImmediate) || setImmediate)(...args);
-  },
-  clearImmediate(handle) {
-    const { delegate } = immediateProvider;
-    return ((delegate === null || delegate === void 0 ? void 0 : delegate.clearImmediate) || clearImmediate)(handle);
-  },
-  delegate: void 0
-};
-
-// node_modules/rxjs/dist/esm/internal/scheduler/AsapAction.js
-var _AsapAction = class _AsapAction extends AsyncAction {
-  constructor(scheduler, work) {
-    super(scheduler, work);
-    this.scheduler = scheduler;
-    this.work = work;
-  }
-  requestAsyncId(scheduler, id, delay2 = 0) {
-    if (delay2 !== null && delay2 > 0) {
-      return super.requestAsyncId(scheduler, id, delay2);
-    }
-    scheduler.actions.push(this);
-    return scheduler._scheduled || (scheduler._scheduled = immediateProvider.setImmediate(scheduler.flush.bind(scheduler, void 0)));
-  }
-  recycleAsyncId(scheduler, id, delay2 = 0) {
-    var _a8;
-    if (delay2 != null ? delay2 > 0 : this.delay > 0) {
-      return super.recycleAsyncId(scheduler, id, delay2);
-    }
-    const { actions } = scheduler;
-    if (id != null && ((_a8 = actions[actions.length - 1]) === null || _a8 === void 0 ? void 0 : _a8.id) !== id) {
-      immediateProvider.clearImmediate(id);
-      if (scheduler._scheduled === id) {
-        scheduler._scheduled = void 0;
-      }
-    }
-    return void 0;
-  }
-};
-__name(_AsapAction, "AsapAction");
-var AsapAction = _AsapAction;
-
 // node_modules/rxjs/dist/esm/internal/Scheduler.js
 var _Scheduler = class _Scheduler {
   constructor(schedulerActionCtor, now = _Scheduler.now) {
@@ -1498,35 +1459,6 @@ var _AsyncScheduler = class _AsyncScheduler extends Scheduler {
 };
 __name(_AsyncScheduler, "AsyncScheduler");
 var AsyncScheduler = _AsyncScheduler;
-
-// node_modules/rxjs/dist/esm/internal/scheduler/AsapScheduler.js
-var _AsapScheduler = class _AsapScheduler extends AsyncScheduler {
-  flush(action) {
-    this._active = true;
-    const flushId = this._scheduled;
-    this._scheduled = void 0;
-    const { actions } = this;
-    let error;
-    action = action || actions.shift();
-    do {
-      if (error = action.execute(action.state, action.delay)) {
-        break;
-      }
-    } while ((action = actions[0]) && action.id === flushId && actions.shift());
-    this._active = false;
-    if (error) {
-      while ((action = actions[0]) && action.id === flushId && actions.shift()) {
-        action.unsubscribe();
-      }
-      throw error;
-    }
-  }
-};
-__name(_AsapScheduler, "AsapScheduler");
-var AsapScheduler = _AsapScheduler;
-
-// node_modules/rxjs/dist/esm/internal/scheduler/asap.js
-var asapScheduler = new AsapScheduler(AsapAction);
 
 // node_modules/rxjs/dist/esm/internal/scheduler/async.js
 var asyncScheduler = new AsyncScheduler(AsyncAction);
@@ -12725,11 +12657,11 @@ function listenToOutput(tNode, lView, directiveIndex, lookupName, eventName, lis
   const tView = lView[TVIEW];
   const def = tView.data[directiveIndex];
   const propertyName = def.outputs[lookupName];
-  const output2 = instance[propertyName];
-  if (ngDevMode && !isOutputSubscribable(output2)) {
+  const output = instance[propertyName];
+  if (ngDevMode && !isOutputSubscribable(output)) {
     throw new Error(`@Output ${propertyName} not initialized in '${instance.constructor.name}'.`);
   }
-  const subscription = output2.subscribe(listenerFn);
+  const subscription = output.subscribe(listenerFn);
   storeListenerCleanup(tNode.index, tView, lView, eventName, listenerFn, subscription, true);
 }
 __name(listenToOutput, "listenToOutput");
@@ -14466,8 +14398,8 @@ function findHostDirectiveDefs(currentDef, matchedDefs, hostDirectiveDefs) {
   if (currentDef.hostDirectives !== null) {
     for (const configOrFn of currentDef.hostDirectives) {
       if (typeof configOrFn === "function") {
-        const resolved2 = configOrFn();
-        for (const config2 of resolved2) {
+        const resolved = configOrFn();
+        for (const config2 of resolved) {
           trackHostDirectiveDef(createHostDirectiveDef(config2), matchedDefs, hostDirectiveDefs);
         }
       } else {
@@ -23023,7 +22955,7 @@ __name(compileNgModule, "compileNgModule");
 function compileNgModuleDefs(moduleType, ngModule, allowDuplicateDeclarationsInRoot = false) {
   ngDevMode && assertDefined(moduleType, "Required value moduleType");
   ngDevMode && assertDefined(ngModule, "Required value ngModule");
-  const declarations2 = flatten(ngModule.declarations || EMPTY_ARRAY);
+  const declarations = flatten(ngModule.declarations || EMPTY_ARRAY);
   let ngModuleDef = null;
   Object.defineProperty(moduleType, NG_MOD_DEF, {
     configurable: true,
@@ -23040,7 +22972,7 @@ function compileNgModuleDefs(moduleType, ngModule, allowDuplicateDeclarationsInR
         ngModuleDef = compiler.compileNgModule(angularCoreEnv, `ng:///${moduleType.name}/\u0275mod.js`, {
           type: moduleType,
           bootstrap: flatten(ngModule.bootstrap || EMPTY_ARRAY).map(resolveForwardRef),
-          declarations: declarations2.map(resolveForwardRef),
+          declarations: declarations.map(resolveForwardRef),
           imports: flatten(ngModule.imports || EMPTY_ARRAY).map(resolveForwardRef).map(expandModuleWithProviders),
           exports: flatten(ngModule.exports || EMPTY_ARRAY).map(resolveForwardRef).map(expandModuleWithProviders),
           schemas: ngModule.schemas ? flatten(ngModule.schemas) : null,
@@ -23126,22 +23058,22 @@ function verifySemanticsOfNgModuleDef(moduleType, allowDuplicateDeclarationsInRo
     ngModuleDef = getNgModuleDefOrThrow(moduleType);
   }
   const errors = [];
-  const declarations2 = maybeUnwrapFn(ngModuleDef.declarations);
+  const declarations = maybeUnwrapFn(ngModuleDef.declarations);
   const imports = maybeUnwrapFn(ngModuleDef.imports);
   flatten(imports).map(unwrapModuleWithProvidersImports).forEach((modOrStandaloneCmpt) => {
     verifySemanticsOfNgModuleImport(modOrStandaloneCmpt, moduleType);
     verifySemanticsOfNgModuleDef(modOrStandaloneCmpt, false, moduleType);
   });
   const exports = maybeUnwrapFn(ngModuleDef.exports);
-  declarations2.forEach(verifyDeclarationsHaveDefinitions);
-  declarations2.forEach(verifyDirectivesHaveSelector);
-  declarations2.forEach((declarationType) => verifyNotStandalone(declarationType, moduleType));
+  declarations.forEach(verifyDeclarationsHaveDefinitions);
+  declarations.forEach(verifyDirectivesHaveSelector);
+  declarations.forEach((declarationType) => verifyNotStandalone(declarationType, moduleType));
   const combinedDeclarations = [
-    ...declarations2.map(resolveForwardRef),
+    ...declarations.map(resolveForwardRef),
     ...flatten(imports.map(computeCombinedExports)).map(resolveForwardRef)
   ];
   exports.forEach(verifyExportsAreDeclaredOrReExported);
-  declarations2.forEach((decl) => verifyDeclarationIsUnique(decl, allowDuplicateDeclarationsInRoot));
+  declarations.forEach((decl) => verifyDeclarationIsUnique(decl, allowDuplicateDeclarationsInRoot));
   const ngModule = getAnnotation(moduleType, "NgModule");
   if (ngModule) {
     ngModule.imports && flatten(ngModule.imports).map(unwrapModuleWithProvidersImports).forEach((mod) => {
@@ -23286,9 +23218,9 @@ function computeCombinedExports(type) {
 }
 __name(computeCombinedExports, "computeCombinedExports");
 function setScopeOnDeclaredComponents(moduleType, ngModule) {
-  const declarations2 = flatten(ngModule.declarations || EMPTY_ARRAY);
+  const declarations = flatten(ngModule.declarations || EMPTY_ARRAY);
   const transitiveScopes = transitiveScopesFor(moduleType);
-  declarations2.forEach((declaration) => {
+  declarations.forEach((declaration) => {
     declaration = resolveForwardRef(declaration);
     if (declaration.hasOwnProperty(NG_COMP_DEF)) {
       const component = declaration;
@@ -24809,11 +24741,6 @@ function getDevModeNodeName(tNode) {
   }
 }
 __name(getDevModeNodeName, "getDevModeNodeName");
-function output(opts) {
-  ngDevMode && assertInInjectionContext(output);
-  return new OutputEmitterRef();
-}
-__name(output, "output");
 function inputFunction(initialValue, opts) {
   ngDevMode && assertInInjectionContext(input);
   return createInputSignal(initialValue, opts);
@@ -30293,10 +30220,6 @@ var XhrFactory = _XhrFactory;
 
 // node_modules/@angular/common/fesm2022/common.mjs
 var PLATFORM_BROWSER_ID = "browser";
-function isPlatformBrowser(platformId) {
-  return platformId === PLATFORM_BROWSER_ID;
-}
-__name(isPlatformBrowser, "isPlatformBrowser");
 var VERSION = new Version("20.3.0");
 var _ViewportScroller = class _ViewportScroller {
 };
@@ -54951,1194 +54874,648 @@ var MainLayoutComponent = _MainLayoutComponent;
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(MainLayoutComponent, { className: "MainLayoutComponent", filePath: "src/app/layout/main-layout/main-layout.component.ts", lineNumber: 28 });
 })();
 
-// node_modules/ng-apexcharts/fesm2022/ng-apexcharts.mjs
-var _c03 = ["chart"];
-var _ChartComponent = class _ChartComponent {
-  constructor() {
-    this.chart = input();
-    this.annotations = input();
-    this.colors = input();
-    this.dataLabels = input();
-    this.series = input();
-    this.stroke = input();
-    this.labels = input();
-    this.legend = input();
-    this.markers = input();
-    this.noData = input();
-    this.parsing = input();
-    this.fill = input();
-    this.tooltip = input();
-    this.plotOptions = input();
-    this.responsive = input();
-    this.xaxis = input();
-    this.yaxis = input();
-    this.forecastDataPoints = input();
-    this.grid = input();
-    this.states = input();
-    this.title = input();
-    this.subtitle = input();
-    this.theme = input();
-    this.autoUpdateSeries = input(true);
-    this.chartReady = output();
-    this.chartInstance = signal(null);
-    this.chartElement = viewChild.required("chart");
-    this.ngZone = inject2(NgZone);
-    this.isBrowser = isPlatformBrowser(inject2(PLATFORM_ID));
-  }
-  ngOnChanges(changes) {
-    if (!this.isBrowser) return;
-    this.ngZone.runOutsideAngular(() => {
-      asapScheduler.schedule(() => this.hydrate(changes));
-    });
-  }
-  ngOnDestroy() {
-    this.destroy();
-  }
-  hydrate(changes) {
-    const shouldUpdateSeries = this.autoUpdateSeries() && Object.keys(changes).filter((c) => c !== "series").length === 0;
-    if (shouldUpdateSeries) {
-      this.updateSeries(this.series(), true);
-      return;
-    }
-    this.createElement();
-  }
-  createElement() {
-    return __async(this, null, function* () {
-      const {
-        default: ApexCharts
-      } = yield import("./chunk-IJ7OEXC5.js");
-      window.ApexCharts ||= ApexCharts;
-      const options = {};
-      const properties = ["annotations", "chart", "colors", "dataLabels", "series", "stroke", "labels", "legend", "fill", "tooltip", "plotOptions", "responsive", "markers", "noData", "parsing", "xaxis", "yaxis", "forecastDataPoints", "grid", "states", "title", "subtitle", "theme"];
-      properties.forEach((property) => {
-        const value = this[property]();
-        if (value) {
-          options[property] = value;
-        }
-      });
-      this.destroy();
-      const chartInstance = this.ngZone.runOutsideAngular(() => new ApexCharts(this.chartElement().nativeElement, options));
-      this.chartInstance.set(chartInstance);
-      this.render();
-      this.chartReady.emit({
-        chartObj: chartInstance
-      });
-    });
-  }
-  render() {
-    return this.ngZone.runOutsideAngular(() => this.chartInstance()?.render());
-  }
-  updateOptions(options, redrawPaths, animate, updateSyncedCharts) {
-    return this.ngZone.runOutsideAngular(() => this.chartInstance()?.updateOptions(options, redrawPaths, animate, updateSyncedCharts));
-  }
-  updateSeries(newSeries, animate) {
-    return this.ngZone.runOutsideAngular(() => this.chartInstance()?.updateSeries(newSeries, animate));
-  }
-  appendSeries(newSeries, animate) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.appendSeries(newSeries, animate));
-  }
-  appendData(newData) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.appendData(newData));
-  }
-  highlightSeries(seriesName) {
-    return this.ngZone.runOutsideAngular(() => this.chartInstance()?.highlightSeries(seriesName));
-  }
-  toggleSeries(seriesName) {
-    return this.ngZone.runOutsideAngular(() => this.chartInstance()?.toggleSeries(seriesName));
-  }
-  showSeries(seriesName) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.showSeries(seriesName));
-  }
-  hideSeries(seriesName) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.hideSeries(seriesName));
-  }
-  resetSeries() {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.resetSeries());
-  }
-  zoomX(min, max) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.zoomX(min, max));
-  }
-  toggleDataPointSelection(seriesIndex, dataPointIndex) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.toggleDataPointSelection(seriesIndex, dataPointIndex));
-  }
-  destroy() {
-    this.chartInstance()?.destroy();
-    this.chartInstance.set(null);
-  }
-  setLocale(localeName) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.setLocale(localeName));
-  }
-  paper() {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.paper());
-  }
-  addXaxisAnnotation(options, pushToMemory, context2) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.addXaxisAnnotation(options, pushToMemory, context2));
-  }
-  addYaxisAnnotation(options, pushToMemory, context2) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.addYaxisAnnotation(options, pushToMemory, context2));
-  }
-  addPointAnnotation(options, pushToMemory, context2) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.addPointAnnotation(options, pushToMemory, context2));
-  }
-  removeAnnotation(id, options) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.removeAnnotation(id, options));
-  }
-  clearAnnotations(options) {
-    this.ngZone.runOutsideAngular(() => this.chartInstance()?.clearAnnotations(options));
-  }
-  dataURI(options) {
-    return this.chartInstance()?.dataURI(options);
-  }
-};
-__name(_ChartComponent, "ChartComponent");
-_ChartComponent.\u0275fac = /* @__PURE__ */ __name(function ChartComponent_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _ChartComponent)();
-}, "ChartComponent_Factory");
-_ChartComponent.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({
-  type: _ChartComponent,
-  selectors: [["apx-chart"]],
-  viewQuery: /* @__PURE__ */ __name(function ChartComponent_Query(rf, ctx) {
-    if (rf & 1) {
-      \u0275\u0275viewQuerySignal(ctx.chartElement, _c03, 5);
-    }
-    if (rf & 2) {
-      \u0275\u0275queryAdvance();
-    }
-  }, "ChartComponent_Query"),
-  inputs: {
-    chart: [1, "chart"],
-    annotations: [1, "annotations"],
-    colors: [1, "colors"],
-    dataLabels: [1, "dataLabels"],
-    series: [1, "series"],
-    stroke: [1, "stroke"],
-    labels: [1, "labels"],
-    legend: [1, "legend"],
-    markers: [1, "markers"],
-    noData: [1, "noData"],
-    parsing: [1, "parsing"],
-    fill: [1, "fill"],
-    tooltip: [1, "tooltip"],
-    plotOptions: [1, "plotOptions"],
-    responsive: [1, "responsive"],
-    xaxis: [1, "xaxis"],
-    yaxis: [1, "yaxis"],
-    forecastDataPoints: [1, "forecastDataPoints"],
-    grid: [1, "grid"],
-    states: [1, "states"],
-    title: [1, "title"],
-    subtitle: [1, "subtitle"],
-    theme: [1, "theme"],
-    autoUpdateSeries: [1, "autoUpdateSeries"]
-  },
-  outputs: {
-    chartReady: "chartReady"
-  },
-  features: [\u0275\u0275NgOnChangesFeature],
-  decls: 2,
-  vars: 0,
-  consts: [["chart", ""]],
-  template: /* @__PURE__ */ __name(function ChartComponent_Template(rf, ctx) {
-    if (rf & 1) {
-      \u0275\u0275domElement(0, "div", null, 0);
-    }
-  }, "ChartComponent_Template"),
-  encapsulation: 2,
-  changeDetection: 0
-});
-var ChartComponent = _ChartComponent;
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ChartComponent, [{
-    type: Component,
-    args: [{
-      selector: "apx-chart",
-      template: `<div #chart></div>`,
-      changeDetection: ChangeDetectionStrategy.OnPush,
-      standalone: true
-    }]
-  }], null, null);
-})();
-var declarations = [ChartComponent];
-var _NgApexchartsModule = class _NgApexchartsModule {
-};
-__name(_NgApexchartsModule, "NgApexchartsModule");
-_NgApexchartsModule.\u0275fac = /* @__PURE__ */ __name(function NgApexchartsModule_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _NgApexchartsModule)();
-}, "NgApexchartsModule_Factory");
-_NgApexchartsModule.\u0275mod = /* @__PURE__ */ \u0275\u0275defineNgModule({
-  type: _NgApexchartsModule,
-  imports: [ChartComponent],
-  exports: [ChartComponent]
-});
-_NgApexchartsModule.\u0275inj = /* @__PURE__ */ \u0275\u0275defineInjector({});
-var NgApexchartsModule = _NgApexchartsModule;
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgApexchartsModule, [{
-    type: NgModule,
-    args: [{
-      imports: [declarations],
-      exports: [declarations]
-    }]
-  }], null, null);
-})();
-
-// src/app/core/services/chart.service.ts
-var _ChartService = class _ChartService {
-  mockServices = [
-    {
-      id: "sacco-core",
-      name: "SACCO Core Service",
-      status: "healthy",
-      uptime: "99.99%",
-      responseTime: 120,
-      successRate: 99.8,
-      requestsPerMinute: 350
-    },
-    {
-      id: "payment-gateway",
-      name: "Payment Gateway",
-      status: "warning",
-      uptime: "99.5%",
-      responseTime: 250,
-      successRate: 98.5,
-      requestsPerMinute: 180,
-      lastIncident: "2 hours ago"
-    },
-    {
-      id: "notification",
-      name: "Notification Service",
-      status: "healthy",
-      uptime: "99.95%",
-      responseTime: 80,
-      successRate: 99.9,
-      requestsPerMinute: 420
-    }
-  ];
-  constructor() {
-  }
-  getServices() {
-    return of(this.mockServices);
-  }
-  getServiceMetrics(serviceId) {
-    const hours = Array.from({ length: 24 }, (_, i) => `${23 - i}h ago`).reverse();
-    return of({
-      series: [
-        {
-          name: "Response Time (ms)",
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 100 + 150))
-        },
-        {
-          name: "Requests/min",
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 200 + 300))
-        }
-      ],
-      categories: hours,
-      colors: ["#3498db", "#2ecc71"]
-    });
-  }
-  getTransactionDistribution() {
-    return of({
-      series: [12, 11, 1],
-      labels: ["Internal Transactions", "Push Transactions", "Pull Transactions"],
-      colors: ["#1b2e4b", "#3498db", "#5c7299"]
-    });
-  }
-  getTransactionPerformance() {
-    return of({
-      series: [
-        {
-          name: "Success",
-          data: [2, 11, 1]
-        },
-        {
-          name: "Failed",
-          data: [10, 0, 0]
-        }
-      ],
-      colors: ["#1b2e4b", "#94a3b8"]
-    });
-  }
-  getErrorDistribution() {
-    return of({
-      series: [{
-        name: "Errors",
-        data: [30, 25, 15, 12, 8]
-      }],
-      categories: ["Timeout", "API Error", "Validation", "Network", "Other"],
-      colors: ["#94a3b8"]
-    });
-  }
-  getLatencyTrends() {
-    const days = Array.from({ length: 7 }, (_, i) => {
-      const d = /* @__PURE__ */ new Date();
-      d.setDate(d.getDate() - (6 - i));
-      return d.toLocaleDateString("en-US", { weekday: "short" });
-    });
-    return of({
-      series: [
-        {
-          name: "P95 Latency",
-          data: Array.from({ length: 7 }, () => Math.floor(Math.random() * 100 + 200))
-        },
-        {
-          name: "P50 Latency",
-          data: Array.from({ length: 7 }, () => Math.floor(Math.random() * 50 + 100))
-        }
-      ],
-      categories: days,
-      colors: ["#1b2e4b", "#3498db"]
-    });
-  }
-  getTransactionVolume() {
-    const hours = Array.from({ length: 24 }, (_, i) => `${23 - i}h ago`).reverse();
-    return of({
-      series: [
-        {
-          name: "MTN MOMO",
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 100 + 100))
-        },
-        {
-          name: "Airtel Money",
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 80 + 80))
-        },
-        {
-          name: "Internal",
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 150 + 200))
-        }
-      ],
-      categories: hours,
-      colors: ["#ffc700", "#ff0000", "#3498db"]
-    });
-  }
-  getSuccessRate() {
-    const hours = Array.from({ length: 24 }, (_, i) => `${23 - i}h ago`).reverse();
-    return of({
-      series: [
-        {
-          name: "MTN MOMO",
-          data: Array.from({ length: 24 }, () => Math.round((99.5 + Math.random() * 0.4) * 100) / 100)
-        },
-        {
-          name: "Airtel Money",
-          data: Array.from({ length: 24 }, () => Math.round((99.3 + Math.random() * 0.5) * 100) / 100)
-        },
-        {
-          name: "Internal",
-          data: Array.from({ length: 24 }, () => Math.round((99.8 + Math.random() * 0.2) * 100) / 100)
-        }
-      ],
-      categories: hours,
-      colors: ["#ffc700", "#ff0000", "#3498db"]
-    });
-  }
-  getAmountAnalysis() {
-    return of({
-      series: [25e5, 18e5, 52e5],
-      labels: ["MTN MOMO", "Airtel Money", "Internal Transfers"],
-      colors: ["#ffc700", "#ff0000", "#3498db"]
-    });
-  }
-  getErrorAnalysis() {
-    return of({
-      series: [{
-        name: "Errors",
-        data: [45, 32, 28, 15, 10, 5]
-      }],
-      categories: [
-        "Insufficient Funds",
-        "Network Timeout",
-        "Invalid Account",
-        "Daily Limit Exceeded",
-        "Authentication Failed",
-        "Other"
-      ],
-      colors: ["#ef4444", "#f97316", "#f59e0b", "#eab308", "#84cc16", "#22c55e"]
-    });
-  }
-  getTransactionTypes() {
-    return of({
-      series: [
-        {
-          name: "Deposits",
-          data: [450, 380, 620]
-        },
-        {
-          name: "Withdrawals",
-          data: [380, 320, 480]
-        },
-        {
-          name: "Transfers",
-          data: [180, 150, 350]
-        }
-      ],
-      categories: ["MTN MOMO", "Airtel Money", "Internal"],
-      colors: ["#2ecc71", "#e74c3c", "#3498db"]
-    });
-  }
-  getValueTrends() {
-    const hours = Array.from({ length: 24 }, (_, i) => `${23 - i}h ago`).reverse();
-    return of({
-      series: [
-        {
-          name: "MTN MOMO",
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 1e6 + 15e5))
-        },
-        {
-          name: "Airtel Money",
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 8e5 + 1e6))
-        },
-        {
-          name: "Internal",
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 2e6 + 3e6))
-        }
-      ],
-      categories: hours,
-      colors: ["#ffc700", "#ff0000", "#3498db"]
-    });
-  }
-};
-__name(_ChartService, "ChartService");
-__publicField(_ChartService, "\u0275fac", /* @__PURE__ */ __name(function ChartService_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _ChartService)();
-}, "ChartService_Factory"));
-__publicField(_ChartService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ChartService, factory: _ChartService.\u0275fac, providedIn: "root" }));
-var ChartService = _ChartService;
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ChartService, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [], null);
-})();
-
 // src/app/features/dashboard/dashboard.component.ts
-var _c04 = ["distributionChart"];
-var _c1 = ["performanceChart"];
+function DashboardComponent_div_14_div_1_span_11_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 41);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const wallet_r3 = \u0275\u0275nextContext().$implicit;
+    const ctx_r3 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate2(" ", ctx_r3.formatCurrency(wallet_r3.balance), " ", wallet_r3.currency, " ");
+  }
+}
+__name(DashboardComponent_div_14_div_1_span_11_Template, "DashboardComponent_div_14_div_1_span_11_Template");
+function DashboardComponent_div_14_div_1_span_12_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 42);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const wallet_r3 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" \u2022\u2022\u2022\u2022\u2022 ", wallet_r3.currency, " ");
+  }
+}
+__name(DashboardComponent_div_14_div_1_span_12_Template, "DashboardComponent_div_14_div_1_span_12_Template");
+function DashboardComponent_div_14_div_1_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r2 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 29);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_div_14_div_1_Template_div_click_0_listener() {
+      const wallet_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r3 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r3.navigateToTransactions(wallet_r3));
+    }, "DashboardComponent_div_14_div_1_Template_div_click_0_listener"));
+    \u0275\u0275elementStart(1, "div", 30)(2, "div", 31)(3, "h3", 32);
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "p", 33);
+    \u0275\u0275text(6);
+    \u0275\u0275pipe(7, "titlecase");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(8, "button", 34);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_div_14_div_1_Template_button_click_8_listener($event) {
+      const wallet_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r3 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r3.toggleBalanceVisibility(wallet_r3.id, $event));
+    }, "DashboardComponent_div_14_div_1_Template_button_click_8_listener"));
+    \u0275\u0275element(9, "app-feather-icon", 35);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(10, "div", 36);
+    \u0275\u0275template(11, DashboardComponent_div_14_div_1_span_11_Template, 2, 2, "span", 37)(12, DashboardComponent_div_14_div_1_span_12_Template, 2, 1, "span", 38);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "div", 39)(14, "span", 40);
+    \u0275\u0275text(15);
+    \u0275\u0275pipe(16, "titlecase");
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const wallet_r3 = ctx.$implicit;
+    const ctx_r3 = \u0275\u0275nextContext(2);
+    \u0275\u0275classProp("active", wallet_r3.isDefault);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(wallet_r3.name);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind1(7, 10, wallet_r3.type));
+    \u0275\u0275advance(3);
+    \u0275\u0275property("name", ctx_r3.walletBalanceVisibility[wallet_r3.id] ? "eye" : "eye-off");
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", ctx_r3.walletBalanceVisibility[wallet_r3.id]);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !ctx_r3.walletBalanceVisibility[wallet_r3.id]);
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("active", wallet_r3.status === "active");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(16, 12, wallet_r3.status), " ");
+  }
+}
+__name(DashboardComponent_div_14_div_1_Template, "DashboardComponent_div_14_div_1_Template");
+function DashboardComponent_div_14_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 27);
+    \u0275\u0275template(1, DashboardComponent_div_14_div_1_Template, 17, 14, "div", 28);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r3 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r3.wallets);
+  }
+}
+__name(DashboardComponent_div_14_Template, "DashboardComponent_div_14_Template");
+function DashboardComponent_ng_template_15_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 43);
+    \u0275\u0275element(1, "app-feather-icon", 44);
+    \u0275\u0275elementStart(2, "p");
+    \u0275\u0275text(3, "No wallets available");
+    \u0275\u0275elementEnd()();
+  }
+}
+__name(DashboardComponent_ng_template_15_Template, "DashboardComponent_ng_template_15_Template");
+function DashboardComponent_div_40_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r5 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 45)(1, "div", 46);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_div_40_Template_div_click_1_listener() {
+      \u0275\u0275restoreView(_r5);
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.navigateToCollections());
+    }, "DashboardComponent_div_40_Template_div_click_1_listener"));
+    \u0275\u0275elementStart(2, "div", 47);
+    \u0275\u0275element(3, "app-feather-icon", 48);
+    \u0275\u0275elementStart(4, "span", 49);
+    \u0275\u0275text(5, "Collections");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "div", 50);
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "div", 51);
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(10, "div", 46);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_div_40_Template_div_click_10_listener() {
+      \u0275\u0275restoreView(_r5);
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.navigateToSales());
+    }, "DashboardComponent_div_40_Template_div_click_10_listener"));
+    \u0275\u0275elementStart(11, "div", 47);
+    \u0275\u0275element(12, "app-feather-icon", 52);
+    \u0275\u0275elementStart(13, "span", 49);
+    \u0275\u0275text(14, "Sales");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(15, "div", 50);
+    \u0275\u0275text(16);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(17, "div", 51);
+    \u0275\u0275text(18);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(19, "div", 46);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_div_40_Template_div_click_19_listener() {
+      \u0275\u0275restoreView(_r5);
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.navigateToSuppliers());
+    }, "DashboardComponent_div_40_Template_div_click_19_listener"));
+    \u0275\u0275elementStart(20, "div", 47);
+    \u0275\u0275element(21, "app-feather-icon", 53);
+    \u0275\u0275elementStart(22, "span", 49);
+    \u0275\u0275text(23, "Suppliers");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(24, "div", 50);
+    \u0275\u0275text(25);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(26, "div", 51);
+    \u0275\u0275text(27);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(28, "div", 46);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_div_40_Template_div_click_28_listener() {
+      \u0275\u0275restoreView(_r5);
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.navigateToCustomers());
+    }, "DashboardComponent_div_40_Template_div_click_28_listener"));
+    \u0275\u0275elementStart(29, "div", 47);
+    \u0275\u0275element(30, "app-feather-icon", 54);
+    \u0275\u0275elementStart(31, "span", 49);
+    \u0275\u0275text(32, "Customers");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(33, "div", 50);
+    \u0275\u0275text(34);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(35, "div", 51);
+    \u0275\u0275text(36);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r3 = \u0275\u0275nextContext();
+    \u0275\u0275advance(7);
+    \u0275\u0275textInterpolate1("", ctx_r3.formatNumber(ctx_r3.overviewMetrics.collections.liters), " L");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2(" ", ctx_r3.formatCurrency(ctx_r3.overviewMetrics.collections.value), " \u2022 ", ctx_r3.overviewMetrics.collections.transactions, " txns ");
+    \u0275\u0275advance(7);
+    \u0275\u0275textInterpolate1("", ctx_r3.formatNumber(ctx_r3.overviewMetrics.sales.liters), " L");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2(" ", ctx_r3.formatCurrency(ctx_r3.overviewMetrics.sales.value), " \u2022 ", ctx_r3.overviewMetrics.sales.transactions, " txns ");
+    \u0275\u0275advance(7);
+    \u0275\u0275textInterpolate(ctx_r3.overviewMetrics.suppliers.active);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1(" ", ctx_r3.overviewMetrics.suppliers.inactive, " inactive ");
+    \u0275\u0275advance(7);
+    \u0275\u0275textInterpolate(ctx_r3.overviewMetrics.customers.active);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1(" ", ctx_r3.overviewMetrics.customers.inactive, " inactive ");
+  }
+}
+__name(DashboardComponent_div_40_Template, "DashboardComponent_div_40_Template");
+function DashboardComponent_ng_template_41_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 55);
+    \u0275\u0275element(1, "div", 56);
+    \u0275\u0275elementStart(2, "p");
+    \u0275\u0275text(3, "Loading overview data...");
+    \u0275\u0275elementEnd()();
+  }
+}
+__name(DashboardComponent_ng_template_41_Template, "DashboardComponent_ng_template_41_Template");
+function DashboardComponent_div_47_div_8_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 63);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const activity_r6 = \u0275\u0275nextContext().$implicit;
+    const ctx_r3 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", ctx_r3.formatCurrency(activity_r6.amount), " ");
+  }
+}
+__name(DashboardComponent_div_47_div_8_Template, "DashboardComponent_div_47_div_8_Template");
+function DashboardComponent_div_47_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 57)(1, "div", 58);
+    \u0275\u0275element(2, "app-feather-icon", 35);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "div", 59)(4, "p", 60);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "p", 61);
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(8, DashboardComponent_div_47_div_8_Template, 2, 1, "div", 62);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const activity_r6 = ctx.$implicit;
+    \u0275\u0275advance(2);
+    \u0275\u0275property("name", activity_r6.icon);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(activity_r6.title);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(activity_r6.time);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", activity_r6.amount);
+  }
+}
+__name(DashboardComponent_div_47_Template, "DashboardComponent_div_47_Template");
 var _DashboardComponent = class _DashboardComponent {
   authService;
-  chartService;
-  distributionChart;
-  performanceChart;
-  userName;
-  userRole;
-  volumeChartOptions = {
-    series: [],
-    chart: {
-      type: "area",
-      height: 280,
-      stacked: true,
-      toolbar: { show: false }
-    },
-    xaxis: {
-      type: "datetime",
-      labels: {
-        style: { colors: "#64748b" }
-      }
-    },
-    yaxis: {
-      title: { text: "Transactions per Hour" },
-      labels: {
-        style: { colors: "#64748b" },
-        formatter: /* @__PURE__ */ __name((val) => val.toFixed(2), "formatter")
-      }
-    },
-    dataLabels: { enabled: false },
-    stroke: { curve: "spline", width: 1 },
-    fill: { type: "gradient", gradient: { opacityFrom: 0.6, opacityTo: 0.1 } },
-    legend: { position: "top", horizontalAlign: "right" },
-    colors: ["#ffc700", "#ff0000", "#3498db"],
-    tooltip: { x: { format: "dd MMM HH:mm" } }
-  };
-  successRateChartOptions = {
-    series: [],
-    chart: {
-      type: "area",
-      height: 280,
-      toolbar: { show: false }
-    },
-    xaxis: {
-      type: "datetime",
-      labels: { style: { colors: "#64748b" } }
-    },
-    yaxis: {
-      title: { text: "Success Rate (%)" },
-      labels: {
-        style: { colors: "#64748b" },
-        formatter: /* @__PURE__ */ __name((val) => val.toFixed(2) + "%", "formatter")
-      },
-      min: 90,
-      max: 100
-    },
-    dataLabels: { enabled: false },
-    stroke: { curve: "spline", width: 1 },
-    fill: { type: "gradient", gradient: { opacityFrom: 0.6, opacityTo: 0.1 } },
-    legend: { position: "top", horizontalAlign: "right" },
-    colors: ["#ffc700", "#ff0000", "#3498db"],
-    tooltip: { x: { format: "dd MMM HH:mm" } }
-  };
-  amountChartOptions = {
-    series: [],
-    chart: {
-      type: "donut",
-      height: 280,
-      toolbar: { show: false }
-    },
-    labels: ["MTN MOMO", "Airtel Money", "Internal Transfers"],
-    colors: ["#ffc700", "#ff0000", "#3498db"],
-    dataLabels: {
-      enabled: true,
-      formatter: /* @__PURE__ */ __name((val) => val.toFixed(2) + "%", "formatter")
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: "70%",
-          labels: {
-            show: true,
-            total: {
-              show: true,
-              label: "Total",
-              formatter: /* @__PURE__ */ __name((w) => {
-                const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                return "RWF " + (total / 1e6).toFixed(1) + "M";
-              }, "formatter")
-            }
-          }
-        }
-      }
-    },
-    legend: { position: "top", horizontalAlign: "right" }
-  };
-  errorChartOptions = {
-    series: [],
-    chart: {
-      type: "bar",
-      height: 280,
-      toolbar: { show: false }
-    },
-    xaxis: {
-      type: "category",
-      labels: { style: { colors: "#64748b" } }
-    },
-    yaxis: {
-      title: { text: "Error Count" },
-      labels: { style: { colors: "#64748b" } }
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 4,
-        distributed: true,
-        horizontal: true
-      }
-    },
-    dataLabels: {
-      enabled: true,
-      formatter: /* @__PURE__ */ __name((val) => val.toFixed(2), "formatter"),
-      style: { colors: ["#fff"] }
-    },
-    legend: { show: false },
-    colors: ["#ef4444", "#f97316", "#f59e0b", "#eab308", "#84cc16", "#22c55e"]
-  };
-  transactionTypesChartOptions = {
-    series: [],
-    chart: {
-      type: "bar",
-      height: 280,
-      stacked: true,
-      toolbar: { show: false }
-    },
-    xaxis: {
-      type: "category",
-      categories: ["MTN MOMO", "Airtel Money", "Internal"],
-      labels: { style: { colors: "#64748b" } }
-    },
-    yaxis: {
-      title: { text: "Transaction Count" },
-      labels: {
-        style: { colors: "#64748b" },
-        formatter: /* @__PURE__ */ __name((val) => {
-          if (val >= 1e3)
-            return (val / 1e3).toFixed(2) + "K";
-          return val.toFixed(2);
-        }, "formatter")
-      }
-    },
-    dataLabels: { enabled: false },
-    legend: { position: "top", horizontalAlign: "right" },
-    colors: ["#2ecc71", "#e74c3c", "#3498db"],
-    tooltip: {
-      y: {
-        formatter: /* @__PURE__ */ __name((val) => val.toFixed(2), "formatter")
-      }
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 4,
-        columnWidth: "60%"
-      }
-    }
-  };
-  valueTrendsChartOptions = {
-    series: [],
-    chart: {
-      type: "area",
-      height: 280,
-      toolbar: { show: false }
-    },
-    xaxis: {
-      type: "datetime",
-      labels: { style: { colors: "#64748b" } }
-    },
-    yaxis: {
-      title: { text: "Transaction Value (RWF)" },
-      labels: {
-        style: { colors: "#64748b" },
-        formatter: /* @__PURE__ */ __name((val) => {
-          if (val >= 1e6)
-            return (val / 1e6).toFixed(2) + "M";
-          if (val >= 1e3)
-            return (val / 1e3).toFixed(2) + "K";
-          return val.toFixed(2);
-        }, "formatter")
-      }
-    },
-    dataLabels: { enabled: false },
-    stroke: { curve: "spline", width: 1 },
-    fill: { type: "gradient", gradient: { opacityFrom: 0.6, opacityTo: 0.1 } },
-    legend: { position: "top", horizontalAlign: "right" },
-    colors: ["#ffc700", "#ff0000", "#3498db"],
-    tooltip: {
-      x: { format: "dd MMM HH:mm" },
-      y: {
-        formatter: /* @__PURE__ */ __name((val) => {
-          if (val >= 1e6)
-            return (val / 1e6).toFixed(2) + "M RWF";
-          if (val >= 1e3)
-            return (val / 1e3).toFixed(2) + "K RWF";
-          return val.toFixed(2) + " RWF";
-        }, "formatter")
-      }
-    }
-  };
-  constructor(authService, chartService) {
+  wallets = [];
+  walletBalanceVisibility = {};
+  overviewMetrics = null;
+  recentActivities = [];
+  isLoading = false;
+  constructor(authService) {
     this.authService = authService;
-    this.chartService = chartService;
-    const user = this.authService.getCurrentUser();
-    this.userName = user?.name || "User";
-    this.userRole = user?.role || "Guest";
-    this.initializeCharts();
   }
   ngOnInit() {
-    this.initializeCharts();
-    this.loadChartData();
+    this.loadDashboardData();
   }
-  initializeCharts() {
-    this.volumeChartOptions = this.getDefaultChartOptions();
-    this.successRateChartOptions = this.getDefaultChartOptions();
-    this.errorChartOptions = this.getDefaultChartOptions();
-    this.transactionTypesChartOptions = this.getDefaultChartOptions();
-    this.valueTrendsChartOptions = this.getDefaultChartOptions();
-  }
-  getDefaultChartOptions() {
-    return {
-      series: [],
-      chart: {
-        type: "area",
-        height: 280,
-        toolbar: { show: false }
+  loadDashboardData() {
+    this.isLoading = true;
+    this.wallets = [
+      {
+        id: "WALLET-1",
+        name: "Main Ikofi",
+        balance: 25e4,
+        currency: "RWF",
+        type: "individual",
+        status: "active",
+        isDefault: true,
+        owners: ["You"]
       },
-      dataLabels: { enabled: false },
-      legend: { position: "top", horizontalAlign: "right" },
-      colors: ["#ffc700", "#ff0000", "#3498db"],
-      xaxis: {
-        type: "category",
-        categories: []
+      {
+        id: "WALLET-2",
+        name: "Joint Ikofi",
+        balance: 12e5,
+        currency: "RWF",
+        type: "joint",
+        status: "active",
+        isDefault: false,
+        owners: ["You", "Alice", "Eric"]
+      }
+    ];
+    this.overviewMetrics = {
+      collections: {
+        liters: 1250.5,
+        value: 187500,
+        transactions: 45
       },
-      yaxis: {
-        labels: {
-          style: {
-            colors: "#64748b"
-          }
-        }
+      sales: {
+        liters: 980.2,
+        value: 147e3,
+        transactions: 32
       },
-      stroke: {
-        width: 1,
-        curve: "spline"
+      suppliers: {
+        active: 12,
+        inactive: 3
       },
-      fill: {
-        type: "gradient",
-        gradient: {
-          opacityFrom: 0.6,
-          opacityTo: 0.1
-        }
-      },
-      tooltip: {
-        enabled: true
-      },
-      title: {
-        text: ""
-      },
-      labels: []
+      customers: {
+        active: 28,
+        inactive: 5
+      }
     };
+    this.recentActivities = [
+      {
+        icon: "truck",
+        title: "Milk collection from John Doe",
+        time: "2 hours ago",
+        amount: 15e3
+      },
+      {
+        icon: "shopping-cart",
+        title: "Milk sale to ABC Store",
+        time: "4 hours ago",
+        amount: 25e3
+      },
+      {
+        icon: "user-plus",
+        title: "New supplier registered",
+        time: "1 day ago",
+        amount: null
+      },
+      {
+        icon: "users",
+        title: "New customer added",
+        time: "2 days ago",
+        amount: null
+      }
+    ];
+    this.wallets.forEach((wallet) => {
+      this.walletBalanceVisibility[wallet.id] = true;
+    });
+    this.isLoading = false;
   }
-  loadChartData() {
-    this.chartService.getTransactionVolume().subscribe((data) => {
-      this.volumeChartOptions = __spreadProps(__spreadValues({}, this.volumeChartOptions), {
-        series: data.series,
-        colors: data.colors || []
-      });
-    });
-    this.chartService.getSuccessRate().subscribe((data) => {
-      this.successRateChartOptions = __spreadProps(__spreadValues({}, this.successRateChartOptions), {
-        series: data.series,
-        colors: data.colors || []
-      });
-    });
-    this.chartService.getAmountAnalysis().subscribe((data) => {
-      this.amountChartOptions = __spreadProps(__spreadValues({}, this.amountChartOptions), {
-        series: data.series,
-        labels: data.labels || [],
-        colors: data.colors || []
-      });
-    });
-    this.chartService.getErrorAnalysis().subscribe((data) => {
-      this.errorChartOptions = __spreadProps(__spreadValues({}, this.errorChartOptions), {
-        series: data.series,
-        xaxis: __spreadProps(__spreadValues({}, this.errorChartOptions.xaxis), {
-          categories: data.categories || []
-        }),
-        colors: data.colors || []
-      });
-    });
-    this.chartService.getTransactionTypes().subscribe((data) => {
-      this.transactionTypesChartOptions = __spreadProps(__spreadValues({}, this.transactionTypesChartOptions), {
-        series: data.series,
-        colors: data.colors || []
-      });
-    });
-    this.chartService.getValueTrends().subscribe((data) => {
-      this.valueTrendsChartOptions = __spreadProps(__spreadValues({}, this.valueTrendsChartOptions), {
-        series: data.series,
-        colors: data.colors || []
-      });
-    });
+  refreshData() {
+    this.loadDashboardData();
   }
-  refreshCharts() {
-    this.loadChartData();
+  toggleBalanceVisibility(walletId, event) {
+    event.stopPropagation();
+    this.walletBalanceVisibility[walletId] = !this.walletBalanceVisibility[walletId];
+  }
+  formatCurrency(amount) {
+    return new Intl.NumberFormat("en-RW", {
+      style: "currency",
+      currency: "RWF",
+      minimumFractionDigits: 0
+    }).format(amount);
+  }
+  formatNumber(value) {
+    return new Intl.NumberFormat("en-RW", {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    }).format(value);
+  }
+  // Navigation methods
+  navigateToTransactions(wallet) {
+    console.log("Navigate to transactions for wallet:", wallet.id);
+  }
+  navigateToCollect() {
+    console.log("Navigate to collect milk");
+  }
+  navigateToSell() {
+    console.log("Navigate to sell milk");
+  }
+  navigateToSuppliers() {
+    console.log("Navigate to suppliers");
+  }
+  navigateToCustomers() {
+    console.log("Navigate to customers");
+  }
+  navigateToCollections() {
+    console.log("Navigate to collections");
+  }
+  navigateToSales() {
+    console.log("Navigate to sales");
   }
 };
 __name(_DashboardComponent, "DashboardComponent");
 __publicField(_DashboardComponent, "\u0275fac", /* @__PURE__ */ __name(function DashboardComponent_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _DashboardComponent)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(ChartService));
+  return new (__ngFactoryType__ || _DashboardComponent)(\u0275\u0275directiveInject(AuthService));
 }, "DashboardComponent_Factory"));
-__publicField(_DashboardComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardComponent, selectors: [["app-dashboard"]], viewQuery: /* @__PURE__ */ __name(function DashboardComponent_Query(rf, ctx) {
+__publicField(_DashboardComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardComponent, selectors: [["app-dashboard"]], decls: 48, vars: 5, consts: [["noWallets", ""], ["loadingMetrics", ""], [1, "dashboard-container"], [1, "welcome-section"], [1, "welcome-content"], [1, "welcome-title"], [1, "welcome-subtitle"], [1, "welcome-actions"], [1, "btn", "btn-outline", 3, "click"], ["name", "refresh-cw", 1, "icon-sm"], [1, "wallet-section"], [1, "section-title"], ["class", "wallet-cards", 4, "ngIf", "ngIfElse"], [1, "quick-actions-section"], [1, "quick-actions-grid"], [1, "quick-action-btn", 3, "click"], ["name", "truck", 1, "icon-md"], ["name", "shopping-cart", 1, "icon-md"], ["name", "user-plus", 1, "icon-md"], ["name", "users", 1, "icon-md"], [1, "overview-section"], [1, "overview-header"], ["name", "bar-chart-2", 1, "icon-sm"], ["class", "metrics-grid", 4, "ngIf", "ngIfElse"], [1, "recent-activity-section"], [1, "activity-list"], ["class", "activity-item", 4, "ngFor", "ngForOf"], [1, "wallet-cards"], ["class", "wallet-card", 3, "active", "click", 4, "ngFor", "ngForOf"], [1, "wallet-card", 3, "click"], [1, "wallet-header"], [1, "wallet-info"], [1, "wallet-name"], [1, "wallet-type"], [1, "balance-toggle", 3, "click"], [1, "icon-sm", 3, "name"], [1, "wallet-balance"], ["class", "balance-amount", 4, "ngIf"], ["class", "balance-hidden", 4, "ngIf"], [1, "wallet-status"], [1, "status-badge"], [1, "balance-amount"], [1, "balance-hidden"], [1, "no-wallets"], ["name", "wallet", 1, "icon-lg"], [1, "metrics-grid"], [1, "metric-card", 3, "click"], [1, "metric-header"], ["name", "truck", 1, "icon-sm", "metric-icon"], [1, "metric-title"], [1, "metric-value"], [1, "metric-details"], ["name", "shopping-cart", 1, "icon-sm", "metric-icon"], ["name", "user-plus", 1, "icon-sm", "metric-icon"], ["name", "users", 1, "icon-sm", "metric-icon"], [1, "loading-metrics"], [1, "loading-spinner"], [1, "activity-item"], [1, "activity-icon"], [1, "activity-content"], [1, "activity-title"], [1, "activity-time"], ["class", "activity-amount", 4, "ngIf"], [1, "activity-amount"]], template: /* @__PURE__ */ __name(function DashboardComponent_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275viewQuery(_c04, 5);
-    \u0275\u0275viewQuery(_c1, 5);
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 2)(1, "div", 3)(2, "div", 4)(3, "h1", 5);
+    \u0275\u0275text(4, "Welcome back!");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "p", 6);
+    \u0275\u0275text(6, "Manage your dairy farming business");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(7, "div", 7)(8, "button", 8);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_8_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.refreshData());
+    }, "DashboardComponent_Template_button_click_8_listener"));
+    \u0275\u0275element(9, "app-feather-icon", 9);
+    \u0275\u0275text(10, " Refresh ");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(11, "div", 10)(12, "h2", 11);
+    \u0275\u0275text(13, "Your Ikofi");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(14, DashboardComponent_div_14_Template, 2, 1, "div", 12)(15, DashboardComponent_ng_template_15_Template, 4, 0, "ng-template", null, 0, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(17, "div", 13)(18, "div", 14)(19, "button", 15);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_19_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.navigateToCollect());
+    }, "DashboardComponent_Template_button_click_19_listener"));
+    \u0275\u0275element(20, "app-feather-icon", 16);
+    \u0275\u0275elementStart(21, "span");
+    \u0275\u0275text(22, "Collect");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(23, "button", 15);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_23_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.navigateToSell());
+    }, "DashboardComponent_Template_button_click_23_listener"));
+    \u0275\u0275element(24, "app-feather-icon", 17);
+    \u0275\u0275elementStart(25, "span");
+    \u0275\u0275text(26, "Sell");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(27, "button", 15);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_27_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.navigateToSuppliers());
+    }, "DashboardComponent_Template_button_click_27_listener"));
+    \u0275\u0275element(28, "app-feather-icon", 18);
+    \u0275\u0275elementStart(29, "span");
+    \u0275\u0275text(30, "Supplier");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(31, "button", 15);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_31_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.navigateToCustomers());
+    }, "DashboardComponent_Template_button_click_31_listener"));
+    \u0275\u0275element(32, "app-feather-icon", 19);
+    \u0275\u0275elementStart(33, "span");
+    \u0275\u0275text(34, "Customer");
+    \u0275\u0275elementEnd()()()();
+    \u0275\u0275elementStart(35, "div", 20)(36, "div", 21)(37, "h2", 11);
+    \u0275\u0275element(38, "app-feather-icon", 22);
+    \u0275\u0275text(39, " Overview ");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(40, DashboardComponent_div_40_Template, 37, 10, "div", 23)(41, DashboardComponent_ng_template_41_Template, 4, 0, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(43, "div", 24)(44, "h2", 11);
+    \u0275\u0275text(45, "Recent Activity");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(46, "div", 25);
+    \u0275\u0275template(47, DashboardComponent_div_47_Template, 9, 4, "div", 26);
+    \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
-    let _t;
-    \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.distributionChart = _t.first);
-    \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.performanceChart = _t.first);
+    const noWallets_r7 = \u0275\u0275reference(16);
+    const loadingMetrics_r8 = \u0275\u0275reference(42);
+    \u0275\u0275advance(14);
+    \u0275\u0275property("ngIf", ctx.wallets.length > 0)("ngIfElse", noWallets_r7);
+    \u0275\u0275advance(26);
+    \u0275\u0275property("ngIf", ctx.overviewMetrics)("ngIfElse", loadingMetrics_r8);
+    \u0275\u0275advance(7);
+    \u0275\u0275property("ngForOf", ctx.recentActivities);
   }
-}, "DashboardComponent_Query"), decls: 119, vars: 42, consts: [[1, "dashboard-container"], [1, "stats-grid"], [1, "stat-card", "mtn"], [1, "stat-icon"], ["name", "smartphone", "size", "28px"], [1, "stat-details"], [1, "stat-title"], [1, "stat-numbers"], [1, "main-stat"], [1, "sub-stats"], [1, "success"], [1, "volume"], [1, "stat-card", "airtel"], ["name", "credit-card", "size", "28px"], [1, "stat-card", "internal"], ["name", "refresh-cw", "size", "28px"], [1, "stat-card", "value"], ["name", "dollar-sign", "size", "28px"], [1, "deposits"], [1, "withdrawals"], [1, "charts-grid"], [1, "chart-card", "volume-chart"], [1, "card-header"], [1, "card-actions"], [1, "btn-refresh", 3, "click"], ["name", "refresh-cw", "size", "16px"], [1, "card-body"], ["id", "volumeTrendsChart"], [3, "series", "chart", "xaxis", "yaxis", "legend", "colors", "dataLabels"], [1, "chart-card", "success-rate-chart"], ["id", "successRateChart"], [1, "chart-card", "amount-chart", "amount-chart-quarter"], ["id", "amountAnalysisChart"], [3, "series", "chart", "labels", "legend", "colors", "dataLabels", "plotOptions"], [1, "chart-card", "error-chart"], ["id", "errorAnalysisChart"], [1, "chart-card", "transaction-types-chart"], ["id", "transactionTypesChart"], [1, "chart-card", "value-trends-chart"], ["id", "valueTrendsChart"]], template: /* @__PURE__ */ __name(function DashboardComponent_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "div", 3);
-    \u0275\u0275element(4, "app-feather-icon", 4);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "div", 5)(6, "div", 6);
-    \u0275\u0275text(7, "MTN MOMO");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(8, "div", 7)(9, "div", 8);
-    \u0275\u0275text(10, "2.5M");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(11, "div", 9)(12, "span", 10);
-    \u0275\u0275text(13, "99.8% Success");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(14, "span", 11);
-    \u0275\u0275text(15, "150/min");
-    \u0275\u0275elementEnd()()()()();
-    \u0275\u0275elementStart(16, "div", 12)(17, "div", 3);
-    \u0275\u0275element(18, "app-feather-icon", 13);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(19, "div", 5)(20, "div", 6);
-    \u0275\u0275text(21, "Airtel Money");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(22, "div", 7)(23, "div", 8);
-    \u0275\u0275text(24, "1.8M");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(25, "div", 9)(26, "span", 10);
-    \u0275\u0275text(27, "99.5% Success");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(28, "span", 11);
-    \u0275\u0275text(29, "120/min");
-    \u0275\u0275elementEnd()()()()();
-    \u0275\u0275elementStart(30, "div", 14)(31, "div", 3);
-    \u0275\u0275element(32, "app-feather-icon", 15);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(33, "div", 5)(34, "div", 6);
-    \u0275\u0275text(35, "Internal Transfers");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(36, "div", 7)(37, "div", 8);
-    \u0275\u0275text(38, "5.2M");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(39, "div", 9)(40, "span", 10);
-    \u0275\u0275text(41, "99.9% Success");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(42, "span", 11);
-    \u0275\u0275text(43, "280/min");
-    \u0275\u0275elementEnd()()()()();
-    \u0275\u0275elementStart(44, "div", 16)(45, "div", 3);
-    \u0275\u0275element(46, "app-feather-icon", 17);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(47, "div", 5)(48, "div", 6);
-    \u0275\u0275text(49, "Total Value (24h)");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(50, "div", 7)(51, "div", 8);
-    \u0275\u0275text(52, "298.5M");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(53, "div", 9)(54, "span", 18);
-    \u0275\u0275text(55, "185.2M In");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(56, "span", 19);
-    \u0275\u0275text(57, "113.3M Out");
-    \u0275\u0275elementEnd()()()()()();
-    \u0275\u0275elementStart(58, "div", 20)(59, "div", 21)(60, "div", 22)(61, "h3");
-    \u0275\u0275text(62, "Transaction Volume Trends");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(63, "div", 23)(64, "button", 24);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_64_listener() {
-      return ctx.refreshCharts();
-    }, "DashboardComponent_Template_button_click_64_listener"));
-    \u0275\u0275element(65, "app-feather-icon", 25);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(66, "div", 26)(67, "div", 27);
-    \u0275\u0275element(68, "apx-chart", 28);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(69, "div", 29)(70, "div", 22)(71, "h3");
-    \u0275\u0275text(72, "Success Rate by Provider");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(73, "div", 23)(74, "button", 24);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_74_listener() {
-      return ctx.refreshCharts();
-    }, "DashboardComponent_Template_button_click_74_listener"));
-    \u0275\u0275element(75, "app-feather-icon", 25);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(76, "div", 26)(77, "div", 30);
-    \u0275\u0275element(78, "apx-chart", 28);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(79, "div", 31)(80, "div", 22)(81, "h3");
-    \u0275\u0275text(82, "Transaction Amount Analysis");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(83, "div", 23)(84, "button", 24);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_84_listener() {
-      return ctx.refreshCharts();
-    }, "DashboardComponent_Template_button_click_84_listener"));
-    \u0275\u0275element(85, "app-feather-icon", 25);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(86, "div", 26)(87, "div", 32);
-    \u0275\u0275element(88, "apx-chart", 33);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(89, "div", 34)(90, "div", 22)(91, "h3");
-    \u0275\u0275text(92, "Error Analysis");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(93, "div", 23)(94, "button", 24);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_94_listener() {
-      return ctx.refreshCharts();
-    }, "DashboardComponent_Template_button_click_94_listener"));
-    \u0275\u0275element(95, "app-feather-icon", 25);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(96, "div", 26)(97, "div", 35);
-    \u0275\u0275element(98, "apx-chart", 28);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(99, "div", 36)(100, "div", 22)(101, "h3");
-    \u0275\u0275text(102, "Transaction Types by Provider");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(103, "div", 23)(104, "button", 24);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_104_listener() {
-      return ctx.refreshCharts();
-    }, "DashboardComponent_Template_button_click_104_listener"));
-    \u0275\u0275element(105, "app-feather-icon", 25);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(106, "div", 26)(107, "div", 37);
-    \u0275\u0275element(108, "apx-chart", 28);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(109, "div", 38)(110, "div", 22)(111, "h3");
-    \u0275\u0275text(112, "Transaction Value Trends");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(113, "div", 23)(114, "button", 24);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DashboardComponent_Template_button_click_114_listener() {
-      return ctx.refreshCharts();
-    }, "DashboardComponent_Template_button_click_114_listener"));
-    \u0275\u0275element(115, "app-feather-icon", 25);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(116, "div", 26)(117, "div", 39);
-    \u0275\u0275element(118, "apx-chart", 28);
-    \u0275\u0275elementEnd()()()()();
-  }
-  if (rf & 2) {
-    \u0275\u0275advance(68);
-    \u0275\u0275property("series", ctx.volumeChartOptions.series)("chart", ctx.volumeChartOptions.chart)("xaxis", ctx.volumeChartOptions.xaxis)("yaxis", ctx.volumeChartOptions.yaxis)("legend", ctx.volumeChartOptions.legend)("colors", ctx.volumeChartOptions.colors)("dataLabels", ctx.volumeChartOptions.dataLabels);
-    \u0275\u0275advance(10);
-    \u0275\u0275property("series", ctx.successRateChartOptions.series)("chart", ctx.successRateChartOptions.chart)("xaxis", ctx.successRateChartOptions.xaxis)("yaxis", ctx.successRateChartOptions.yaxis)("legend", ctx.successRateChartOptions.legend)("colors", ctx.successRateChartOptions.colors)("dataLabels", ctx.successRateChartOptions.dataLabels);
-    \u0275\u0275advance(10);
-    \u0275\u0275property("series", ctx.amountChartOptions.series)("chart", ctx.amountChartOptions.chart)("labels", ctx.amountChartOptions.labels)("legend", ctx.amountChartOptions.legend)("colors", ctx.amountChartOptions.colors)("dataLabels", ctx.amountChartOptions.dataLabels)("plotOptions", ctx.amountChartOptions.plotOptions);
-    \u0275\u0275advance(10);
-    \u0275\u0275property("series", ctx.errorChartOptions.series)("chart", ctx.errorChartOptions.chart)("xaxis", ctx.errorChartOptions.xaxis)("yaxis", ctx.errorChartOptions.yaxis)("legend", ctx.errorChartOptions.legend)("colors", ctx.errorChartOptions.colors)("dataLabels", ctx.errorChartOptions.dataLabels);
-    \u0275\u0275advance(10);
-    \u0275\u0275property("series", ctx.transactionTypesChartOptions.series)("chart", ctx.transactionTypesChartOptions.chart)("xaxis", ctx.transactionTypesChartOptions.xaxis)("yaxis", ctx.transactionTypesChartOptions.yaxis)("legend", ctx.transactionTypesChartOptions.legend)("colors", ctx.transactionTypesChartOptions.colors)("dataLabels", ctx.transactionTypesChartOptions.dataLabels);
-    \u0275\u0275advance(10);
-    \u0275\u0275property("series", ctx.valueTrendsChartOptions.series)("chart", ctx.valueTrendsChartOptions.chart)("xaxis", ctx.valueTrendsChartOptions.xaxis)("yaxis", ctx.valueTrendsChartOptions.yaxis)("legend", ctx.valueTrendsChartOptions.legend)("colors", ctx.valueTrendsChartOptions.colors)("dataLabels", ctx.valueTrendsChartOptions.dataLabels);
-  }
-}, "DashboardComponent_Template"), dependencies: [CommonModule, RouterModule, FeatherIconComponent, NgApexchartsModule, ChartComponent], styles: ["\n\n.dashboard-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n  min-height: 100%;\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n}\n.stat-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 4px;\n  padding: 24px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  border: 1px solid #e5e7eb;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);\n  transition: transform 0.2s ease, box-shadow 0.2s ease;\n}\n.stat-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-1px);\n}\n.stat-card[_ngcontent-%COMP%]:hover.pull {\n  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.08);\n}\n.stat-card[_ngcontent-%COMP%]:hover.push {\n  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.08);\n}\n.stat-card[_ngcontent-%COMP%]:hover.internal {\n  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.08);\n}\n.stat-card[_ngcontent-%COMP%]:hover.customers {\n  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.08);\n}\n.stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 4px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 20px;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%]     svg {\n  stroke-width: 2;\n}\n.stat-card.mtn[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  background: rgba(255, 199, 0, 0.1);\n  color: #ffc700;\n}\n.stat-card.airtel[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  background: rgba(255, 0, 0, 0.1);\n  color: #ff0000;\n}\n.stat-card.internal[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  background: rgba(52, 152, 219, 0.1);\n  color: #3498db;\n}\n.stat-card.health[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  background: rgba(46, 204, 113, 0.1);\n  color: #2ecc71;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-title[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 0.875rem;\n  font-weight: 500;\n  margin-bottom: 8px;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .main-stat[_ngcontent-%COMP%] {\n  font-size: 1.75rem;\n  font-weight: 600;\n  margin-bottom: 4px;\n}\n.mtn[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .main-stat[_ngcontent-%COMP%] {\n  color: #ffc700;\n}\n.airtel[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .main-stat[_ngcontent-%COMP%] {\n  color: #ff0000;\n}\n.internal[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .main-stat[_ngcontent-%COMP%] {\n  color: #3498db;\n}\n.health[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .main-stat[_ngcontent-%COMP%] {\n  color: #2ecc71;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .sub-stats[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  font-size: 0.75rem;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .sub-stats[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  padding: 2px 8px;\n  border-radius: 12px;\n  font-weight: 500;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .sub-stats[_ngcontent-%COMP%]   span.success[_ngcontent-%COMP%] {\n  background: rgba(46, 204, 113, 0.1);\n  color: #2ecc71;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .sub-stats[_ngcontent-%COMP%]   span.failed[_ngcontent-%COMP%] {\n  background: rgba(231, 76, 60, 0.1);\n  color: #e74c3c;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .sub-stats[_ngcontent-%COMP%]   span.active[_ngcontent-%COMP%] {\n  background: rgba(46, 204, 113, 0.1);\n  color: #2ecc71;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-details[_ngcontent-%COMP%]   .stat-numbers[_ngcontent-%COMP%]   .sub-stats[_ngcontent-%COMP%]   span.inactive[_ngcontent-%COMP%] {\n  background: rgba(149, 165, 166, 0.1);\n  color: #95a5a6;\n}\n.charts-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n  gap: 16px;\n  margin-top: 16px;\n  width: 100%;\n}\n@media (max-width: 1200px) {\n  .charts-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.charts-grid[_ngcontent-%COMP%]   .chart-card[_ngcontent-%COMP%] {\n  height: auto;\n}\n.chart-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 4px;\n  padding: 16px;\n  border: 1px solid #e5e7eb;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);\n}\n.chart-card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 20px;\n}\n.chart-card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 1.125rem;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.chart-card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%]   .btn-refresh[_ngcontent-%COMP%] {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 4px;\n  transition: all 0.2s ease;\n}\n.chart-card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%]   .btn-refresh[_ngcontent-%COMP%]:hover {\n  background: rgba(100, 116, 139, 0.1);\n  color: #1e293b;\n}\n.chart-card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 1rem;\n  min-height: 280px;\n}\n.chart-card[_ngcontent-%COMP%]   .amount-chart-quarter[_ngcontent-%COMP%] {\n  flex: 0 0 25%;\n  max-width: 25%;\n}\n@media (max-width: 768px) {\n  .dashboard-container[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .charts-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n/*# sourceMappingURL=dashboard.component.css.map */"] }));
+}, "DashboardComponent_Template"), dependencies: [CommonModule, NgForOf, NgIf, RouterModule, FeatherIconComponent, TitleCasePipe], styles: ['\n\n.dashboard-container[_ngcontent-%COMP%] {\n  padding: 24px;\n  max-width: 1200px;\n  margin: 0 auto;\n  background: #f8fafc;\n  min-height: 100vh;\n}\n@media (max-width: 768px) {\n  .dashboard-container[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n}\n.welcome-section[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 32px;\n  padding: 24px;\n  background:\n    linear-gradient(\n      135deg,\n      #004AAD 0%,\n      #0066CC 100%);\n  border-radius: 16px;\n  color: white;\n}\n@media (max-width: 768px) {\n  .welcome-section[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n    text-align: center;\n  }\n}\n.welcome-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 28px;\n  font-weight: 700;\n  margin: 0 0 8px 0;\n  color: white;\n}\n.welcome-content[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  font-size: 16px;\n  margin: 0;\n  opacity: 0.9;\n}\n.welcome-actions[_ngcontent-%COMP%]   .btn[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 12px 20px;\n  border: 2px solid rgba(255, 255, 255, 0.3);\n  background: rgba(255, 255, 255, 0.1);\n  color: white;\n  border-radius: 8px;\n  font-weight: 500;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.welcome-actions[_ngcontent-%COMP%]   .btn[_ngcontent-%COMP%]:hover {\n  background: rgba(255, 255, 255, 0.2);\n  border-color: rgba(255, 255, 255, 0.5);\n}\n.section-title[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 20px 0;\n}\n.wallet-section[_ngcontent-%COMP%] {\n  margin-bottom: 32px;\n}\n.wallet-cards[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  gap: 16px;\n}\n@media (max-width: 768px) {\n  .wallet-cards[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.wallet-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 16px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  position: relative;\n  overflow: hidden;\n}\n.wallet-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 74, 173, 0.15);\n}\n.wallet-card.active[_ngcontent-%COMP%] {\n  border-color: #004AAD;\n  background:\n    linear-gradient(\n      135deg,\n      #f8fafc 0%,\n      #f1f5f9 100%);\n}\n.wallet-card[_ngcontent-%COMP%]::before {\n  content: "";\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  height: 4px;\n  background:\n    linear-gradient(\n      90deg,\n      #004AAD,\n      #0066CC);\n  border-radius: 16px 16px 0 0;\n}\n.wallet-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 16px;\n}\n.wallet-info[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 18px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 4px 0;\n}\n.wallet-info[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #64748b;\n  margin: 0;\n  text-transform: capitalize;\n}\n.balance-toggle[_ngcontent-%COMP%] {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 4px;\n  border-radius: 4px;\n  transition: all 0.2s ease;\n}\n.balance-toggle[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n  color: #004AAD;\n}\n.wallet-balance[_ngcontent-%COMP%] {\n  margin-bottom: 12px;\n}\n.wallet-balance[_ngcontent-%COMP%]   .balance-amount[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n}\n.wallet-balance[_ngcontent-%COMP%]   .balance-hidden[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #64748b;\n  letter-spacing: 2px;\n}\n.wallet-status[_ngcontent-%COMP%]   .status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.wallet-status[_ngcontent-%COMP%]   .status-badge.active[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.wallet-status[_ngcontent-%COMP%]   .status-badge[_ngcontent-%COMP%]:not(.active) {\n  background: #fef2f2;\n  color: #dc2626;\n}\n.no-wallets[_ngcontent-%COMP%] {\n  text-align: center;\n  padding: 40px 20px;\n  color: #64748b;\n}\n.no-wallets[_ngcontent-%COMP%]   .icon-lg[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  margin-bottom: 16px;\n}\n.no-wallets[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  font-size: 16px;\n  margin: 0;\n}\n.quick-actions-section[_ngcontent-%COMP%] {\n  margin-bottom: 32px;\n}\n.quick-actions-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  gap: 16px;\n  background:\n    linear-gradient(\n      135deg,\n      #f8fafc 0%,\n      #f1f5f9 100%);\n  padding: 20px;\n  border-radius: 16px;\n  border: 1px solid #e2e8f0;\n}\n@media (max-width: 768px) {\n  .quick-actions-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n@media (max-width: 480px) {\n  .quick-actions-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.quick-action-btn[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 12px;\n  padding: 20px 16px;\n  background: white;\n  border: 1px solid #e2e8f0;\n  border-radius: 12px;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  font-weight: 500;\n  color: #1e293b;\n}\n.quick-action-btn[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.15);\n  border-color: #004AAD;\n}\n.quick-action-btn[_ngcontent-%COMP%]   .icon-md[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n  color: #004AAD;\n}\n.quick-action-btn[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  font-size: 14px;\n  font-weight: 500;\n}\n.overview-section[_ngcontent-%COMP%] {\n  margin-bottom: 32px;\n}\n.overview-header[_ngcontent-%COMP%] {\n  margin-bottom: 20px;\n}\n.metrics-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n  gap: 16px;\n}\n@media (max-width: 768px) {\n  .metrics-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.metric-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n.metric-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.1);\n  border-color: #004AAD;\n}\n.metric-header[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-bottom: 12px;\n}\n.metric-title[_ngcontent-%COMP%] {\n  font-size: 14px;\n  font-weight: 500;\n  color: #64748b;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.metric-icon[_ngcontent-%COMP%] {\n  color: #004AAD;\n}\n.metric-value[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.metric-details[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #64748b;\n}\n.loading-metrics[_ngcontent-%COMP%] {\n  text-align: center;\n  padding: 40px 20px;\n  color: #64748b;\n}\n.loading-metrics[_ngcontent-%COMP%]   .loading-spinner[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border: 3px solid #e2e8f0;\n  border-top: 3px solid #004AAD;\n  border-radius: 50%;\n  animation: _ngcontent-%COMP%_spin 1s linear infinite;\n  margin: 0 auto 16px;\n}\n.loading-metrics[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  font-size: 14px;\n  margin: 0;\n}\n@keyframes _ngcontent-%COMP%_spin {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n.recent-activity-section[_ngcontent-%COMP%] {\n  margin-bottom: 32px;\n}\n.activity-list[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.activity-item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  padding: 16px 20px;\n  border-bottom: 1px solid #f1f5f9;\n  transition: background-color 0.2s ease;\n}\n.activity-item[_ngcontent-%COMP%]:last-child {\n  border-bottom: none;\n}\n.activity-item[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n}\n.activity-icon[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  background: #f1f5f9;\n  border-radius: 8px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n}\n.activity-content[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.activity-content[_ngcontent-%COMP%]   .activity-title[_ngcontent-%COMP%] {\n  font-size: 14px;\n  font-weight: 500;\n  color: #1e293b;\n  margin: 0 0 4px 0;\n}\n.activity-content[_ngcontent-%COMP%]   .activity-time[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #64748b;\n  margin: 0;\n}\n.activity-amount[_ngcontent-%COMP%] {\n  font-size: 14px;\n  font-weight: 600;\n  color: #059669;\n}\n@media (max-width: 768px) {\n  .dashboard-container[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n  .welcome-section[_ngcontent-%COMP%] {\n    padding: 20px;\n  }\n  .welcome-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n  .section-title[_ngcontent-%COMP%] {\n    font-size: 18px;\n  }\n  .wallet-card[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n  .wallet-balance[_ngcontent-%COMP%]   .balance-amount[_ngcontent-%COMP%], \n   .wallet-balance[_ngcontent-%COMP%]   .balance-hidden[_ngcontent-%COMP%] {\n    font-size: 20px;\n  }\n  .quick-actions-grid[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n  .quick-action-btn[_ngcontent-%COMP%] {\n    padding: 16px 12px;\n  }\n  .metric-card[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n  .metric-value[_ngcontent-%COMP%] {\n    font-size: 20px;\n  }\n}\n/*# sourceMappingURL=dashboard.component.css.map */'] }));
 var DashboardComponent = _DashboardComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(DashboardComponent, [{
     type: Component,
-    args: [{ selector: "app-dashboard", standalone: true, imports: [CommonModule, RouterModule, FeatherIconComponent, NgApexchartsModule], template: `
+    args: [{ selector: "app-dashboard", standalone: true, imports: [CommonModule, RouterModule, FeatherIconComponent], template: `
     <div class="dashboard-container">
-      <!-- Stats Cards -->
-      <div class="stats-grid">
-        <!-- MTN MOMO Transactions -->
-        <div class="stat-card mtn">
-          <div class="stat-icon">
-            <app-feather-icon name="smartphone" size="28px"></app-feather-icon>
+      <!-- Welcome Section -->
+      <div class="welcome-section">
+        <div class="welcome-content">
+          <h1 class="welcome-title">Welcome back!</h1>
+          <p class="welcome-subtitle">Manage your dairy farming business</p>
           </div>
-          <div class="stat-details">
-            <div class="stat-title">MTN MOMO</div>
-            <div class="stat-numbers">
-              <div class="main-stat">2.5M</div>
-              <div class="sub-stats">
-                <span class="success">99.8% Success</span>
-                <span class="volume">150/min</span>
+        <div class="welcome-actions">
+          <button class="btn btn-outline" (click)="refreshData()">
+            <app-feather-icon name="refresh-cw" class="icon-sm"></app-feather-icon>
+            Refresh
+          </button>
+        </div>
+          </div>
+
+      <!-- Wallet Cards Section -->
+      <div class="wallet-section">
+        <h2 class="section-title">Your Ikofi</h2>
+        <div class="wallet-cards" *ngIf="wallets.length > 0; else noWallets">
+          <div class="wallet-card" *ngFor="let wallet of wallets; let i = index" 
+               [class.active]="wallet.isDefault"
+               (click)="navigateToTransactions(wallet)">
+            <div class="wallet-header">
+              <div class="wallet-info">
+                <h3 class="wallet-name">{{ wallet.name }}</h3>
+                <p class="wallet-type">{{ wallet.type | titlecase }}</p>
               </div>
+              <button class="balance-toggle" (click)="toggleBalanceVisibility(wallet.id, $event)">
+                <app-feather-icon [name]="walletBalanceVisibility[wallet.id] ? 'eye' : 'eye-off'" class="icon-sm"></app-feather-icon>
+              </button>
+            </div>
+            <div class="wallet-balance">
+              <span class="balance-amount" *ngIf="walletBalanceVisibility[wallet.id]">
+                {{ formatCurrency(wallet.balance) }} {{ wallet.currency }}
+              </span>
+              <span class="balance-hidden" *ngIf="!walletBalanceVisibility[wallet.id]">
+                \u2022\u2022\u2022\u2022\u2022 {{ wallet.currency }}
+              </span>
+          </div>
+            <div class="wallet-status">
+              <span class="status-badge" [class.active]="wallet.status === 'active'">
+                {{ wallet.status | titlecase }}
+              </span>
             </div>
           </div>
         </div>
-
-        <!-- Airtel Money -->
-        <div class="stat-card airtel">
-          <div class="stat-icon">
-            <app-feather-icon name="credit-card" size="28px"></app-feather-icon>
+        <ng-template #noWallets>
+          <div class="no-wallets">
+            <app-feather-icon name="wallet" class="icon-lg"></app-feather-icon>
+            <p>No wallets available</p>
           </div>
-          <div class="stat-details">
-            <div class="stat-title">Airtel Money</div>
-            <div class="stat-numbers">
-              <div class="main-stat">1.8M</div>
-              <div class="sub-stats">
-                <span class="success">99.5% Success</span>
-                <span class="volume">120/min</span>
+        </ng-template>
               </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Internal Transactions -->
-        <div class="stat-card internal">
-          <div class="stat-icon">
-            <app-feather-icon name="refresh-cw" size="28px"></app-feather-icon>
-          </div>
-          <div class="stat-details">
-            <div class="stat-title">Internal Transfers</div>
-            <div class="stat-numbers">
-              <div class="main-stat">5.2M</div>
-              <div class="sub-stats">
-                <span class="success">99.9% Success</span>
-                <span class="volume">280/min</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Transaction Value -->
-        <div class="stat-card value">
-          <div class="stat-icon">
-            <app-feather-icon name="dollar-sign" size="28px"></app-feather-icon>
-          </div>
-          <div class="stat-details">
-            <div class="stat-title">Total Value (24h)</div>
-            <div class="stat-numbers">
-              <div class="main-stat">298.5M</div>
-              <div class="sub-stats">
-                <span class="deposits">185.2M In</span>
-                <span class="withdrawals">113.3M Out</span>
-              </div>
-            </div>
-          </div>
+      <!-- Quick Actions Section -->
+      <div class="quick-actions-section">
+        <div class="quick-actions-grid">
+          <button class="quick-action-btn" (click)="navigateToCollect()">
+            <app-feather-icon name="truck" class="icon-md"></app-feather-icon>
+            <span>Collect</span>
+          </button>
+          <button class="quick-action-btn" (click)="navigateToSell()">
+            <app-feather-icon name="shopping-cart" class="icon-md"></app-feather-icon>
+            <span>Sell</span>
+          </button>
+          <button class="quick-action-btn" (click)="navigateToSuppliers()">
+            <app-feather-icon name="user-plus" class="icon-md"></app-feather-icon>
+            <span>Supplier</span>
+          </button>
+          <button class="quick-action-btn" (click)="navigateToCustomers()">
+            <app-feather-icon name="users" class="icon-md"></app-feather-icon>
+            <span>Customer</span>
+          </button>
         </div>
       </div>
 
-
-      <!-- Charts Section -->
-      <div class="charts-grid">
-        <!-- Transaction Volume Trends -->
-        <div class="chart-card volume-chart">
-          <div class="card-header">
-            <h3>Transaction Volume Trends</h3>
-            <div class="card-actions">
-              <button class="btn-refresh" (click)="refreshCharts()">
-                <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
-              </button>
+      <!-- Overview Metrics Section -->
+      <div class="overview-section">
+        <div class="overview-header">
+          <h2 class="section-title">
+            <app-feather-icon name="bar-chart-2" class="icon-sm"></app-feather-icon>
+            Overview
+          </h2>
+        </div>
+        
+        <div class="metrics-grid" *ngIf="overviewMetrics; else loadingMetrics">
+          <!-- Collections Metric -->
+          <div class="metric-card" (click)="navigateToCollections()">
+            <div class="metric-header">
+              <app-feather-icon name="truck" class="icon-sm metric-icon"></app-feather-icon>
+              <span class="metric-title">Collections</span>
             </div>
+            <div class="metric-value">{{ formatNumber(overviewMetrics.collections.liters) }} L</div>
+            <div class="metric-details">
+              {{ formatCurrency(overviewMetrics.collections.value) }} \u2022 {{ overviewMetrics.collections.transactions }} txns
           </div>
-          <div class="card-body">
-            <div id="volumeTrendsChart">
-              <apx-chart
-                [series]="volumeChartOptions.series"
-                [chart]="volumeChartOptions.chart"
-                [xaxis]="volumeChartOptions.xaxis"
-                [yaxis]="volumeChartOptions.yaxis"
-                [legend]="volumeChartOptions.legend"
-                [colors]="volumeChartOptions.colors"
-                [dataLabels]="volumeChartOptions.dataLabels"
-              ></apx-chart>
+        </div>
+
+          <!-- Sales Metric -->
+          <div class="metric-card" (click)="navigateToSales()">
+            <div class="metric-header">
+              <app-feather-icon name="shopping-cart" class="icon-sm metric-icon"></app-feather-icon>
+              <span class="metric-title">Sales</span>
+            </div>
+            <div class="metric-value">{{ formatNumber(overviewMetrics.sales.liters) }} L</div>
+            <div class="metric-details">
+              {{ formatCurrency(overviewMetrics.sales.value) }} \u2022 {{ overviewMetrics.sales.transactions }} txns
+          </div>
+        </div>
+
+          <!-- Suppliers Metric -->
+          <div class="metric-card" (click)="navigateToSuppliers()">
+            <div class="metric-header">
+              <app-feather-icon name="user-plus" class="icon-sm metric-icon"></app-feather-icon>
+              <span class="metric-title">Suppliers</span>
+            </div>
+            <div class="metric-value">{{ overviewMetrics.suppliers.active }}</div>
+            <div class="metric-details">
+              {{ overviewMetrics.suppliers.inactive }} inactive
+          </div>
+        </div>
+
+          <!-- Customers Metric -->
+          <div class="metric-card" (click)="navigateToCustomers()">
+            <div class="metric-header">
+              <app-feather-icon name="users" class="icon-sm metric-icon"></app-feather-icon>
+              <span class="metric-title">Customers</span>
+            </div>
+            <div class="metric-value">{{ overviewMetrics.customers.active }}</div>
+            <div class="metric-details">
+              {{ overviewMetrics.customers.inactive }} inactive
             </div>
           </div>
         </div>
 
-        <!-- Success Rate Trends -->
-        <div class="chart-card success-rate-chart">
-          <div class="card-header">
-            <h3>Success Rate by Provider</h3>
-            <div class="card-actions">
-              <button class="btn-refresh" (click)="refreshCharts()">
-                <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
-              </button>
-            </div>
+        <ng-template #loadingMetrics>
+          <div class="loading-metrics">
+            <div class="loading-spinner"></div>
+            <p>Loading overview data...</p>
           </div>
-          <div class="card-body">
-            <div id="successRateChart">
-              <apx-chart
-                [series]="successRateChartOptions.series"
-                [chart]="successRateChartOptions.chart"
-                [xaxis]="successRateChartOptions.xaxis"
-                [yaxis]="successRateChartOptions.yaxis"
-                [legend]="successRateChartOptions.legend"
-                [colors]="successRateChartOptions.colors"
-                [dataLabels]="successRateChartOptions.dataLabels"
-              ></apx-chart>
-            </div>
-          </div>
-        </div>
+        </ng-template>
+      </div>
 
-        <!-- Transaction Amount Analysis -->
-        <div class="chart-card amount-chart amount-chart-quarter">
-          <div class="card-header">
-            <h3>Transaction Amount Analysis</h3>
-            <div class="card-actions">
-              <button class="btn-refresh" (click)="refreshCharts()">
-                <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
-              </button>
+      <!-- Recent Activity Section -->
+      <div class="recent-activity-section">
+        <h2 class="section-title">Recent Activity</h2>
+        <div class="activity-list">
+          <div class="activity-item" *ngFor="let activity of recentActivities">
+            <div class="activity-icon">
+              <app-feather-icon [name]="activity.icon" class="icon-sm"></app-feather-icon>
             </div>
-          </div>
-          <div class="card-body">
-            <div id="amountAnalysisChart">
-              <apx-chart
-                [series]="amountChartOptions.series"
-                [chart]="amountChartOptions.chart"
-                [labels]="amountChartOptions.labels"
-                [legend]="amountChartOptions.legend"
-                [colors]="amountChartOptions.colors"
-                [dataLabels]="amountChartOptions.dataLabels"
-                [plotOptions]="amountChartOptions.plotOptions"
-              ></apx-chart>
+            <div class="activity-content">
+              <p class="activity-title">{{ activity.title }}</p>
+              <p class="activity-time">{{ activity.time }}</p>
             </div>
-          </div>
-        </div>
-
-        <!-- Error Analysis -->
-        <div class="chart-card error-chart">
-          <div class="card-header">
-            <h3>Error Analysis</h3>
-            <div class="card-actions">
-              <button class="btn-refresh" (click)="refreshCharts()">
-                <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div id="errorAnalysisChart">
-              <apx-chart
-                [series]="errorChartOptions.series"
-                [chart]="errorChartOptions.chart"
-                [xaxis]="errorChartOptions.xaxis"
-                [yaxis]="errorChartOptions.yaxis"
-                [legend]="errorChartOptions.legend"
-                [colors]="errorChartOptions.colors"
-                [dataLabels]="errorChartOptions.dataLabels"
-              ></apx-chart>
-            </div>
-          </div>
-        </div>
-
-        <!-- Transaction Types -->
-        <div class="chart-card transaction-types-chart">
-          <div class="card-header">
-            <h3>Transaction Types by Provider</h3>
-            <div class="card-actions">
-              <button class="btn-refresh" (click)="refreshCharts()">
-                <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div id="transactionTypesChart">
-              <apx-chart
-                [series]="transactionTypesChartOptions.series"
-                [chart]="transactionTypesChartOptions.chart"
-                [xaxis]="transactionTypesChartOptions.xaxis"
-                [yaxis]="transactionTypesChartOptions.yaxis"
-                [legend]="transactionTypesChartOptions.legend"
-                [colors]="transactionTypesChartOptions.colors"
-                [dataLabels]="transactionTypesChartOptions.dataLabels"
-              ></apx-chart>
-            </div>
-          </div>
-        </div>
-
-        <!-- Transaction Value Trends -->
-        <div class="chart-card value-trends-chart">
-          <div class="card-header">
-            <h3>Transaction Value Trends</h3>
-            <div class="card-actions">
-              <button class="btn-refresh" (click)="refreshCharts()">
-                <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div id="valueTrendsChart">
-              <apx-chart
-                [series]="valueTrendsChartOptions.series"
-                [chart]="valueTrendsChartOptions.chart"
-                [xaxis]="valueTrendsChartOptions.xaxis"
-                [yaxis]="valueTrendsChartOptions.yaxis"
-                [legend]="valueTrendsChartOptions.legend"
-                [colors]="valueTrendsChartOptions.colors"
-                [dataLabels]="valueTrendsChartOptions.dataLabels"
-              ></apx-chart>
+            <div class="activity-amount" *ngIf="activity.amount">
+              {{ formatCurrency(activity.amount) }}
             </div>
           </div>
         </div>
       </div>
     </div>
-  `, styles: ["/* angular:styles/component:scss;3c7e1e3d8ac448159030c2d87610442a79300de7f59042403f6f8c31535740d2;/Applications/AMPPS/www/gemura_2/src/app/features/dashboard/dashboard.component.ts */\n.dashboard-container {\n  padding: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n  min-height: 100%;\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n}\n.stat-card {\n  background: white;\n  border-radius: 4px;\n  padding: 24px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  border: 1px solid #e5e7eb;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);\n  transition: transform 0.2s ease, box-shadow 0.2s ease;\n}\n.stat-card:hover {\n  transform: translateY(-1px);\n}\n.stat-card:hover.pull {\n  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.08);\n}\n.stat-card:hover.push {\n  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.08);\n}\n.stat-card:hover.internal {\n  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.08);\n}\n.stat-card:hover.customers {\n  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.08);\n}\n.stat-card .stat-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 4px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 20px;\n}\n.stat-card .stat-icon ::ng-deep svg {\n  stroke-width: 2;\n}\n.stat-card.mtn .stat-icon {\n  background: rgba(255, 199, 0, 0.1);\n  color: #ffc700;\n}\n.stat-card.airtel .stat-icon {\n  background: rgba(255, 0, 0, 0.1);\n  color: #ff0000;\n}\n.stat-card.internal .stat-icon {\n  background: rgba(52, 152, 219, 0.1);\n  color: #3498db;\n}\n.stat-card.health .stat-icon {\n  background: rgba(46, 204, 113, 0.1);\n  color: #2ecc71;\n}\n.stat-card .stat-details {\n  flex: 1;\n}\n.stat-card .stat-details .stat-title {\n  color: #64748b;\n  font-size: 0.875rem;\n  font-weight: 500;\n  margin-bottom: 8px;\n}\n.stat-card .stat-details .stat-numbers .main-stat {\n  font-size: 1.75rem;\n  font-weight: 600;\n  margin-bottom: 4px;\n}\n.mtn .stat-card .stat-details .stat-numbers .main-stat {\n  color: #ffc700;\n}\n.airtel .stat-card .stat-details .stat-numbers .main-stat {\n  color: #ff0000;\n}\n.internal .stat-card .stat-details .stat-numbers .main-stat {\n  color: #3498db;\n}\n.health .stat-card .stat-details .stat-numbers .main-stat {\n  color: #2ecc71;\n}\n.stat-card .stat-details .stat-numbers .sub-stats {\n  display: flex;\n  gap: 12px;\n  font-size: 0.75rem;\n}\n.stat-card .stat-details .stat-numbers .sub-stats span {\n  padding: 2px 8px;\n  border-radius: 12px;\n  font-weight: 500;\n}\n.stat-card .stat-details .stat-numbers .sub-stats span.success {\n  background: rgba(46, 204, 113, 0.1);\n  color: #2ecc71;\n}\n.stat-card .stat-details .stat-numbers .sub-stats span.failed {\n  background: rgba(231, 76, 60, 0.1);\n  color: #e74c3c;\n}\n.stat-card .stat-details .stat-numbers .sub-stats span.active {\n  background: rgba(46, 204, 113, 0.1);\n  color: #2ecc71;\n}\n.stat-card .stat-details .stat-numbers .sub-stats span.inactive {\n  background: rgba(149, 165, 166, 0.1);\n  color: #95a5a6;\n}\n.charts-grid {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n  gap: 16px;\n  margin-top: 16px;\n  width: 100%;\n}\n@media (max-width: 1200px) {\n  .charts-grid {\n    grid-template-columns: 1fr;\n  }\n}\n.charts-grid .chart-card {\n  height: auto;\n}\n.chart-card {\n  background: white;\n  border-radius: 4px;\n  padding: 16px;\n  border: 1px solid #e5e7eb;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);\n}\n.chart-card .card-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 20px;\n}\n.chart-card .card-header h3 {\n  font-size: 1.125rem;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.chart-card .card-header .card-actions .btn-refresh {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 4px;\n  transition: all 0.2s ease;\n}\n.chart-card .card-header .card-actions .btn-refresh:hover {\n  background: rgba(100, 116, 139, 0.1);\n  color: #1e293b;\n}\n.chart-card .card-body {\n  padding: 1rem;\n  min-height: 280px;\n}\n.chart-card .amount-chart-quarter {\n  flex: 0 0 25%;\n  max-width: 25%;\n}\n@media (max-width: 768px) {\n  .dashboard-container {\n    padding: 16px;\n  }\n  .stats-grid {\n    grid-template-columns: 1fr;\n  }\n  .charts-grid {\n    grid-template-columns: 1fr;\n  }\n}\n/*# sourceMappingURL=dashboard.component.css.map */\n"] }]
-  }], () => [{ type: AuthService }, { type: ChartService }], { distributionChart: [{
-    type: ViewChild,
-    args: ["distributionChart"]
-  }], performanceChart: [{
-    type: ViewChild,
-    args: ["performanceChart"]
-  }] });
+  `, styles: ['/* src/app/features/dashboard/dashboard.component.scss */\n.dashboard-container {\n  padding: 24px;\n  max-width: 1200px;\n  margin: 0 auto;\n  background: #f8fafc;\n  min-height: 100vh;\n}\n@media (max-width: 768px) {\n  .dashboard-container {\n    padding: 16px;\n  }\n}\n.welcome-section {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 32px;\n  padding: 24px;\n  background:\n    linear-gradient(\n      135deg,\n      #004AAD 0%,\n      #0066CC 100%);\n  border-radius: 16px;\n  color: white;\n}\n@media (max-width: 768px) {\n  .welcome-section {\n    flex-direction: column;\n    gap: 16px;\n    text-align: center;\n  }\n}\n.welcome-content h1 {\n  font-size: 28px;\n  font-weight: 700;\n  margin: 0 0 8px 0;\n  color: white;\n}\n.welcome-content p {\n  font-size: 16px;\n  margin: 0;\n  opacity: 0.9;\n}\n.welcome-actions .btn {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 12px 20px;\n  border: 2px solid rgba(255, 255, 255, 0.3);\n  background: rgba(255, 255, 255, 0.1);\n  color: white;\n  border-radius: 8px;\n  font-weight: 500;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.welcome-actions .btn:hover {\n  background: rgba(255, 255, 255, 0.2);\n  border-color: rgba(255, 255, 255, 0.5);\n}\n.section-title {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 20px 0;\n}\n.wallet-section {\n  margin-bottom: 32px;\n}\n.wallet-cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  gap: 16px;\n}\n@media (max-width: 768px) {\n  .wallet-cards {\n    grid-template-columns: 1fr;\n  }\n}\n.wallet-card {\n  background: white;\n  border-radius: 16px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  position: relative;\n  overflow: hidden;\n}\n.wallet-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 74, 173, 0.15);\n}\n.wallet-card.active {\n  border-color: #004AAD;\n  background:\n    linear-gradient(\n      135deg,\n      #f8fafc 0%,\n      #f1f5f9 100%);\n}\n.wallet-card::before {\n  content: "";\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  height: 4px;\n  background:\n    linear-gradient(\n      90deg,\n      #004AAD,\n      #0066CC);\n  border-radius: 16px 16px 0 0;\n}\n.wallet-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 16px;\n}\n.wallet-info h3 {\n  font-size: 18px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 4px 0;\n}\n.wallet-info p {\n  font-size: 14px;\n  color: #64748b;\n  margin: 0;\n  text-transform: capitalize;\n}\n.balance-toggle {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 4px;\n  border-radius: 4px;\n  transition: all 0.2s ease;\n}\n.balance-toggle:hover {\n  background: #f1f5f9;\n  color: #004AAD;\n}\n.wallet-balance {\n  margin-bottom: 12px;\n}\n.wallet-balance .balance-amount {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n}\n.wallet-balance .balance-hidden {\n  font-size: 24px;\n  font-weight: 700;\n  color: #64748b;\n  letter-spacing: 2px;\n}\n.wallet-status .status-badge {\n  display: inline-block;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.wallet-status .status-badge.active {\n  background: #dcfce7;\n  color: #166534;\n}\n.wallet-status .status-badge:not(.active) {\n  background: #fef2f2;\n  color: #dc2626;\n}\n.no-wallets {\n  text-align: center;\n  padding: 40px 20px;\n  color: #64748b;\n}\n.no-wallets .icon-lg {\n  width: 48px;\n  height: 48px;\n  margin-bottom: 16px;\n}\n.no-wallets p {\n  font-size: 16px;\n  margin: 0;\n}\n.quick-actions-section {\n  margin-bottom: 32px;\n}\n.quick-actions-grid {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  gap: 16px;\n  background:\n    linear-gradient(\n      135deg,\n      #f8fafc 0%,\n      #f1f5f9 100%);\n  padding: 20px;\n  border-radius: 16px;\n  border: 1px solid #e2e8f0;\n}\n@media (max-width: 768px) {\n  .quick-actions-grid {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n@media (max-width: 480px) {\n  .quick-actions-grid {\n    grid-template-columns: 1fr;\n  }\n}\n.quick-action-btn {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 12px;\n  padding: 20px 16px;\n  background: white;\n  border: 1px solid #e2e8f0;\n  border-radius: 12px;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  font-weight: 500;\n  color: #1e293b;\n}\n.quick-action-btn:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.15);\n  border-color: #004AAD;\n}\n.quick-action-btn .icon-md {\n  width: 24px;\n  height: 24px;\n  color: #004AAD;\n}\n.quick-action-btn span {\n  font-size: 14px;\n  font-weight: 500;\n}\n.overview-section {\n  margin-bottom: 32px;\n}\n.overview-header {\n  margin-bottom: 20px;\n}\n.metrics-grid {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n  gap: 16px;\n}\n@media (max-width: 768px) {\n  .metrics-grid {\n    grid-template-columns: 1fr;\n  }\n}\n.metric-card {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n.metric-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.1);\n  border-color: #004AAD;\n}\n.metric-header {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-bottom: 12px;\n}\n.metric-title {\n  font-size: 14px;\n  font-weight: 500;\n  color: #64748b;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.metric-icon {\n  color: #004AAD;\n}\n.metric-value {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.metric-details {\n  font-size: 12px;\n  color: #64748b;\n}\n.loading-metrics {\n  text-align: center;\n  padding: 40px 20px;\n  color: #64748b;\n}\n.loading-metrics .loading-spinner {\n  width: 32px;\n  height: 32px;\n  border: 3px solid #e2e8f0;\n  border-top: 3px solid #004AAD;\n  border-radius: 50%;\n  animation: spin 1s linear infinite;\n  margin: 0 auto 16px;\n}\n.loading-metrics p {\n  font-size: 14px;\n  margin: 0;\n}\n@keyframes spin {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n.recent-activity-section {\n  margin-bottom: 32px;\n}\n.activity-list {\n  background: white;\n  border-radius: 12px;\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.activity-item {\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  padding: 16px 20px;\n  border-bottom: 1px solid #f1f5f9;\n  transition: background-color 0.2s ease;\n}\n.activity-item:last-child {\n  border-bottom: none;\n}\n.activity-item:hover {\n  background: #f8fafc;\n}\n.activity-icon {\n  width: 40px;\n  height: 40px;\n  background: #f1f5f9;\n  border-radius: 8px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n}\n.activity-content {\n  flex: 1;\n}\n.activity-content .activity-title {\n  font-size: 14px;\n  font-weight: 500;\n  color: #1e293b;\n  margin: 0 0 4px 0;\n}\n.activity-content .activity-time {\n  font-size: 12px;\n  color: #64748b;\n  margin: 0;\n}\n.activity-amount {\n  font-size: 14px;\n  font-weight: 600;\n  color: #059669;\n}\n@media (max-width: 768px) {\n  .dashboard-container {\n    padding: 16px;\n  }\n  .welcome-section {\n    padding: 20px;\n  }\n  .welcome-content h1 {\n    font-size: 24px;\n  }\n  .section-title {\n    font-size: 18px;\n  }\n  .wallet-card {\n    padding: 16px;\n  }\n  .wallet-balance .balance-amount,\n  .wallet-balance .balance-hidden {\n    font-size: 20px;\n  }\n  .quick-actions-grid {\n    padding: 16px;\n  }\n  .quick-action-btn {\n    padding: 16px 12px;\n  }\n  .metric-card {\n    padding: 16px;\n  }\n  .metric-value {\n    font-size: 20px;\n  }\n}\n/*# sourceMappingURL=dashboard.component.css.map */\n'] }]
+  }], () => [{ type: AuthService }], null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DashboardComponent, { className: "DashboardComponent", filePath: "src/app/features/dashboard/dashboard.component.ts", lineNumber: 481 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DashboardComponent, { className: "DashboardComponent", filePath: "src/app/features/dashboard/dashboard.component.ts", lineNumber: 209 });
 })();
 
 // src/app/shared/components/data-table/data-table.component.ts
-var _c05 = [[["", "table-actions-left", ""]], [["", "table-actions-right", ""]], [["", "row-actions", ""]]];
-var _c12 = ["[table-actions-left]", "[table-actions-right]", "[row-actions]"];
+var _c03 = [[["", "table-actions-left", ""]], [["", "table-actions-right", ""]], [["", "row-actions", ""]]];
+var _c1 = ["[table-actions-left]", "[table-actions-right]", "[row-actions]"];
 var _c2 = /* @__PURE__ */ __name((a0) => ({ $implicit: a0 }), "_c2");
 function DataTableComponent_div_1_div_3_Template(rf, ctx) {
   if (rf & 1) {
@@ -56495,9 +55872,9 @@ __name(_DataTableComponent, "DataTableComponent");
 __publicField(_DataTableComponent, "\u0275fac", /* @__PURE__ */ __name(function DataTableComponent_Factory(__ngFactoryType__) {
   return new (__ngFactoryType__ || _DataTableComponent)();
 }, "DataTableComponent_Factory"));
-__publicField(_DataTableComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DataTableComponent, selectors: [["app-data-table"]], inputs: { columns: "columns", data: "data", showHeader: "showHeader", showSearch: "showSearch", showActions: "showActions", showPagination: "showPagination", hover: "hover", striped: "striped", noDataMessage: "noDataMessage", currentPage: "currentPage", pageSize: "pageSize", totalPages: "totalPages", pageSizes: "pageSizes" }, outputs: { onSort: "onSort", onSearch: "onSearch", onPageChange: "onPageChange", onPageSizeChange: "onPageSizeChange" }, ngContentSelectors: _c12, decls: 12, vars: 10, consts: [[1, "data-table-wrapper"], ["class", "data-table-header", 4, "ngIf"], [1, "table-responsive"], [1, "table"], [3, "sortable", "click", 4, "ngFor", "ngForOf"], ["class", "actions-column", 4, "ngIf"], [4, "ngFor", "ngForOf"], [4, "ngIf"], ["class", "data-table-footer d-flex justify-content-between align-items-center mt-3", 4, "ngIf"], [1, "data-table-header"], [1, "d-flex", "justify-content-between", "align-items-center", "mb-3"], [1, "d-flex", "align-items-center", "gap-2"], ["class", "search-box", 4, "ngIf"], [1, "search-box"], ["type", "text", "placeholder", "Search...", 1, "form-control", 3, "ngModelChange", "ngModel"], [3, "click"], ["class", "sort-icon", 3, "asc", "desc", 4, "ngIf"], [1, "sort-icon"], [1, "actions-column"], [3, "ngSwitch"], [4, "ngSwitchCase"], [4, "ngSwitchDefault"], [1, "badge"], [4, "ngTemplateOutlet", "ngTemplateOutletContext"], [1, "text-center", "py-4"], [1, "data-table-footer", "d-flex", "justify-content-between", "align-items-center", "mt-3"], [1, "page-size"], [1, "form-select", 3, "ngModelChange", "ngModel"], [3, "value", 4, "ngFor", "ngForOf"], ["aria-label", "Table navigation", 4, "ngIf"], [3, "value"], ["aria-label", "Table navigation"], [1, "pagination", "mb-0"], [1, "page-item"], ["href", "javascript:void(0)", 1, "page-link", 3, "click"], ["class", "page-item", 3, "active", 4, "ngFor", "ngForOf"]], template: /* @__PURE__ */ __name(function DataTableComponent_Template(rf, ctx) {
+__publicField(_DataTableComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DataTableComponent, selectors: [["app-data-table"]], inputs: { columns: "columns", data: "data", showHeader: "showHeader", showSearch: "showSearch", showActions: "showActions", showPagination: "showPagination", hover: "hover", striped: "striped", noDataMessage: "noDataMessage", currentPage: "currentPage", pageSize: "pageSize", totalPages: "totalPages", pageSizes: "pageSizes" }, outputs: { onSort: "onSort", onSearch: "onSearch", onPageChange: "onPageChange", onPageSizeChange: "onPageSizeChange" }, ngContentSelectors: _c1, decls: 12, vars: 10, consts: [[1, "data-table-wrapper"], ["class", "data-table-header", 4, "ngIf"], [1, "table-responsive"], [1, "table"], [3, "sortable", "click", 4, "ngFor", "ngForOf"], ["class", "actions-column", 4, "ngIf"], [4, "ngFor", "ngForOf"], [4, "ngIf"], ["class", "data-table-footer d-flex justify-content-between align-items-center mt-3", 4, "ngIf"], [1, "data-table-header"], [1, "d-flex", "justify-content-between", "align-items-center", "mb-3"], [1, "d-flex", "align-items-center", "gap-2"], ["class", "search-box", 4, "ngIf"], [1, "search-box"], ["type", "text", "placeholder", "Search...", 1, "form-control", 3, "ngModelChange", "ngModel"], [3, "click"], ["class", "sort-icon", 3, "asc", "desc", 4, "ngIf"], [1, "sort-icon"], [1, "actions-column"], [3, "ngSwitch"], [4, "ngSwitchCase"], [4, "ngSwitchDefault"], [1, "badge"], [4, "ngTemplateOutlet", "ngTemplateOutletContext"], [1, "text-center", "py-4"], [1, "data-table-footer", "d-flex", "justify-content-between", "align-items-center", "mt-3"], [1, "page-size"], [1, "form-select", 3, "ngModelChange", "ngModel"], [3, "value", 4, "ngFor", "ngForOf"], ["aria-label", "Table navigation", 4, "ngIf"], [3, "value"], ["aria-label", "Table navigation"], [1, "pagination", "mb-0"], [1, "page-item"], ["href", "javascript:void(0)", 1, "page-link", 3, "click"], ["class", "page-item", 3, "active", 4, "ngFor", "ngForOf"]], template: /* @__PURE__ */ __name(function DataTableComponent_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275projectionDef(_c05);
+    \u0275\u0275projectionDef(_c03);
     \u0275\u0275elementStart(0, "div", 0);
     \u0275\u0275template(1, DataTableComponent_div_1_Template, 7, 1, "div", 1);
     \u0275\u0275elementStart(2, "div", 2)(3, "table", 3)(4, "thead")(5, "tr");
