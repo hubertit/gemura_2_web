@@ -9156,7 +9156,7 @@ function getOrCreateComponentTView(def) {
   return tView;
 }
 __name(getOrCreateComponentTView, "getOrCreateComponentTView");
-function createLView(parentLView, tView, context2, flags, host, tHostNode, environment, renderer, injector, embeddedViewInjector, hydrationInfo) {
+function createLView(parentLView, tView, context2, flags, host, tHostNode, environment2, renderer, injector, embeddedViewInjector, hydrationInfo) {
   const lView = tView.blueprint.slice();
   lView[HOST] = host;
   lView[FLAGS] = flags | 4 | 128 | 8 | 64 | 1024;
@@ -9167,7 +9167,7 @@ function createLView(parentLView, tView, context2, flags, host, tHostNode, envir
   ngDevMode && tView.declTNode && parentLView && assertTNodeForLView(tView.declTNode, parentLView);
   lView[PARENT] = lView[DECLARATION_VIEW] = parentLView;
   lView[CONTEXT] = context2;
-  lView[ENVIRONMENT] = environment || parentLView && parentLView[ENVIRONMENT];
+  lView[ENVIRONMENT] = environment2 || parentLView && parentLView[ENVIRONMENT];
   ngDevMode && assertDefined(lView[ENVIRONMENT], "LViewEnvironment is required");
   lView[RENDERER] = renderer || parentLView && parentLView[RENDERER];
   ngDevMode && assertDefined(lView[RENDERER], "Renderer is required");
@@ -9868,8 +9868,8 @@ function markDirtyIfOnPush(lView, viewIndex) {
 }
 __name(markDirtyIfOnPush, "markDirtyIfOnPush");
 function setNgReflectProperty(lView, tNode, attrName, value) {
-  const environment = lView[ENVIRONMENT];
-  if (!environment.ngReflect) {
+  const environment2 = lView[ENVIRONMENT];
+  if (!environment2.ngReflect) {
     return;
   }
   const element = getNativeByTNode(tNode, lView);
@@ -9889,8 +9889,8 @@ function setNgReflectProperty(lView, tNode, attrName, value) {
 }
 __name(setNgReflectProperty, "setNgReflectProperty");
 function setNgReflectProperties(lView, tView, tNode, publicName, value) {
-  const environment = lView[ENVIRONMENT];
-  if (!environment.ngReflect || !(tNode.type & (3 | 4))) {
+  const environment2 = lView[ENVIRONMENT];
+  if (!environment2.ngReflect || !(tNode.type & (3 | 4))) {
     return;
   }
   const inputConfig = tNode.inputs?.[publicName];
@@ -10376,8 +10376,8 @@ function runEffectsInView(view) {
 __name(runEffectsInView, "runEffectsInView");
 var MAXIMUM_REFRESH_RERUNS$1 = 100;
 function detectChangesInternal(lView, mode = 0) {
-  const environment = lView[ENVIRONMENT];
-  const rendererFactory = environment.rendererFactory;
+  const environment2 = lView[ENVIRONMENT];
+  const rendererFactory = environment2.rendererFactory;
   const checkNoChangesMode = !!ngDevMode && isInCheckNoChangesMode();
   if (!checkNoChangesMode) {
     rendererFactory.begin?.();
@@ -12861,11 +12861,11 @@ var _ComponentFactory = class _ComponentFactory extends ComponentFactory$1 {
       ngDevMode && verifyNotAnOrphanComponent(cmpDef);
       const rootTView = createRootTView(rootSelectorOrNode, cmpDef, componentBindings, directives);
       const rootViewInjector = createRootViewInjector(cmpDef, environmentInjector || this.ngModule, injector);
-      const environment = createRootLViewEnvironment(rootViewInjector);
-      const hostRenderer = environment.rendererFactory.createRenderer(null, cmpDef);
+      const environment2 = createRootLViewEnvironment(rootViewInjector);
+      const hostRenderer = environment2.rendererFactory.createRenderer(null, cmpDef);
       const hostElement = rootSelectorOrNode ? locateHostElement(hostRenderer, rootSelectorOrNode, cmpDef.encapsulation, rootViewInjector) : createHostElement(cmpDef, hostRenderer);
       const hasInputBindings = componentBindings?.some(isInputBinding) || directives?.some((d) => typeof d !== "function" && d.bindings.some(isInputBinding));
-      const rootLView = createLView(null, rootTView, null, 512 | getInitialLViewFlagsFromDef(cmpDef), null, null, environment, hostRenderer, rootViewInjector, null, retrieveHydrationInfo(
+      const rootLView = createLView(null, rootTView, null, 512 | getInitialLViewFlagsFromDef(cmpDef), null, null, environment2, hostRenderer, rootViewInjector, null, retrieveHydrationInfo(
         hostElement,
         rootViewInjector,
         true
@@ -50457,15 +50457,168 @@ var AlertComponent = _AlertComponent;
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AlertComponent, { className: "AlertComponent", filePath: "src/app/shared/components/alert/alert.component.ts", lineNumber: 18 });
 })();
 
+// src/environments/environment.ts
+var environment = {
+  production: false,
+  apiBaseUrl: "https://api.gemura.rw/v2",
+  appName: "Gemura",
+  appVersion: "1.0.0",
+  features: {
+    enableAnalytics: true,
+    enableNotifications: true,
+    enableChat: true,
+    enableReports: true
+  },
+  auth: {
+    tokenKey: "gemura.token",
+    userKey: "gemura.user",
+    loginKey: "gemura.isLoggedIn",
+    sessionTimeout: 30 * 60 * 1e3
+    // 30 minutes in milliseconds
+  },
+  ui: {
+    theme: {
+      primary: "#004AAD",
+      secondary: "#515365",
+      success: "#1abc9c",
+      info: "#3498db",
+      warning: "#f1c40f",
+      danger: "#e74c3c"
+    },
+    sidebar: {
+      width: 240,
+      miniWidth: 70,
+      headerHeight: 90
+    }
+  },
+  endpoints: {
+    auth: "/auth",
+    profile: "/profile",
+    users: "/users",
+    entities: "/entities",
+    roles: "/roles",
+    permissions: "/permissions",
+    audit: "/audit",
+    logs: "/logs"
+  }
+};
+
+// src/app/core/services/config.service.ts
+var _ConfigService = class _ConfigService {
+  config = environment;
+  // API Configuration
+  get apiBaseUrl() {
+    return this.config.apiBaseUrl;
+  }
+  get authEndpoint() {
+    return this.config.endpoints.auth;
+  }
+  get profileEndpoint() {
+    return this.config.endpoints.profile;
+  }
+  get usersEndpoint() {
+    return this.config.endpoints.users;
+  }
+  get entitiesEndpoint() {
+    return this.config.endpoints.entities;
+  }
+  get rolesEndpoint() {
+    return this.config.endpoints.roles;
+  }
+  get permissionsEndpoint() {
+    return this.config.endpoints.permissions;
+  }
+  get auditEndpoint() {
+    return this.config.endpoints.audit;
+  }
+  get logsEndpoint() {
+    return this.config.endpoints.logs;
+  }
+  // App Configuration
+  get appName() {
+    return this.config.appName;
+  }
+  get appVersion() {
+    return this.config.appVersion;
+  }
+  get isProduction() {
+    return this.config.production;
+  }
+  // Features Configuration
+  get features() {
+    return this.config.features;
+  }
+  isFeatureEnabled(feature) {
+    return this.config.features[feature];
+  }
+  // Auth Configuration
+  get authConfig() {
+    return this.config.auth;
+  }
+  get tokenKey() {
+    return this.config.auth.tokenKey;
+  }
+  get userKey() {
+    return this.config.auth.userKey;
+  }
+  get loginKey() {
+    return this.config.auth.loginKey;
+  }
+  get sessionTimeout() {
+    return this.config.auth.sessionTimeout;
+  }
+  // UI Configuration
+  get uiConfig() {
+    return this.config.ui;
+  }
+  get theme() {
+    return this.config.ui.theme;
+  }
+  get sidebarConfig() {
+    return this.config.ui.sidebar;
+  }
+  // Helper methods
+  getFullUrl(endpoint) {
+    return `${this.apiBaseUrl}${endpoint}`;
+  }
+  getAuthUrl(endpoint) {
+    return `${this.apiBaseUrl}${this.authEndpoint}${endpoint}`;
+  }
+  getProfileUrl(endpoint) {
+    return `${this.apiBaseUrl}${this.profileEndpoint}${endpoint}`;
+  }
+  // Development helpers
+  get isDevelopment() {
+    return !this.isProduction;
+  }
+  get isDebugMode() {
+    return this.isDevelopment;
+  }
+};
+__name(_ConfigService, "ConfigService");
+__publicField(_ConfigService, "\u0275fac", /* @__PURE__ */ __name(function ConfigService_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _ConfigService)();
+}, "ConfigService_Factory"));
+__publicField(_ConfigService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ConfigService, factory: _ConfigService.\u0275fac, providedIn: "root" }));
+var ConfigService = _ConfigService;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ConfigService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], null, null);
+})();
+
 // src/app/core/services/auth.service.ts
-var API_BASE_URL = "https://api.gemura.rw/v2";
-var AUTH_ENDPOINT = "/auth";
 var _AuthService = class _AuthService {
   http;
+  configService;
   currentUser = null;
-  constructor(http) {
+  constructor(http, configService) {
     this.http = http;
-    const storedUser = localStorage.getItem("gemura.user");
+    this.configService = configService;
+    const storedUser = localStorage.getItem(this.configService.userKey);
     if (storedUser) {
       this.currentUser = JSON.parse(storedUser);
     }
@@ -50477,8 +50630,8 @@ var _AuthService = class _AuthService {
       password
     };
     console.log("\u{1F527} AuthService: Attempting login with:", { identifier, password: "***" });
-    console.log("\u{1F527} AuthService: API URL:", `${API_BASE_URL}${AUTH_ENDPOINT}/login`);
-    return from(fetch(`${API_BASE_URL}${AUTH_ENDPOINT}/login`, {
+    console.log("\u{1F527} AuthService: API URL:", this.configService.getAuthUrl("/login"));
+    return from(fetch(this.configService.getAuthUrl("/login"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50529,9 +50682,9 @@ var _AuthService = class _AuthService {
             isAgentCandidate: user.isAgentCandidate || false
           };
           this.currentUser = userData;
-          localStorage.setItem("gemura.user", JSON.stringify(userData));
-          localStorage.setItem("gemura.token", userData.token || "");
-          localStorage.setItem("gemura.isLoggedIn", "true");
+          localStorage.setItem(this.configService.userKey, JSON.stringify(userData));
+          localStorage.setItem(this.configService.tokenKey, userData.token || "");
+          localStorage.setItem(this.configService.loginKey, "true");
           return userData;
         }
       }
@@ -50552,7 +50705,7 @@ var _AuthService = class _AuthService {
     }));
   }
   logout() {
-    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/logout`, {}).pipe(map(() => {
+    return this.http.post(this.configService.getAuthUrl("/logout"), {}).pipe(map(() => {
       this.clearLocalData();
     }), catchError(() => {
       this.clearLocalData();
@@ -50561,9 +50714,9 @@ var _AuthService = class _AuthService {
   }
   clearLocalData() {
     this.currentUser = null;
-    localStorage.removeItem("gemura.user");
-    localStorage.removeItem("gemura.token");
-    localStorage.removeItem("gemura.isLoggedIn");
+    localStorage.removeItem(this.configService.userKey);
+    localStorage.removeItem(this.configService.tokenKey);
+    localStorage.removeItem(this.configService.loginKey);
   }
   isLoggedIn() {
     return !!this.currentUser;
@@ -50572,7 +50725,7 @@ var _AuthService = class _AuthService {
     return this.currentUser;
   }
   getToken() {
-    return localStorage.getItem("gemura.token");
+    return localStorage.getItem(this.configService.tokenKey);
   }
   getUserRole() {
     return this.currentUser?.role || "";
@@ -50590,7 +50743,7 @@ var _AuthService = class _AuthService {
       permissions: userData.permissions || {},
       is_agent_candidate: userData.isAgentCandidate || false
     };
-    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/register`, registrationRequest).pipe(map((response) => {
+    return this.http.post(this.configService.getAuthUrl("/register"), registrationRequest).pipe(map((response) => {
       if (response.statusCode === 200 || response.statusCode === 201) {
         const data = response.data;
         if (data) {
@@ -50621,9 +50774,9 @@ var _AuthService = class _AuthService {
             isAgentCandidate: user.isAgentCandidate || false
           };
           this.currentUser = newUser;
-          localStorage.setItem("gemura.user", JSON.stringify(newUser));
-          localStorage.setItem("gemura.token", newUser.token || token);
-          localStorage.setItem("gemura.isLoggedIn", "true");
+          localStorage.setItem(this.configService.userKey, JSON.stringify(newUser));
+          localStorage.setItem(this.configService.tokenKey, newUser.token || token);
+          localStorage.setItem(this.configService.loginKey, "true");
           return newUser;
         }
       }
@@ -50638,13 +50791,13 @@ var _AuthService = class _AuthService {
     if (email && email.trim() !== "") {
       data.email = email;
     }
-    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/request_reset.php`, data).pipe(map((response) => response), catchError((error) => {
+    return this.http.post(this.configService.getAuthUrl("/request_reset.php"), data).pipe(map((response) => response), catchError((error) => {
       console.error("Password reset request error:", error);
       return throwError(() => this.handleHttpError(error));
     }));
   }
   resetPassword(userId, resetCode, newPassword) {
-    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/reset_password.php`, {
+    return this.http.post(this.configService.getAuthUrl("/reset_password.php"), {
       user_id: userId,
       reset_code: resetCode,
       new_password: newPassword
@@ -50679,7 +50832,7 @@ var _AuthService = class _AuthService {
     if (!token) {
       return throwError(() => "No authentication token found");
     }
-    return this.http.post(`${API_BASE_URL}/profile/get.php`, { token }).pipe(map((response) => {
+    return this.http.post(this.configService.getProfileUrl("/get.php"), { token }).pipe(map((response) => {
       if (response.statusCode === 200 && response.data) {
         const user = response.data.user;
         const userData = {
@@ -50709,14 +50862,14 @@ var _AuthService = class _AuthService {
           isAgentCandidate: user.isAgentCandidate
         };
         this.currentUser = userData;
-        localStorage.setItem("gemura.user", JSON.stringify(userData));
+        localStorage.setItem(this.configService.userKey, JSON.stringify(userData));
         return userData;
       } else {
         throw new Error(response.message || "Failed to fetch profile");
       }
     }), catchError((error) => {
       console.error("Profile fetch error:", error);
-      const cachedUserData = localStorage.getItem("gemura.user");
+      const cachedUserData = localStorage.getItem(this.configService.userKey);
       if (cachedUserData) {
         const userData = JSON.parse(cachedUserData);
         this.currentUser = userData;
@@ -50733,7 +50886,7 @@ var _AuthService = class _AuthService {
     const body = __spreadValues({
       token
     }, profileData);
-    return this.http.post(`${API_BASE_URL}/profile/update.php`, body).pipe(map((response) => {
+    return this.http.post(this.configService.getProfileUrl("/update.php"), body).pipe(map((response) => {
       if (response.statusCode === 200 && response.data) {
         const updatedUser = response.data.user;
         const userData = __spreadProps(__spreadValues(__spreadValues({}, this.currentUser), updatedUser), {
@@ -50741,7 +50894,7 @@ var _AuthService = class _AuthService {
           createdAt: updatedUser.createdAt ? new Date(updatedUser.createdAt) : this.currentUser.createdAt
         });
         this.currentUser = userData;
-        localStorage.setItem("gemura.user", JSON.stringify(userData));
+        localStorage.setItem(this.configService.userKey, JSON.stringify(userData));
         return userData;
       } else {
         throw new Error(response.message || "Profile update failed");
@@ -50756,14 +50909,14 @@ var _AuthService = class _AuthService {
     if (!token) {
       return throwError(() => "No authentication token found");
     }
-    return this.http.post(`${API_BASE_URL}/auth/validate-password`, { password }, {
+    return this.http.post(this.configService.getAuthUrl("/validate-password"), { password }, {
       headers: { Authorization: `Bearer ${token}` }
     }).pipe(map((response) => response.success && response.data?.valid === true), catchError(() => of(false)));
   }
 };
 __name(_AuthService, "AuthService");
 __publicField(_AuthService, "\u0275fac", /* @__PURE__ */ __name(function AuthService_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _AuthService)(\u0275\u0275inject(HttpClient));
+  return new (__ngFactoryType__ || _AuthService)(\u0275\u0275inject(HttpClient), \u0275\u0275inject(ConfigService));
 }, "AuthService_Factory"));
 __publicField(_AuthService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _AuthService, factory: _AuthService.\u0275fac, providedIn: "root" }));
 var AuthService = _AuthService;
@@ -50773,7 +50926,7 @@ var AuthService = _AuthService;
     args: [{
       providedIn: "root"
     }]
-  }], () => [{ type: HttpClient }], null);
+  }], () => [{ type: HttpClient }, { type: ConfigService }], null);
 })();
 
 // src/app/features/auth/login/login.component.ts

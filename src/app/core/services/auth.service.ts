@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError, from } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
+import { ConfigService } from './config.service';
 
 export interface User {
   id: string;
@@ -32,9 +33,7 @@ export interface User {
   isAgentCandidate?: boolean;
 }
 
-// API Configuration - matching Flutter app exactly
-const API_BASE_URL = 'https://api.gemura.rw/v2';
-const AUTH_ENDPOINT = '/auth';
+// API Configuration - now using ConfigService
 
 // Account Types matching Flutter app exactly
 export const ACCOUNT_TYPES = {
@@ -70,9 +69,12 @@ export interface RegistrationRequest {
 export class AuthService {
   private currentUser: User | null = null;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {
     // Check if user is already logged in
-    const storedUser = localStorage.getItem('gemura.user');
+    const storedUser = localStorage.getItem(this.configService.userKey);
     if (storedUser) {
       this.currentUser = JSON.parse(storedUser);
     }
@@ -86,10 +88,10 @@ export class AuthService {
     };
 
     console.log('🔧 AuthService: Attempting login with:', { identifier, password: '***' });
-    console.log('🔧 AuthService: API URL:', `${API_BASE_URL}${AUTH_ENDPOINT}/login`);
+        console.log('🔧 AuthService: API URL:', this.configService.getAuthUrl('/login'));
 
     // Use fetch API to bypass CORS issues
-    return from(fetch(`${API_BASE_URL}${AUTH_ENDPOINT}/login`, {
+    return from(fetch(this.configService.getAuthUrl('/login'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -148,9 +150,9 @@ export class AuthService {
 
             // Store user info - matching Flutter app storage keys
             this.currentUser = userData;
-            localStorage.setItem('gemura.user', JSON.stringify(userData));
-            localStorage.setItem('gemura.token', userData.token || '');
-            localStorage.setItem('gemura.isLoggedIn', 'true');
+            localStorage.setItem(this.configService.userKey, JSON.stringify(userData));
+            localStorage.setItem(this.configService.tokenKey, userData.token || '');
+            localStorage.setItem(this.configService.loginKey, 'true');
             
             return userData;
           }
@@ -185,7 +187,7 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/logout`, {}).pipe(
+    return this.http.post(this.configService.getAuthUrl('/logout'), {}).pipe(
       map(() => {
         this.clearLocalData();
       }),
@@ -199,9 +201,9 @@ export class AuthService {
 
   private clearLocalData(): void {
     this.currentUser = null;
-    localStorage.removeItem('gemura.user');
-    localStorage.removeItem('gemura.token');
-    localStorage.removeItem('gemura.isLoggedIn');
+    localStorage.removeItem(this.configService.userKey);
+    localStorage.removeItem(this.configService.tokenKey);
+    localStorage.removeItem(this.configService.loginKey);
   }
 
   isLoggedIn(): boolean {
@@ -213,7 +215,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('gemura.token');
+    return localStorage.getItem(this.configService.tokenKey);
   }
 
   getUserRole(): string {
@@ -235,7 +237,7 @@ export class AuthService {
       is_agent_candidate: userData.isAgentCandidate || false
     };
 
-    return this.http.post<any>(`${API_BASE_URL}${AUTH_ENDPOINT}/register`, registrationRequest).pipe(
+    return this.http.post<any>(this.configService.getAuthUrl('/register'), registrationRequest).pipe(
       map(response => {
         // Handle response structure matching Flutter app
         if (response.statusCode === 200 || response.statusCode === 201) {
@@ -271,9 +273,9 @@ export class AuthService {
 
             // Store user info - matching Flutter app storage keys
             this.currentUser = newUser;
-            localStorage.setItem('gemura.user', JSON.stringify(newUser));
-            localStorage.setItem('gemura.token', newUser.token || token);
-            localStorage.setItem('gemura.isLoggedIn', 'true');
+            localStorage.setItem(this.configService.userKey, JSON.stringify(newUser));
+            localStorage.setItem(this.configService.tokenKey, newUser.token || token);
+            localStorage.setItem(this.configService.loginKey, 'true');
             
             return newUser;
           }
@@ -294,7 +296,7 @@ export class AuthService {
       data.email = email;
     }
 
-    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/request_reset.php`, data).pipe(
+    return this.http.post(this.configService.getAuthUrl('/request_reset.php'), data).pipe(
       map(response => response),
       catchError(error => {
         console.error('Password reset request error:', error);
@@ -305,7 +307,7 @@ export class AuthService {
 
   resetPassword(userId: number, resetCode: string, newPassword: string): Observable<any> {
     // Matching Flutter app's resetPasswordWithCode method
-    return this.http.post(`${API_BASE_URL}${AUTH_ENDPOINT}/reset_password.php`, {
+    return this.http.post(this.configService.getAuthUrl('/reset_password.php'), {
       user_id: userId,
       reset_code: resetCode,
       new_password: newPassword
@@ -349,7 +351,7 @@ export class AuthService {
     }
 
     // Matching Flutter app's getProfile method - using POST with token in body
-    return this.http.post<any>(`${API_BASE_URL}/profile/get.php`, { token }).pipe(
+    return this.http.post<any>(this.configService.getProfileUrl('/get.php'), { token }).pipe(
       map(response => {
         if (response.statusCode === 200 && response.data) {
           const user = response.data.user;
@@ -382,7 +384,7 @@ export class AuthService {
 
           // Update cached user data
           this.currentUser = userData;
-          localStorage.setItem('gemura.user', JSON.stringify(userData));
+          localStorage.setItem(this.configService.userKey, JSON.stringify(userData));
           return userData;
         } else {
           throw new Error(response.message || 'Failed to fetch profile');
@@ -391,7 +393,7 @@ export class AuthService {
       catchError(error => {
         console.error('Profile fetch error:', error);
         // If API call fails, try to get from cache as fallback - matching Flutter app
-        const cachedUserData = localStorage.getItem('gemura.user');
+        const cachedUserData = localStorage.getItem(this.configService.userKey);
         if (cachedUserData) {
           const userData = JSON.parse(cachedUserData);
           this.currentUser = userData;
@@ -414,7 +416,7 @@ export class AuthService {
       ...profileData
     };
 
-    return this.http.post<any>(`${API_BASE_URL}/profile/update.php`, body).pipe(
+    return this.http.post<any>(this.configService.getProfileUrl('/update.php'), body).pipe(
       map(response => {
         if (response.statusCode === 200 && response.data) {
           const updatedUser = response.data.user;
@@ -427,7 +429,7 @@ export class AuthService {
 
           // Update cached user data
           this.currentUser = userData;
-          localStorage.setItem('gemura.user', JSON.stringify(userData));
+          localStorage.setItem(this.configService.userKey, JSON.stringify(userData));
           return userData;
         } else {
           throw new Error(response.message || 'Profile update failed');
@@ -446,7 +448,7 @@ export class AuthService {
       return throwError(() => 'No authentication token found');
     }
 
-    return this.http.post<any>(`${API_BASE_URL}/auth/validate-password`, { password }, {
+    return this.http.post<any>(this.configService.getAuthUrl('/validate-password'), { password }, {
       headers: { Authorization: `Bearer ${token}` }
     }).pipe(
       map(response => response.success && response.data?.valid === true),
