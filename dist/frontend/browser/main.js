@@ -54761,7 +54761,7 @@ __publicField(_MainLayoutComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275def
     \u0275\u0275advance();
     \u0275\u0275property("isCollapsed", ctx.isSidebarCollapsed);
   }
-}, "MainLayoutComponent_Template"), dependencies: [CommonModule, RouterModule, RouterOutlet, NavbarComponent, SidebarComponent], styles: ["\n\n.main-container[_ngcontent-%COMP%] {\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n}\n.page-wrapper[_ngcontent-%COMP%] {\n  margin-top: calc(90px + 10px);\n  margin-left: 240px;\n  min-height: calc(100vh - 90px - 10px);\n  background: #f1f2f3;\n  padding: 12px;\n  transition: all 0.3s ease;\n}\n.page-wrapper.sidebar-collapsed[_ngcontent-%COMP%] {\n  margin-left: 70px;\n}\n/*# sourceMappingURL=main-layout.component.css.map */"] }));
+}, "MainLayoutComponent_Template"), dependencies: [CommonModule, RouterModule, RouterOutlet, NavbarComponent, SidebarComponent], styles: ["\n\n.main-container[_ngcontent-%COMP%] {\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n}\n.page-wrapper[_ngcontent-%COMP%] {\n  margin-top: calc(90px + 10px);\n  margin-left: 240px;\n  min-height: calc(100vh - 90px - 10px);\n  background: #f1f2f3;\n  padding: 12px;\n  transition: all 0.3s ease;\n}\n.main-container.sidebar-collapsed[_ngcontent-%COMP%]   .page-wrapper[_ngcontent-%COMP%] {\n  margin-left: 70px;\n}\n@media (max-width: 991px) {\n  .page-wrapper[_ngcontent-%COMP%] {\n    margin-left: 0;\n    padding: 8px;\n  }\n  .main-container.sidebar-collapsed[_ngcontent-%COMP%]   .page-wrapper[_ngcontent-%COMP%] {\n    margin-left: 0;\n  }\n}\n/*# sourceMappingURL=main-layout.component.css.map */"] }));
 var MainLayoutComponent = _MainLayoutComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MainLayoutComponent, [{
@@ -54780,7 +54780,7 @@ var MainLayoutComponent = _MainLayoutComponent;
         <router-outlet></router-outlet>
       </div>
     </div>
-  `, styles: ["/* src/app/layout/main-layout/main-layout.component.scss */\n.main-container {\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n}\n.page-wrapper {\n  margin-top: calc(90px + 10px);\n  margin-left: 240px;\n  min-height: calc(100vh - 90px - 10px);\n  background: #f1f2f3;\n  padding: 12px;\n  transition: all 0.3s ease;\n}\n.page-wrapper.sidebar-collapsed {\n  margin-left: 70px;\n}\n/*# sourceMappingURL=main-layout.component.css.map */\n"] }]
+  `, styles: ["/* src/app/layout/main-layout/main-layout.component.scss */\n.main-container {\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n}\n.page-wrapper {\n  margin-top: calc(90px + 10px);\n  margin-left: 240px;\n  min-height: calc(100vh - 90px - 10px);\n  background: #f1f2f3;\n  padding: 12px;\n  transition: all 0.3s ease;\n}\n.main-container.sidebar-collapsed .page-wrapper {\n  margin-left: 70px;\n}\n@media (max-width: 991px) {\n  .page-wrapper {\n    margin-left: 0;\n    padding: 8px;\n  }\n  .main-container.sidebar-collapsed .page-wrapper {\n    margin-left: 0;\n  }\n}\n/*# sourceMappingURL=main-layout.component.css.map */\n"] }]
   }], null, { onResize: [{
     type: HostListener,
     args: ["window:resize"]
