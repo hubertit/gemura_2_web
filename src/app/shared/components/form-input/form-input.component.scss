@@ -1,0 +1,101 @@
+@import '../../../../styles/variables';
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-wrapper {
+  position: relative;
+  
+  i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    z-index: 2;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: white;
+
+    &::placeholder {
+      color: #999;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      box-shadow: 0 0 2px rgba($primary, 0.1);
+    }
+
+    &.is-invalid {
+      border-color: $danger;
+      
+      &:focus {
+        box-shadow: 0 0 2px rgba($danger, 0.1);
+      }
+    }
+
+    &:disabled {
+      background-color: #f8f9fa;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    option {
+      padding: 8px;
+      background: white;
+      color: #333;
+    }
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 2;
+
+    &:hover {
+      color: $primary;
+    }
+
+    i {
+      position: static;
+      transform: none;
+    }
+  }
+}
+
+.invalid-feedback {
+  color: $danger;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: block;
+}

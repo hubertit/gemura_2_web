@@ -14,7 +14,7 @@ import { AuthService } from '../../core/services/auth.service';
     <aside class="sidebar" [class.collapsed]="isCollapsed">
       <div class="sidebar-header">
         <div class="logo-container">
-          <img src="assets/img/icon.png" alt="Logo" class="logo">
+          <img src="assets/img/logo.png" alt="Gemura Logo" class="logo">
           <span class="logo-text" *ngIf="!isCollapsed">Gemura</span>
         </div>
       </div>

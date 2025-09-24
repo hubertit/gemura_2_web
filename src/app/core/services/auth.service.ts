@@ -98,10 +98,13 @@ export class AuthService {
       body: JSON.stringify(loginData),
       mode: 'cors'
     }).then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      return response.json();
+      return response.json().then(data => {
+        // Check if the API returned an error response
+        if (data.code && data.status === 'error') {
+          throw new Error(data.message || 'Login failed');
+        }
+        return data;
+      });
     })).pipe(
       map((response: any) => {
         console.log('🔧 AuthService: Full API response:', response);
@@ -163,10 +166,20 @@ export class AuthService {
       }),
       catchError(error => {
         console.error('🔧 AuthService: Login error:', error);
-        console.error('🔧 AuthService: Error status:', error.status);
         console.error('🔧 AuthService: Error message:', error.message);
-        console.error('🔧 AuthService: Error details:', error);
-        return throwError(() => this.handleHttpError(error));
+        
+        // Handle fetch API errors properly
+        if (error.message) {
+          return throwError(() => error.message);
+        }
+        
+        // Handle network errors
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+          return throwError(() => 'Please check your internet connection and try again.');
+        }
+        
+        // Fallback error message
+        return throwError(() => 'An unexpected error occurred. Please try again.');
       })
     );
   }

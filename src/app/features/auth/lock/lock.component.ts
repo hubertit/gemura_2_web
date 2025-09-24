@@ -5,85 +5,58 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { InactivityService } from '../../../core/services/inactivity.service';
 import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { AuthLayoutComponent } from '../../../shared/components/auth-layout/auth-layout.component';
+import { FormInputComponent } from '../../../shared/components/form-input/form-input.component';
+import { AlertComponent } from '../../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-lock',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, FeatherIconComponent],
+  imports: [CommonModule, FormsModule, RouterModule, AuthLayoutComponent, FormInputComponent, AlertComponent],
   template: `
-    <div class="auth-page">
-      <!-- Left side - Lock Form -->
-      <div class="login-section">
-        <div class="login-container">
-          <div class="logo-section">
-            <h1>Welcome back to <span>SACCO ESB</span></h1>
+    <app-auth-layout 
+      title="Welcome back to Gemura"
+      [showAuthLinks]="false">
+      
+      <ng-template #formTemplate>
+        <div class="user-info">
+          <div class="user-avatar">
+            <img [src]="userAvatar" [alt]="userName" />
           </div>
-          <div class="user-info">
-            <div class="user-avatar">
-              <img [src]="userAvatar" [alt]="userName" />
-            </div>
-            <h5>{{ userName }}</h5>
-            <p class="text-muted">Your session is locked</p>
-          </div>
-          <form (ngSubmit)="unlock()" #lockForm="ngForm" class="login-form">
-            <div class="form-group">
-              <div class="input-wrapper">
-                <app-feather-icon name="lock" size="16px"></app-feather-icon>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  [(ngModel)]="password"
-                  placeholder="Enter your password"
-                  required
-                  [class.is-invalid]="error"
-                />
-              </div>
-              <div *ngIf="error" class="error-message">
-                {{ error }}
-              </div>
-            </div>
-            <button type="submit" class="login-btn" [disabled]="!password">
-              <app-feather-icon name="unlock" size="16px"></app-feather-icon>
-              Unlock
-            </button>
-            <div class="footer-text">
-              <a routerLink="/login" class="switch-account">
-                <app-feather-icon name="log-out" size="16px"></app-feather-icon>
-                Sign in as a different user
-              </a>
-            </div>
-          </form>
+          <h5>{{ userName }}</h5>
+          <p class="text-muted">Your session is locked</p>
         </div>
-      </div>
+        
+        <form (ngSubmit)="unlock()" #lockForm="ngForm" class="auth-form">
+          <app-form-input
+            type="password"
+            placeholder="Enter your password"
+            iconClass="fas fa-lock"
+            [(ngModel)]="password"
+            name="password"
+            [isInvalid]="!!error"
+            [errorMessage]="error">
+          </app-form-input>
 
-      <!-- Right side - Background with Clock -->
-      <div class="background-section">
-        <div class="analog-clock">
-          <div class="clock-face">
-            <div class="numbers">
-              <span>12</span>
-              <span>1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>4</span>
-              <span>5</span>
-              <span>6</span>
-              <span>7</span>
-              <span>8</span>
-              <span>9</span>
-              <span>10</span>
-              <span>11</span>
-            </div>
-            <div class="hand hour-hand"></div>
-            <div class="hand minute-hand"></div>
-            <div class="hand second-hand"></div>
-            <div class="center-dot"></div>
+          <app-alert 
+            type="danger" 
+            [message]="error">
+          </app-alert>
+
+          <button type="submit" class="auth-btn" [disabled]="!password">
+            <i class="fas fa-unlock"></i>
+            Unlock
+          </button>
+          
+          <div class="auth-links">
+            <a routerLink="/login" class="switch-account">
+              <i class="fas fa-sign-out-alt"></i>
+              Sign in as a different user
+            </a>
           </div>
-          <div class="date">{{ currentDate | date:'EEEE, MMMM d, y' }}</div>
-        </div>
-      </div>
-    </div>
+        </form>
+      </ng-template>
+    </app-auth-layout>
   `,
   styles: [`
     @import '../../../../styles/variables';
@@ -116,7 +89,7 @@ import { FeatherIconComponent } from '../../../shared/components/feather-icon/fe
       max-width: 400px;
       padding: 0 20px;
 
-      .logo-section {
+      .logo-container {
         text-align: center;
         margin-bottom: 2rem;
 
@@ -125,17 +98,18 @@ import { FeatherIconComponent } from '../../../shared/components/feather-icon/fe
           height: 60px;
           margin-bottom: 1rem;
         }
+      }
 
-        h1 {
-          font-size: 1.5rem;
-          font-weight: 500;
-          color: #333;
-          margin: 0;
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #333;
+        margin: 0 0 2rem 0;
+        text-align: center;
 
-          span {
-            color: $primary;
-            font-weight: 600;
-          }
+        span {
+          color: $primary;
+          font-weight: 600;
         }
       }
 
@@ -282,7 +256,7 @@ import { FeatherIconComponent } from '../../../shared/components/feather-icon/fe
     .background-section {
       flex: 1;
       background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
-                  url('/assets/img/auth-cover.jpg');
+                  url('/assets/img/splash.jpg');
       background-size: cover;
       background-position: center;
       position: relative;
@@ -611,12 +585,10 @@ import { FeatherIconComponent } from '../../../shared/components/feather-icon/fe
   `]
 })
 export class LockComponent implements OnInit, OnDestroy {
-  private clockInterval: any;
   userName: string = '';
   userAvatar: string = '/assets/img/user.png';
   password: string = '';
   error: string = '';
-  currentDate = new Date();
 
   constructor(
     private authService: AuthService,
@@ -631,41 +603,10 @@ export class LockComponent implements OnInit, OnDestroy {
         this.userAvatar = user.avatar;
       }
     }
-    this.startClock();
-  }
-
-  private startClock() {
-    const updateClock = () => {
-      const now = new Date();
-      const seconds = now.getSeconds();
-      const minutes = now.getMinutes();
-      const hours = now.getHours();
-
-      // Calculate rotations
-      const secondRotation = (seconds * 6) + 'deg'; // 360° / 60 = 6°
-      const minuteRotation = ((minutes * 6) + (seconds * 0.1)) + 'deg'; // 360° / 60 = 6°
-      const hourRotation = ((hours * 30) + (minutes * 0.5)) + 'deg'; // 360° / 12 = 30°
-
-      // Update CSS variables
-      document.documentElement.style.setProperty('--second-rotation', secondRotation);
-      document.documentElement.style.setProperty('--minute-rotation', minuteRotation);
-      document.documentElement.style.setProperty('--hour-rotation', hourRotation);
-
-      // Update date
-      this.currentDate = now;
-    };
-
-    // Update immediately
-    updateClock();
-
-    // Update every second
-    this.clockInterval = setInterval(updateClock, 1000);
   }
 
   ngOnDestroy() {
-    if (this.clockInterval) {
-      clearInterval(this.clockInterval);
-    }
+    // Component cleanup
   }
 
 

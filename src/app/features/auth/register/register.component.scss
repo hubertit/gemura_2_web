@@ -1,5 +1,47 @@
 @import '../../../../styles/variables';
 
+// Auth form styles
+.auth-form {
+  .auth-btn {
+    width: 100%;
+    padding: 12px;
+    background: $primary;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    &:hover:not(:disabled) {
+      background: darken($primary, 5%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba($primary, 0.3);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .spinner-border {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}
+
 :root {
   --second-rotation: 0deg;
   --minute-rotation: 0deg;

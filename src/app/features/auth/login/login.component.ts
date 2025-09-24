@@ -3,119 +3,74 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { AuthLayoutComponent } from '../../../shared/components/auth-layout/auth-layout.component';
+import { FormInputComponent } from '../../../shared/components/form-input/form-input.component';
+import { AlertComponent } from '../../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, AuthLayoutComponent, FormInputComponent, AlertComponent],
   template: `
-    <div class="auth-page">
-      <!-- Left side - Login Form -->
-      <div class="login-section">
-        <div class="login-container">
-          <div class="logo-container">
-            <img src="assets/img/logo.png" alt="Gemura Logo" class="logo">
-          </div>
-          <h1>Log In to <span>Gemura</span></h1>
+    <app-auth-layout 
+      title="Log In to Gemura"
+      authLinkText="New Here?"
+      authLinkLabel="Create Account"
+      authLinkRoute="/register">
+      
+      <ng-template #formTemplate>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+          <app-form-input
+            type="text"
+            placeholder="Email or Phone Number"
+            iconClass="fas fa-user"
+            formControlName="identifier"
+            [isInvalid]="!!(loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched)"
+            errorMessage="Please enter a valid email or phone number">
+          </app-form-input>
+
+          <app-form-input
+            type="password"
+            placeholder="Password"
+            iconClass="fas fa-lock"
+            formControlName="password"
+            [isInvalid]="!!(loginForm.get('password')?.invalid && loginForm.get('password')?.touched)"
+            errorMessage="Password is required"
+            [showPasswordToggle]="true">
+          </app-form-input>
+
+          <app-alert 
+            type="danger" 
+            [message]="errorMessage">
+          </app-alert>
           
-          <div class="new-user">
-            <span>New Here? </span>
-            <a routerLink="/register">Create Account</a>
+          <app-alert 
+            type="success" 
+            [message]="successMessage">
+          </app-alert>
+
+          <button type="submit" class="auth-btn" [disabled]="loginForm.invalid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isLoading ? 'Logging in...' : 'Log In' }}
+          </button>
+
+          <div class="auth-links">
+            <a routerLink="/forgot-password" class="forgot-password-link">
+              Forgot Password?
+            </a>
           </div>
-
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-            <div class="form-group">
-              <div class="input-wrapper">
-                <i class="fas fa-user"></i>
-                <input 
-                  type="text" 
-                  formControlName="identifier" 
-                  placeholder="Email or Phone Number"
-                  [class.is-invalid]="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched">
-              </div>
-              <div class="invalid-feedback" *ngIf="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched">
-                Please enter a valid email or phone number
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="input-wrapper">
-                <i class="fas fa-lock"></i>
-                <input 
-                  [type]="showPassword ? 'text' : 'password'" 
-                  formControlName="password" 
-                  placeholder="Password"
-                  [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-                <button type="button" class="password-toggle" (click)="togglePassword()">
-                  <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
-                </button>
-              </div>
-              <div class="invalid-feedback" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-                Password is required
-              </div>
-            </div>
-
-            <div class="alert alert-danger" *ngIf="errorMessage">
-              {{ errorMessage }}
-            </div>
-
-            <button type="submit" class="login-btn" [disabled]="loginForm.invalid || isLoading">
-              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-              {{ isLoading ? 'Logging in...' : 'Log In' }}
-            </button>
-
-            <div class="auth-links">
-              <a routerLink="/forgot-password" class="forgot-password-link">
-                Forgot Password?
-              </a>
-            </div>
-          </form>
-
-          <div class="footer-text">
-            <p>© {{ currentYear }} Gemura</p>
-            <p>A comprehensive dairy farming management system</p>
-            <p>Developed for Rwandan Dairy Farmers</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right side - Background with Clock -->
-      <div class="background-section">
-        <div class="analog-clock">
-          <div class="clock-face">
-            <div class="numbers">
-              <span>12</span>
-              <span>1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>4</span>
-              <span>5</span>
-              <span>6</span>
-              <span>7</span>
-              <span>8</span>
-              <span>9</span>
-              <span>10</span>
-              <span>11</span>
-            </div>
-            <div class="hand hour-hand"></div>
-            <div class="hand minute-hand"></div>
-            <div class="hand second-hand"></div>
-            <div class="center-dot"></div>
-          </div>
-          <div class="date">{{ currentTime | date:'EEEE, MMMM d, y' }}</div>
-        </div>
-      </div>
-    </div>
+        </form>
+      </ng-template>
+    </app-auth-layout>
   `,
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isLoading = false;
-  showPassword = false;
-  currentTime = new Date();
-  currentYear = new Date().getFullYear();
   errorMessage = '';
+  successMessage = '';
+  isSuccess = false;
 
       constructor(
         private fb: FormBuilder,
@@ -129,32 +84,7 @@ export class LoginComponent implements OnInit {
       }
 
   ngOnInit(): void {
-    // Update time every second
-    setInterval(() => {
-      this.currentTime = new Date();
-      this.updateClockHands();
-    }, 1000);
-  }
-
-  private updateClockHands(): void {
-    const now = new Date();
-    const seconds = now.getSeconds();
-    const minutes = now.getMinutes();
-    const hours = now.getHours() % 12;
-
-    // Calculate rotation angles
-    const secondDegrees = (seconds / 60) * 360;
-    const minuteDegrees = ((minutes + seconds / 60) / 60) * 360;
-    const hourDegrees = ((hours + minutes / 60) / 12) * 360;
-
-    // Update hand rotations using CSS custom properties
-    document.documentElement.style.setProperty('--second-rotation', `${secondDegrees}deg`);
-    document.documentElement.style.setProperty('--minute-rotation', `${minuteDegrees}deg`);
-    document.documentElement.style.setProperty('--hour-rotation', `${hourDegrees}deg`);
-  }
-
-  togglePassword(): void {
-    this.showPassword = !this.showPassword;
+    // Component initialization
   }
 
       onSubmit(): void {
@@ -169,12 +99,21 @@ export class LoginComponent implements OnInit {
             next: (user) => {
               console.log('🔧 LoginComponent: Login successful:', user);
               this.isLoading = false;
-              this.router.navigate(['/dashboard']);
+              this.isSuccess = true;
+              this.successMessage = 'Login successful! Redirecting to dashboard...';
+              this.errorMessage = '';
+              
+              // Redirect after 3 seconds
+              setTimeout(() => {
+                this.router.navigate(['/dashboard']);
+              }, 3000);
             },
             error: (error) => {
               console.log('🔧 LoginComponent: Login failed:', error);
               this.isLoading = false;
+              this.isSuccess = false;
               this.errorMessage = error;
+              this.successMessage = '';
             }
           });
         } else {
