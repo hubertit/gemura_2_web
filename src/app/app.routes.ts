@@ -7,6 +7,7 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { FeedComponent } from './features/feed/feed.component';
 import { ChatsComponent } from './features/chats/chats.component';
+import { IkofiComponent } from './features/ikofi/ikofi.component';
 import { CustomersListComponent } from './features/customers/customers-list/customers-list.component';
 import { AddCustomerComponent } from './features/customers/add-customer/add-customer.component';
 import { SoldMilkComponent } from './features/customers/sold-milk/sold-milk.component';
@@ -55,6 +56,10 @@ export const routes: Routes = [
             {
               path: 'chats',
               component: ChatsComponent
+            },
+            {
+              path: 'ikofi',
+              component: IkofiComponent
             },
       {
         path: 'customers/list',

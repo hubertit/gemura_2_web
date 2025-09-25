@@ -49,28 +49,11 @@ export class NavigationService {
         }
       ]
     },
-    {
-      title: 'Ikofi',
-      icon: 'dollar-sign',
-      children: [
-        {
-          title: 'Savings',
-          path: 'financial/savings'
-        },
-        {
-          title: 'Loans',
-          path: 'financial/loans'
-        },
-        {
-          title: 'Insurance',
-          path: 'financial/insurance'
-        },
-        {
-          title: 'Payments',
-          path: 'financial/payments'
-        }
-      ]
-    },
+      {
+        title: 'Ikofi',
+        icon: 'dollar-sign',
+        path: 'ikofi'
+      },
     {
       title: 'Chats',
       icon: 'message-circle',
