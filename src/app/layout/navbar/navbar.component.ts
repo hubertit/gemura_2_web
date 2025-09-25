@@ -22,18 +22,76 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
       </div>
 
       <div class="navbar-right">
-        <div class="nav-item">
+        <div class="nav-item notification-item" (click)="toggleNotificationPanel()">
           <button class="icon-button">
             <app-feather-icon name="bell" size="18px"></app-feather-icon>
             <span class="badge">3</span>
           </button>
+
+          <!-- Notification Panel -->
+          <div class="notification-panel" *ngIf="showNotificationPanel">
+            <div class="panel-header">
+              <h6>Notifications</h6>
+              <span class="notification-count">3 new</span>
+            </div>
+            
+            <div class="notification-list">
+              <div class="notification-item" *ngFor="let notification of notifications">
+                <div class="notification-avatar">
+                  <app-feather-icon [name]="notification.icon" size="16px"></app-feather-icon>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">{{ notification.title }}</div>
+                  <div class="notification-message">{{ notification.message }}</div>
+                  <div class="notification-time">{{ notification.time }}</div>
+                </div>
+                <div class="notification-status" [class.unread]="!notification.read"></div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+              <button class="view-all-btn" (click)="viewAllNotifications()">
+                <app-feather-icon name="eye" size="14px"></app-feather-icon>
+                <span>View All Notifications</span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div class="nav-item">
+        <div class="nav-item message-item" (click)="toggleMessagePanel()">
           <button class="icon-button">
             <app-feather-icon name="mail" size="18px"></app-feather-icon>
             <span class="badge">5</span>
           </button>
+
+          <!-- Message Panel -->
+          <div class="message-panel" *ngIf="showMessagePanel">
+            <div class="panel-header">
+              <h6>Messages</h6>
+              <span class="message-count">5 new</span>
+            </div>
+            
+            <div class="message-list">
+              <div class="message-item" *ngFor="let message of messages">
+                <div class="message-avatar">
+                  <img [src]="message.avatar" [alt]="message.sender" class="avatar-img">
+                </div>
+                <div class="message-content">
+                  <div class="message-sender">{{ message.sender }}</div>
+                  <div class="message-preview">{{ message.preview }}</div>
+                  <div class="message-time">{{ message.time }}</div>
+                </div>
+                <div class="message-status" [class.unread]="!message.read"></div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+              <button class="view-all-btn" (click)="viewAllMessages()">
+                <app-feather-icon name="mail" size="14px"></app-feather-icon>
+                <span>View All Messages</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="nav-item language-switcher" (click)="toggleLanguageMenu()">
@@ -137,10 +195,82 @@ export class NavbarComponent implements OnInit, OnDestroy {
   userRole: string;
   showUserMenu = false;
   showLanguageMenu = false;
+  showNotificationPanel = false;
+  showMessagePanel = false;
   
   currentTime: string = '';
   currentDate: string = '';
   private timeInterval: any;
+
+  notifications = [
+    {
+      id: 1,
+      title: 'New Customer Added',
+      message: 'John Doe has been added to your customer list',
+      time: '2 minutes ago',
+      icon: 'user-plus',
+      read: false
+    },
+    {
+      id: 2,
+      title: 'Payment Received',
+      message: 'Payment of RWF 15,000 received from Jane Smith',
+      time: '1 hour ago',
+      icon: 'dollar-sign',
+      read: false
+    },
+    {
+      id: 3,
+      title: 'System Update',
+      message: 'Your system has been updated to version 2.1.0',
+      time: '3 hours ago',
+      icon: 'download',
+      read: true
+    }
+  ];
+
+  messages = [
+    {
+      id: 1,
+      sender: 'Jane Smith',
+      preview: 'Thank you for the quick delivery! The milk quality is excellent.',
+      time: '5 minutes ago',
+      avatar: 'assets/img/user.png',
+      read: false
+    },
+    {
+      id: 2,
+      sender: 'Mike Johnson',
+      preview: 'Can we schedule the next delivery for tomorrow morning?',
+      time: '1 hour ago',
+      avatar: 'assets/img/user.png',
+      read: false
+    },
+    {
+      id: 3,
+      sender: 'Sarah Wilson',
+      preview: 'The payment has been processed successfully. Thank you!',
+      time: '2 hours ago',
+      avatar: 'assets/img/user.png',
+      read: true
+    },
+    {
+      id: 4,
+      sender: 'David Brown',
+      preview: 'I would like to increase my weekly order to 20 liters.',
+      time: '3 hours ago',
+      avatar: 'assets/img/user.png',
+      read: false
+    },
+    {
+      id: 5,
+      sender: 'Lisa Davis',
+      preview: 'The delivery was perfect as always. See you next week!',
+      time: '1 day ago',
+      avatar: 'assets/img/user.png',
+      read: true
+    }
+  ];
 
   currentAccount = {
     id: '1',
@@ -244,6 +374,33 @@ export class NavbarComponent implements OnInit, OnDestroy {
   toggleUserMenu(): void {
     this.showUserMenu = !this.showUserMenu;
     this.showLanguageMenu = false;
+    this.showNotificationPanel = false;
+  }
+
+  toggleNotificationPanel(): void {
+    this.showNotificationPanel = !this.showNotificationPanel;
+    this.showUserMenu = false;
+    this.showLanguageMenu = false;
+    this.showMessagePanel = false;
+  }
+
+  toggleMessagePanel(): void {
+    this.showMessagePanel = !this.showMessagePanel;
+    this.showUserMenu = false;
+    this.showLanguageMenu = false;
+    this.showNotificationPanel = false;
+  }
+
+  viewAllNotifications(): void {
+    this.showNotificationPanel = false;
+    // TODO: Navigate to full notifications page
+    console.log('View all notifications clicked');
+  }
+
+  viewAllMessages(): void {
+    this.showMessagePanel = false;
+    // TODO: Navigate to full messages page
+    console.log('View all messages clicked');
   }
 
   selectAccount(account: any): void {

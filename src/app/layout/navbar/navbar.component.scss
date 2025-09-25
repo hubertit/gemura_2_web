@@ -100,6 +100,304 @@
       }
     }
 
+    &.notification-item {
+      .notification-panel {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        background: white;
+        border-radius: $border-radius;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 320px;
+        max-height: 400px;
+        overflow: hidden;
+        z-index: 1000;
+
+        .panel-header {
+          padding: 1rem;
+          background: rgba($primary, 0.03);
+          border-bottom: 1px solid $gray-100;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          h6 {
+            margin: 0;
+            color: $gray-800;
+            font-size: 0.875rem;
+            font-weight: 600;
+          }
+
+          .notification-count {
+            background: $primary;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+          }
+        }
+
+        .notification-list {
+          max-height: 250px;
+          overflow-y: auto;
+
+          .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid $gray-50;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background: rgba($primary, 0.05);
+            }
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .notification-avatar {
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              background: rgba($primary, 0.1);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: $primary;
+              flex-shrink: 0;
+            }
+
+            .notification-content {
+              flex-grow: 1;
+              min-width: 0;
+
+              .notification-title {
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: $gray-800;
+                margin-bottom: 0.25rem;
+                line-height: 1.2;
+              }
+
+              .notification-message {
+                font-size: 0.8rem;
+                color: $gray-600;
+                line-height: 1.3;
+                margin-bottom: 0.25rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+              }
+
+              .notification-time {
+                font-size: 0.75rem;
+                color: $gray-500;
+              }
+            }
+
+            .notification-status {
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: transparent;
+              flex-shrink: 0;
+              margin-top: 0.25rem;
+
+              &.unread {
+                background: $primary;
+              }
+            }
+          }
+        }
+
+        .panel-footer {
+          padding: 0.75rem 1rem;
+          border-top: 1px solid $gray-100;
+          background: rgba($gray-50, 0.5);
+
+          .view-all-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba($primary, 0.05);
+            color: $primary;
+            border: 1px solid rgba($primary, 0.2);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+
+            &:hover {
+              background: rgba($primary, 0.1);
+              border-color: rgba($primary, 0.3);
+            }
+
+            app-feather-icon {
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+    }
+
+    &.message-item {
+      .message-panel {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        background: white;
+        border-radius: $border-radius;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 320px;
+        max-height: 400px;
+        overflow: hidden;
+        z-index: 1000;
+
+        .panel-header {
+          padding: 1rem;
+          background: rgba($primary, 0.03);
+          border-bottom: 1px solid $gray-100;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          h6 {
+            margin: 0;
+            color: $gray-800;
+            font-size: 0.875rem;
+            font-weight: 600;
+          }
+
+          .message-count {
+            background: $primary;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+          }
+        }
+
+        .message-list {
+          max-height: 250px;
+          overflow-y: auto;
+
+          .message-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid $gray-50;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background: rgba($primary, 0.05);
+            }
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .message-avatar {
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              overflow: hidden;
+              flex-shrink: 0;
+
+              .avatar-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+            }
+
+            .message-content {
+              flex-grow: 1;
+              min-width: 0;
+
+              .message-sender {
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: $gray-800;
+                margin-bottom: 0.25rem;
+                line-height: 1.2;
+              }
+
+              .message-preview {
+                font-size: 0.8rem;
+                color: $gray-600;
+                line-height: 1.3;
+                margin-bottom: 0.25rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+              }
+
+              .message-time {
+                font-size: 0.75rem;
+                color: $gray-500;
+              }
+            }
+
+            .message-status {
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: transparent;
+              flex-shrink: 0;
+              margin-top: 0.25rem;
+
+              &.unread {
+                background: $primary;
+              }
+            }
+          }
+        }
+
+        .panel-footer {
+          padding: 0.75rem 1rem;
+          border-top: 1px solid $gray-100;
+          background: rgba($gray-50, 0.5);
+
+          .view-all-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba($primary, 0.05);
+            color: $primary;
+            border: 1px solid rgba($primary, 0.2);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+
+            &:hover {
+              background: rgba($primary, 0.1);
+              border-color: rgba($primary, 0.3);
+            }
+
+            app-feather-icon {
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+    }
+
     .icon-button {
       background: none;
       border: none;
