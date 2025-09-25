@@ -57754,29 +57754,113 @@ var AddCustomerModalComponent = _AddCustomerModalComponent;
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AddCustomerModalComponent, { className: "AddCustomerModalComponent", filePath: "src/app/shared/components/add-customer-modal/add-customer-modal.component.ts", lineNumber: 148 });
 })();
 
+// src/app/core/services/api.service.ts
+var _ApiService = class _ApiService {
+  http;
+  baseUrl = "https://api.gemura.rw/v2";
+  token = null;
+  constructor(http) {
+    this.http = http;
+    this.loadToken();
+  }
+  loadToken() {
+    this.token = localStorage.getItem("auth_token");
+  }
+  getHeaders() {
+    const headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    });
+    if (this.token) {
+      return headers.set("Authorization", `Bearer ${this.token}`);
+    }
+    return headers;
+  }
+  // Generic HTTP methods
+  get(endpoint) {
+    return this.http.get(`${this.baseUrl}${endpoint}`, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+  }
+  post(endpoint, data) {
+    return this.http.post(`${this.baseUrl}${endpoint}`, data, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+  }
+  put(endpoint, data) {
+    return this.http.put(`${this.baseUrl}${endpoint}`, data, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+  }
+  delete(endpoint) {
+    return this.http.delete(`${this.baseUrl}${endpoint}`, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+  }
+  handleError(error) {
+    let errorMessage = "An error occurred";
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = error.error.message;
+    } else {
+      if (error.status === 401) {
+        errorMessage = "Authentication failed. Please login again.";
+        localStorage.removeItem("auth_token");
+        window.location.href = "/auth/login";
+      } else if (error.status === 404) {
+        errorMessage = "Service not found.";
+      } else if (error.status === 500) {
+        errorMessage = "Server error. Please try again later.";
+      } else {
+        errorMessage = error.error?.message || `Error Code: ${error.status}`;
+      }
+    }
+    return throwError(() => new Error(errorMessage));
+  }
+  // Set token method
+  setToken(token) {
+    this.token = token;
+    localStorage.setItem("auth_token", token);
+  }
+  // Clear token method
+  clearToken() {
+    this.token = null;
+    localStorage.removeItem("auth_token");
+  }
+};
+__name(_ApiService, "ApiService");
+__publicField(_ApiService, "\u0275fac", /* @__PURE__ */ __name(function ApiService_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _ApiService)(\u0275\u0275inject(HttpClient));
+}, "ApiService_Factory"));
+__publicField(_ApiService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ApiService, factory: _ApiService.\u0275fac, providedIn: "root" }));
+var ApiService = _ApiService;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ApiService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [{ type: HttpClient }], null);
+})();
+
 // src/app/core/services/customer.service.ts
 var _CustomerService = class _CustomerService {
+  apiService;
   customers = [];
   milkSales = [];
-  constructor() {
-    this.loadMockData();
+  constructor(apiService) {
+    this.apiService = apiService;
+    this.loadCustomersFromAPI();
   }
   // Customer methods
   getCustomers() {
     return this.customers;
   }
+  getCustomersFromAPI() {
+    return this.apiService.post("/customers/get", {});
+  }
   getCustomerById(id) {
     return this.customers.find((customer) => customer.id === id);
   }
-  addCustomer(customer) {
-    const newCustomer = __spreadProps(__spreadValues({}, customer), {
-      id: this.generateId(),
-      registrationDate: /* @__PURE__ */ new Date(),
-      totalPurchases: 0,
-      totalAmount: 0
+  addCustomer(customerData) {
+    return this.apiService.post("/customers/create", {
+      name: customerData.name,
+      phone: customerData.phone,
+      email: customerData.email,
+      address: customerData.address,
+      price_per_liter: customerData.pricePerLiter
     });
-    this.customers.push(newCustomer);
-    return newCustomer;
   }
   updateCustomer(id, updates) {
     const index = this.customers.findIndex((customer) => customer.id === id);
@@ -57847,6 +57931,64 @@ var _CustomerService = class _CustomerService {
   }
   generateId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+  loadCustomersFromAPI() {
+    this.getCustomersFromAPI().subscribe({
+      next: /* @__PURE__ */ __name((response) => {
+        if (response.code === 200 || response.status === "success") {
+          this.customers = this.transformApiCustomers(response.data || []);
+        }
+      }, "next"),
+      error: /* @__PURE__ */ __name((error) => {
+        console.error("Failed to load customers from API:", error);
+        this.loadMockData();
+      }, "error")
+    });
+  }
+  transformApiCustomers(apiCustomers) {
+    return apiCustomers.map((apiCustomer) => ({
+      id: apiCustomer.relationship_id || apiCustomer.id,
+      name: apiCustomer.customer?.name || apiCustomer.name,
+      email: apiCustomer.customer?.email || apiCustomer.email,
+      phone: apiCustomer.customer?.phone || apiCustomer.phone,
+      address: apiCustomer.customer?.address || apiCustomer.address,
+      city: apiCustomer.customer?.city || "Kigali",
+      region: apiCustomer.customer?.region || "Kigali",
+      customerType: this.mapCustomerType(apiCustomer.customer?.type || "Individual"),
+      status: this.mapStatus(apiCustomer.relationship_status || "active"),
+      registrationDate: new Date(apiCustomer.created_at || /* @__PURE__ */ new Date()),
+      lastPurchaseDate: apiCustomer.last_purchase_date ? new Date(apiCustomer.last_purchase_date) : void 0,
+      totalPurchases: apiCustomer.total_purchases || 0,
+      totalAmount: apiCustomer.total_amount || 0,
+      preferredDeliveryTime: apiCustomer.preferred_delivery_time || "Morning (8:00-10:00)",
+      notes: apiCustomer.notes,
+      avatar: apiCustomer.avatar || "assets/img/user.png",
+      pricePerLiter: apiCustomer.price_per_liter || 0,
+      relationshipId: apiCustomer.relationship_id,
+      averageSupplyQuantity: apiCustomer.average_supply_quantity || 0,
+      relationshipStatus: apiCustomer.relationship_status,
+      userCode: apiCustomer.customer?.code || apiCustomer.user_code,
+      accountCode: apiCustomer.customer?.account?.code || apiCustomer.account_code,
+      accountName: apiCustomer.customer?.account?.name || apiCustomer.account_name
+    }));
+  }
+  mapCustomerType(type) {
+    const typeMap = {
+      "individual": "Individual",
+      "business": "Business",
+      "restaurant": "Restaurant",
+      "school": "School",
+      "hospital": "Hospital"
+    };
+    return typeMap[type.toLowerCase()] || "Individual";
+  }
+  mapStatus(status) {
+    const statusMap = {
+      "active": "Active",
+      "inactive": "Inactive",
+      "suspended": "Suspended"
+    };
+    return statusMap[status.toLowerCase()] || "Inactive";
   }
   loadMockData() {
     this.customers = [
@@ -57989,7 +58131,7 @@ var _CustomerService = class _CustomerService {
 };
 __name(_CustomerService, "CustomerService");
 __publicField(_CustomerService, "\u0275fac", /* @__PURE__ */ __name(function CustomerService_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _CustomerService)();
+  return new (__ngFactoryType__ || _CustomerService)(\u0275\u0275inject(ApiService));
 }, "CustomerService_Factory"));
 __publicField(_CustomerService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _CustomerService, factory: _CustomerService.\u0275fac, providedIn: "root" }));
 var CustomerService = _CustomerService;
@@ -57999,32 +58141,31 @@ var CustomerService = _CustomerService;
     args: [{
       providedIn: "root"
     }]
-  }], () => [], null);
+  }], () => [{ type: ApiService }], null);
 })();
 
 // src/app/features/customers/customers-list/customers-list.component.ts
-function CustomersListComponent_app_add_customer_modal_63_Template(rf, ctx) {
+function CustomersListComponent_app_add_customer_modal_53_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "app-add-customer-modal", 30);
-    \u0275\u0275listener("customerAdded", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_63_Template_app_add_customer_modal_customerAdded_0_listener($event) {
+    \u0275\u0275elementStart(0, "app-add-customer-modal", 24);
+    \u0275\u0275listener("customerAdded", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_customerAdded_0_listener($event) {
       \u0275\u0275restoreView(_r1);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.onCustomerAdded($event));
-    }, "CustomersListComponent_app_add_customer_modal_63_Template_app_add_customer_modal_customerAdded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_63_Template_app_add_customer_modal_modalClosed_0_listener() {
+    }, "CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_customerAdded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_modalClosed_0_listener() {
       \u0275\u0275restoreView(_r1);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.closeAddCustomerModal());
-    }, "CustomersListComponent_app_add_customer_modal_63_Template_app_add_customer_modal_modalClosed_0_listener"));
+    }, "CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_modalClosed_0_listener"));
     \u0275\u0275elementEnd();
   }
 }
-__name(CustomersListComponent_app_add_customer_modal_63_Template, "CustomersListComponent_app_add_customer_modal_63_Template");
+__name(CustomersListComponent_app_add_customer_modal_53_Template, "CustomersListComponent_app_add_customer_modal_53_Template");
 var _CustomersListComponent = class _CustomersListComponent {
   customerService;
   customers = [];
   filteredCustomers = [];
-  statusFilter = "";
   stats = {};
   showAddCustomerModal = false;
   columns = [];
@@ -58038,16 +58179,15 @@ var _CustomersListComponent = class _CustomersListComponent {
   }
   initializeColumns() {
     this.columns = [
-      { key: "name", title: "Customer", type: "custom", sortable: true, template: this.customerTemplate },
-      { key: "customerType", title: "Type", type: "custom", sortable: true, template: this.typeTemplate },
+      { key: "name", title: "Customer", type: "text", sortable: true },
+      { key: "customerType", title: "Type", type: "text", sortable: true },
       { key: "phone", title: "Phone", type: "text", sortable: true },
       { key: "email", title: "Email", type: "text", sortable: true },
       { key: "city", title: "Location", type: "text", sortable: true },
-      { key: "status", title: "Status", type: "custom", sortable: true, template: this.statusTemplate },
+      { key: "status", title: "Status", type: "text", sortable: true },
       { key: "totalPurchases", title: "Orders", type: "number", sortable: true },
-      { key: "totalAmount", title: "Total Spent", type: "custom", sortable: true, template: this.amountTemplate },
-      { key: "lastPurchaseDate", title: "Last Purchase", type: "date", sortable: true },
-      { key: "actions", title: "Actions", type: "custom", template: this.actionsTemplate }
+      { key: "totalAmount", title: "Total Spent", type: "number", sortable: true },
+      { key: "lastPurchaseDate", title: "Last Purchase", type: "date", sortable: true }
     ];
   }
   loadCustomers() {
@@ -58058,10 +58198,7 @@ var _CustomersListComponent = class _CustomersListComponent {
     this.stats = this.customerService.getCustomerStats();
   }
   filterCustomers() {
-    this.filteredCustomers = this.customers.filter((customer) => {
-      const matchesStatus = !this.statusFilter || customer.status === this.statusFilter;
-      return matchesStatus;
-    });
+    this.filteredCustomers = [...this.customers];
   }
   handleSort(event) {
     console.log("Sort:", event);
@@ -58098,38 +58235,6 @@ var _CustomersListComponent = class _CustomersListComponent {
       day: "numeric"
     }).format(new Date(date));
   }
-  // Template functions
-  customerTemplate = /* @__PURE__ */ __name((customer) => `
-    <div class="customer-info">
-      <img src="${customer.avatar || "assets/img/user.png"}" alt="${customer.name}" class="customer-avatar">
-      <div class="customer-details">
-        <div class="customer-name">${customer.name}</div>
-        <div class="customer-id">ID: ${customer.id}</div>
-      </div>
-    </div>
-  `, "customerTemplate");
-  typeTemplate = /* @__PURE__ */ __name((customer) => `
-    <span class="customer-type ${customer.customerType.toLowerCase()}">${customer.customerType}</span>
-  `, "typeTemplate");
-  statusTemplate = /* @__PURE__ */ __name((customer) => `
-    <span class="status-badge ${customer.status.toLowerCase()}">${customer.status}</span>
-  `, "statusTemplate");
-  amountTemplate = /* @__PURE__ */ __name((customer) => `
-    <div class="amount">${this.formatCurrency(customer.totalAmount)}</div>
-  `, "amountTemplate");
-  actionsTemplate = /* @__PURE__ */ __name((customer) => `
-    <div class="action-buttons">
-      <button class="btn-icon" title="View" (click)="viewCustomer(customer)">
-        <app-feather-icon name="eye" size="16px"></app-feather-icon>
-      </button>
-      <button class="btn-icon" title="Edit" (click)="editCustomer(customer)">
-        <app-feather-icon name="edit" size="16px"></app-feather-icon>
-      </button>
-      <button class="btn-icon danger" title="Delete" (click)="deleteCustomer(customer)">
-        <app-feather-icon name="trash-2" size="16px"></app-feather-icon>
-      </button>
-    </div>
-  `, "actionsTemplate");
   // Modal methods
   openAddCustomerModal() {
     this.showAddCustomerModal = true;
@@ -58138,125 +58243,99 @@ var _CustomersListComponent = class _CustomersListComponent {
     this.showAddCustomerModal = false;
   }
   onCustomerAdded(customerData) {
-    const newCustomer = {
-      id: Date.now().toString(),
+    this.customerService.addCustomer({
       name: customerData.name,
-      email: customerData.email,
       phone: customerData.phone,
+      email: customerData.email,
       address: customerData.address,
-      city: "",
-      region: "",
-      customerType: "Individual",
-      status: "Active",
-      registrationDate: /* @__PURE__ */ new Date(),
-      lastPurchaseDate: /* @__PURE__ */ new Date(),
-      totalPurchases: 0,
-      totalAmount: 0,
-      preferredDeliveryTime: "",
-      notes: "",
-      avatar: void 0
-    };
-    this.customers.unshift(newCustomer);
-    this.filterCustomers();
-    this.loadStats();
-    console.log("Customer added successfully:", newCustomer);
+      pricePerLiter: customerData.pricePerLiter
+    }).subscribe({
+      next: /* @__PURE__ */ __name((response) => {
+        console.log("Customer created successfully:", response);
+        this.loadCustomers();
+        this.loadStats();
+      }, "next"),
+      error: /* @__PURE__ */ __name((error) => {
+        console.error("Failed to create customer:", error);
+      }, "error")
+    });
   }
 };
 __name(_CustomersListComponent, "CustomersListComponent");
 __publicField(_CustomersListComponent, "\u0275fac", /* @__PURE__ */ __name(function CustomersListComponent_Factory(__ngFactoryType__) {
   return new (__ngFactoryType__ || _CustomersListComponent)(\u0275\u0275directiveInject(CustomerService));
 }, "CustomersListComponent_Factory"));
-__publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CustomersListComponent, selectors: [["app-customers-list"]], decls: 64, vars: 11, consts: [[1, "customers-container"], [1, "page-header"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "users", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "user-check", "size", "24px"], ["name", "shopping-cart", "size", "24px"], ["name", "dollar-sign", "size", "24px"], [1, "filter-bar"], [1, "filter-dropdown"], [1, "filter-select", 3, "ngModelChange", "change", "ngModel"], ["value", ""], ["value", "Active"], ["value", "Inactive"], ["value", "Suspended"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "customer-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover"], [3, "customerAdded", "modalClosed", 4, "ngIf"], [3, "customerAdded", "modalClosed"]], template: /* @__PURE__ */ __name(function CustomersListComponent_Template(rf, ctx) {
+__publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CustomersListComponent, selectors: [["app-customers-list"]], decls: 54, vars: 10, consts: [[1, "customers-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "users", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "user-check", "size", "24px"], ["name", "shopping-cart", "size", "24px"], ["name", "dollar-sign", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "customer-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover"], [3, "customerAdded", "modalClosed", 4, "ngIf"], [3, "customerAdded", "modalClosed"]], template: /* @__PURE__ */ __name(function CustomersListComponent_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "h1");
-    \u0275\u0275text(3, "Customers");
+    \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "h1");
+    \u0275\u0275text(4, "Customers");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(4, "p", 2);
-    \u0275\u0275text(5, "Manage your customer database and track sales");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(6, "div", 3)(7, "button", 4);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CustomersListComponent_Template_button_click_7_listener() {
+    \u0275\u0275elementStart(5, "p", 3);
+    \u0275\u0275text(6, "Manage your customer database and track sales");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(7, "div", 4)(8, "button", 5);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CustomersListComponent_Template_button_click_8_listener() {
       return ctx.openAddCustomerModal();
-    }, "CustomersListComponent_Template_button_click_7_listener"));
-    \u0275\u0275element(8, "app-feather-icon", 5);
-    \u0275\u0275text(9, " Add Customer ");
+    }, "CustomersListComponent_Template_button_click_8_listener"));
+    \u0275\u0275element(9, "app-feather-icon", 6);
+    \u0275\u0275text(10, " Add Customer ");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(10, "div", 6)(11, "div", 7)(12, "div", 8);
-    \u0275\u0275element(13, "app-feather-icon", 9);
+    \u0275\u0275elementStart(11, "div", 7)(12, "div", 8)(13, "div", 9);
+    \u0275\u0275element(14, "app-feather-icon", 10);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(14, "div", 10)(15, "div", 11);
-    \u0275\u0275text(16);
+    \u0275\u0275elementStart(15, "div", 11)(16, "div", 12);
+    \u0275\u0275text(17);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(17, "div", 12);
-    \u0275\u0275text(18, "Total Customers");
+    \u0275\u0275elementStart(18, "div", 13);
+    \u0275\u0275text(19, "Total Customers");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(19, "div", 7)(20, "div", 8);
-    \u0275\u0275element(21, "app-feather-icon", 13);
+    \u0275\u0275elementStart(20, "div", 8)(21, "div", 9);
+    \u0275\u0275element(22, "app-feather-icon", 14);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(22, "div", 10)(23, "div", 11);
-    \u0275\u0275text(24);
+    \u0275\u0275elementStart(23, "div", 11)(24, "div", 12);
+    \u0275\u0275text(25);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(25, "div", 12);
-    \u0275\u0275text(26, "Active Customers");
+    \u0275\u0275elementStart(26, "div", 13);
+    \u0275\u0275text(27, "Active Customers");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(27, "div", 7)(28, "div", 8);
-    \u0275\u0275element(29, "app-feather-icon", 14);
+    \u0275\u0275elementStart(28, "div", 8)(29, "div", 9);
+    \u0275\u0275element(30, "app-feather-icon", 15);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(30, "div", 10)(31, "div", 11);
-    \u0275\u0275text(32);
+    \u0275\u0275elementStart(31, "div", 11)(32, "div", 12);
+    \u0275\u0275text(33);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(33, "div", 12);
-    \u0275\u0275text(34, "Total Sales");
+    \u0275\u0275elementStart(34, "div", 13);
+    \u0275\u0275text(35, "Total Sales");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(35, "div", 7)(36, "div", 8);
-    \u0275\u0275element(37, "app-feather-icon", 15);
+    \u0275\u0275elementStart(36, "div", 8)(37, "div", 9);
+    \u0275\u0275element(38, "app-feather-icon", 16);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(38, "div", 10)(39, "div", 11);
-    \u0275\u0275text(40);
+    \u0275\u0275elementStart(39, "div", 11)(40, "div", 12);
+    \u0275\u0275text(41);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(41, "div", 12);
-    \u0275\u0275text(42, "Total Revenue");
+    \u0275\u0275elementStart(42, "div", 13);
+    \u0275\u0275text(43, "Total Revenue");
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(43, "div", 16)(44, "div", 17)(45, "select", 18);
-    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_select_ngModelChange_45_listener($event) {
-      \u0275\u0275twoWayBindingSet(ctx.statusFilter, $event) || (ctx.statusFilter = $event);
-      return $event;
-    }, "CustomersListComponent_Template_select_ngModelChange_45_listener"));
-    \u0275\u0275listener("change", /* @__PURE__ */ __name(function CustomersListComponent_Template_select_change_45_listener() {
-      return ctx.filterCustomers();
-    }, "CustomersListComponent_Template_select_change_45_listener"));
-    \u0275\u0275elementStart(46, "option", 19);
-    \u0275\u0275text(47, "All Status");
+    \u0275\u0275elementStart(44, "div", 17)(45, "div", 18)(46, "div", 19)(47, "h3");
+    \u0275\u0275text(48, "All Customers");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(48, "option", 20);
-    \u0275\u0275text(49, "Active");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(50, "option", 21);
-    \u0275\u0275text(51, "Inactive");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(52, "option", 22);
-    \u0275\u0275text(53, "Suspended");
-    \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(54, "div", 23)(55, "div", 24)(56, "div", 25)(57, "h3");
-    \u0275\u0275text(58, "All Customers");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(59, "span", 26);
-    \u0275\u0275text(60);
+    \u0275\u0275elementStart(49, "span", 20);
+    \u0275\u0275text(50);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(61, "div", 27)(62, "app-data-table", 28);
-    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onSort_62_listener($event) {
+    \u0275\u0275elementStart(51, "div", 21)(52, "app-data-table", 22);
+    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onSort_52_listener($event) {
       return ctx.handleSort($event);
-    }, "CustomersListComponent_Template_app_data_table_onSort_62_listener"))("onPageChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageChange_62_listener($event) {
+    }, "CustomersListComponent_Template_app_data_table_onSort_52_listener"))("onPageChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageChange_52_listener($event) {
       return ctx.handlePageChange($event);
-    }, "CustomersListComponent_Template_app_data_table_onPageChange_62_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageSizeChange_62_listener($event) {
+    }, "CustomersListComponent_Template_app_data_table_onPageChange_52_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageSizeChange_52_listener($event) {
       return ctx.handlePageSizeChange($event);
-    }, "CustomersListComponent_Template_app_data_table_onPageSizeChange_62_listener"));
+    }, "CustomersListComponent_Template_app_data_table_onPageSizeChange_52_listener"));
     \u0275\u0275elementEnd()()();
-    \u0275\u0275template(63, CustomersListComponent_app_add_customer_modal_63_Template, 1, 0, "app-add-customer-modal", 29);
+    \u0275\u0275template(53, CustomersListComponent_app_add_customer_modal_53_Template, 1, 0, "app-add-customer-modal", 23);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    \u0275\u0275advance(16);
+    \u0275\u0275advance(17);
     \u0275\u0275textInterpolate(ctx.stats.totalCustomers);
     \u0275\u0275advance(8);
     \u0275\u0275textInterpolate(ctx.stats.activeCustomers);
@@ -58264,16 +58343,14 @@ __publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275
     \u0275\u0275textInterpolate(ctx.stats.totalSales);
     \u0275\u0275advance(8);
     \u0275\u0275textInterpolate(ctx.formatCurrency(ctx.stats.totalRevenue));
-    \u0275\u0275advance(5);
-    \u0275\u0275twoWayProperty("ngModel", ctx.statusFilter);
-    \u0275\u0275advance(15);
+    \u0275\u0275advance(9);
     \u0275\u0275textInterpolate1("", ctx.customers.length, " customers");
     \u0275\u0275advance(2);
     \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredCustomers)("striped", true)("hover", true);
     \u0275\u0275advance();
     \u0275\u0275property("ngIf", ctx.showAddCustomerModal);
   }
-}, "CustomersListComponent_Template"), dependencies: [CommonModule, NgIf, RouterModule, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, SelectControlValueAccessor, NgControlStatus, NgModel, FeatherIconComponent, DataTableComponent, AddCustomerModalComponent], styles: ["\n\n.customers-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .customers-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.page-header[_ngcontent-%COMP%] {\n  margin-bottom: 24px;\n}\n.page-header[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 18px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 16px 0;\n}\n.page-header[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 14px;\n  margin: 0 0 16px 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.filter-bar[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 16px;\n  margin-bottom: 24px;\n  align-items: center;\n}\n.filter-bar[_ngcontent-%COMP%]   .filter-dropdown[_ngcontent-%COMP%]   .filter-select[_ngcontent-%COMP%] {\n  padding: 12px 16px;\n  border: 1px solid #d1d5db;\n  border-radius: 8px;\n  font-size: 14px;\n  background: white;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  min-width: 150px;\n}\n.filter-bar[_ngcontent-%COMP%]   .filter-dropdown[_ngcontent-%COMP%]   .filter-select[_ngcontent-%COMP%]:focus {\n  outline: none;\n  border-color: #004AAD;\n}\n.stat-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-label[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   .customer-count[_ngcontent-%COMP%] {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 0;\n}\n.customer-info[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.customer-info[_ngcontent-%COMP%]   .customer-avatar[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.customer-info[_ngcontent-%COMP%]   .customer-details[_ngcontent-%COMP%]   .customer-name[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.customer-info[_ngcontent-%COMP%]   .customer-details[_ngcontent-%COMP%]   .customer-id[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.customer-type[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.customer-type.individual[_ngcontent-%COMP%] {\n  background: #dbeafe;\n  color: #1e40af;\n}\n.customer-type.business[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.customer-type.restaurant[_ngcontent-%COMP%] {\n  background: #fef3c7;\n  color: #92400e;\n}\n.customer-type.school[_ngcontent-%COMP%] {\n  background: #e0e7ff;\n  color: #3730a3;\n}\n.customer-type.hospital[_ngcontent-%COMP%] {\n  background: #fce7f3;\n  color: #be185d;\n}\n.status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.active[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.inactive[_ngcontent-%COMP%] {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.status-badge.suspended[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.amount[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%]:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon.danger[_ngcontent-%COMP%]:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary[_ngcontent-%COMP%]:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: white;\n}\n.btn-secondary[_ngcontent-%COMP%] {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%], \n   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-secondary[_ngcontent-%COMP%] {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 20px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .customers-container[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=customers-list.component.css.map */"] }));
+}, "CustomersListComponent_Template"), dependencies: [CommonModule, NgIf, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, AddCustomerModalComponent], styles: ["\n\n.customers-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .customers-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-label[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   .customer-count[_ngcontent-%COMP%] {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 0;\n}\n.customer-info[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.customer-info[_ngcontent-%COMP%]   .customer-avatar[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.customer-info[_ngcontent-%COMP%]   .customer-details[_ngcontent-%COMP%]   .customer-name[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.customer-info[_ngcontent-%COMP%]   .customer-details[_ngcontent-%COMP%]   .customer-id[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.customer-type[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.customer-type.individual[_ngcontent-%COMP%] {\n  background: #dbeafe;\n  color: #1e40af;\n}\n.customer-type.business[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.customer-type.restaurant[_ngcontent-%COMP%] {\n  background: #fef3c7;\n  color: #92400e;\n}\n.customer-type.school[_ngcontent-%COMP%] {\n  background: #e0e7ff;\n  color: #3730a3;\n}\n.customer-type.hospital[_ngcontent-%COMP%] {\n  background: #fce7f3;\n  color: #be185d;\n}\n.status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.active[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.inactive[_ngcontent-%COMP%] {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.status-badge.suspended[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.amount[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%]:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon.danger[_ngcontent-%COMP%]:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary[_ngcontent-%COMP%]:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: white;\n}\n.btn-secondary[_ngcontent-%COMP%] {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%], \n   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-secondary[_ngcontent-%COMP%] {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 20px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .customers-container[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=customers-list.component.css.map */"] }));
 var CustomersListComponent = _CustomersListComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CustomersListComponent, [{
@@ -58282,8 +58359,10 @@ var CustomersListComponent = _CustomersListComponent;
     <div class="customers-container">
       <!-- Header -->
       <div class="page-header">
-        <h1>Customers</h1>
-        <p class="page-description">Manage your customer database and track sales</p>
+        <div class="header-content">
+          <h1>Customers</h1>
+          <p class="page-description">Manage your customer database and track sales</p>
+        </div>
         <div class="header-actions">
           <button class="btn-primary" (click)="openAddCustomerModal()">
             <app-feather-icon name="plus" size="16px"></app-feather-icon>
@@ -58332,17 +58411,6 @@ var CustomersListComponent = _CustomersListComponent;
         </div>
       </div>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <div class="filter-dropdown">
-          <select [(ngModel)]="statusFilter" (change)="filterCustomers()" class="filter-select">
-            <option value="">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-            <option value="Suspended">Suspended</option>
-          </select>
-        </div>
-      </div>
 
       <!-- Customers Table -->
       <div class="card">
@@ -58372,11 +58440,11 @@ var CustomersListComponent = _CustomersListComponent;
         (modalClosed)="closeAddCustomerModal()">
       </app-add-customer-modal>
     </div>
-  `, styles: ["/* src/app/features/customers/customers-list/customers-list.component.scss */\n.customers-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .customers-container {\n    padding: 8px;\n  }\n}\n.page-header {\n  margin-bottom: 24px;\n}\n.page-header h1 {\n  font-size: 18px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 16px 0;\n}\n.page-header .page-description {\n  color: #64748b;\n  font-size: 14px;\n  margin: 0 0 16px 0;\n}\n.page-header .header-actions {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.filter-bar {\n  display: flex;\n  gap: 16px;\n  margin-bottom: 24px;\n  align-items: center;\n}\n.filter-bar .filter-dropdown .filter-select {\n  padding: 12px 16px;\n  border: 1px solid #d1d5db;\n  border-radius: 8px;\n  font-size: 14px;\n  background: white;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  min-width: 150px;\n}\n.filter-bar .filter-dropdown .filter-select:focus {\n  outline: none;\n  border-color: #004AAD;\n}\n.stat-card {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card .stat-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card .stat-content {\n  flex: 1;\n}\n.stat-card .stat-content .stat-value {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card .stat-content .stat-label {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card .card-header {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card .card-header .card-title-section {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card .card-header .card-title-section h3 {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card .card-header .card-title-section .customer-count {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card .card-body {\n  padding: 0;\n}\n.customer-info {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.customer-info .customer-avatar {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.customer-info .customer-details .customer-name {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.customer-info .customer-details .customer-id {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.customer-type {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.customer-type.individual {\n  background: #dbeafe;\n  color: #1e40af;\n}\n.customer-type.business {\n  background: #dcfce7;\n  color: #166534;\n}\n.customer-type.restaurant {\n  background: #fef3c7;\n  color: #92400e;\n}\n.customer-type.school {\n  background: #e0e7ff;\n  color: #3730a3;\n}\n.customer-type.hospital {\n  background: #fce7f3;\n  color: #be185d;\n}\n.status-badge {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.active {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.inactive {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.status-badge.suspended {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.amount {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons .btn-icon {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons .btn-icon:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons .btn-icon.danger:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary app-feather-icon {\n  color: white;\n}\n.btn-secondary {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary app-feather-icon {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions .btn-primary,\n  .page-header .header-actions .btn-secondary {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid .stat-card {\n    padding: 20px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid .stat-card .stat-content .stat-value {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .customers-container {\n    padding: 12px;\n  }\n  .page-header .header-content h1 {\n    font-size: 24px;\n  }\n  .stats-grid .stat-card {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=customers-list.component.css.map */\n"] }]
+  `, styles: ["/* src/app/features/customers/customers-list/customers-list.component.scss */\n.customers-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .customers-container {\n    padding: 8px;\n  }\n}\n.page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header .header-content h1 {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header .header-content .page-description {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header .header-actions {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card .stat-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card .stat-content {\n  flex: 1;\n}\n.stat-card .stat-content .stat-value {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card .stat-content .stat-label {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card .card-header {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card .card-header .card-title-section {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card .card-header .card-title-section h3 {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card .card-header .card-title-section .customer-count {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card .card-body {\n  padding: 0;\n}\n.customer-info {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.customer-info .customer-avatar {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.customer-info .customer-details .customer-name {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.customer-info .customer-details .customer-id {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.customer-type {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.customer-type.individual {\n  background: #dbeafe;\n  color: #1e40af;\n}\n.customer-type.business {\n  background: #dcfce7;\n  color: #166534;\n}\n.customer-type.restaurant {\n  background: #fef3c7;\n  color: #92400e;\n}\n.customer-type.school {\n  background: #e0e7ff;\n  color: #3730a3;\n}\n.customer-type.hospital {\n  background: #fce7f3;\n  color: #be185d;\n}\n.status-badge {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.active {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.inactive {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.status-badge.suspended {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.amount {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons .btn-icon {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons .btn-icon:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons .btn-icon.danger:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary app-feather-icon {\n  color: white;\n}\n.btn-secondary {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary app-feather-icon {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions .btn-primary,\n  .page-header .header-actions .btn-secondary {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid .stat-card {\n    padding: 20px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid .stat-card .stat-content .stat-value {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .customers-container {\n    padding: 12px;\n  }\n  .page-header .header-content h1 {\n    font-size: 24px;\n  }\n  .stats-grid .stat-card {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=customers-list.component.css.map */\n"] }]
   }], () => [{ type: CustomerService }], null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CustomersListComponent, { className: "CustomersListComponent", filePath: "src/app/features/customers/customers-list/customers-list.component.ts", lineNumber: 111 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CustomersListComponent, { className: "CustomersListComponent", filePath: "src/app/features/customers/customers-list/customers-list.component.ts", lineNumber: 102 });
 })();
 
 // src/app/features/customers/add-customer/add-customer.component.ts
@@ -58418,28 +58486,25 @@ var _AddCustomerComponent = class _AddCustomerComponent {
     if (this.isSubmitting)
       return;
     this.isSubmitting = true;
-    try {
-      const newCustomer = this.customerService.addCustomer({
-        name: this.customer.name,
-        email: this.customer.email,
-        phone: this.customer.phone,
-        address: this.customer.address,
-        city: this.customer.city,
-        region: this.customer.region,
-        customerType: this.customer.customerType,
-        status: this.customer.status,
-        preferredDeliveryTime: this.customer.preferredDeliveryTime || "",
-        notes: this.customer.notes || ""
-      });
-      console.log("Customer created:", newCustomer);
-      alert("Customer created successfully!");
-      this.router.navigate(["/customers/list"]);
-    } catch (error) {
-      console.error("Error creating customer:", error);
-      alert("Error creating customer. Please try again.");
-    } finally {
-      this.isSubmitting = false;
-    }
+    this.customerService.addCustomer({
+      name: this.customer.name,
+      phone: this.customer.phone,
+      email: this.customer.email,
+      address: this.customer.address,
+      pricePerLiter: this.customer.pricePerLiter || 0
+    }).subscribe({
+      next: /* @__PURE__ */ __name((response) => {
+        console.log("Customer created:", response);
+        alert("Customer created successfully!");
+        this.router.navigate(["/customers/list"]);
+        this.isSubmitting = false;
+      }, "next"),
+      error: /* @__PURE__ */ __name((error) => {
+        console.error("Error creating customer:", error);
+        alert("Error creating customer. Please try again.");
+        this.isSubmitting = false;
+      }, "error")
+    });
   }
   goBack() {
     this.router.navigate(["/customers/list"]);

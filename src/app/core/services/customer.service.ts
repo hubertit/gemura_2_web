@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { ApiService } from './api.service';
 
 export interface Customer {
   id: string;
@@ -17,6 +19,13 @@ export interface Customer {
   preferredDeliveryTime: string;
   notes?: string;
   avatar?: string;
+  pricePerLiter?: number;
+  relationshipId?: string;
+  averageSupplyQuantity?: number;
+  relationshipStatus?: string;
+  userCode?: string;
+  accountCode?: string;
+  accountName?: string;
 }
 
 export interface MilkSale {
@@ -41,8 +50,9 @@ export class CustomerService {
   private customers: Customer[] = [];
   private milkSales: MilkSale[] = [];
 
-  constructor() {
-    this.loadMockData();
+  constructor(private apiService: ApiService) {
+    // Load initial data from API
+    this.loadCustomersFromAPI();
   }
 
   // Customer methods
@@ -50,20 +60,28 @@ export class CustomerService {
     return this.customers;
   }
 
+  getCustomersFromAPI(): Observable<any> {
+    return this.apiService.post<any>('/customers/get', {});
+  }
+
   getCustomerById(id: string): Customer | undefined {
     return this.customers.find(customer => customer.id === id);
   }
 
-  addCustomer(customer: Omit<Customer, 'id' | 'registrationDate' | 'totalPurchases' | 'totalAmount'>): Customer {
-    const newCustomer: Customer = {
-      ...customer,
-      id: this.generateId(),
-      registrationDate: new Date(),
-      totalPurchases: 0,
-      totalAmount: 0
-    };
-    this.customers.push(newCustomer);
-    return newCustomer;
+  addCustomer(customerData: {
+    name: string;
+    phone: string;
+    email?: string;
+    address?: string;
+    pricePerLiter: number;
+  }): Observable<any> {
+    return this.apiService.post('/customers/create', {
+      name: customerData.name,
+      phone: customerData.phone,
+      email: customerData.email,
+      address: customerData.address,
+      price_per_liter: customerData.pricePerLiter
+    });
   }
 
   updateCustomer(id: string, updates: Partial<Customer>): Customer | null {
@@ -148,6 +166,69 @@ export class CustomerService {
 
   private generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+
+  private loadCustomersFromAPI() {
+    this.getCustomersFromAPI().subscribe({
+      next: (response: any) => {
+        if (response.code === 200 || response.status === 'success') {
+          this.customers = this.transformApiCustomers(response.data || []);
+        }
+      },
+      error: (error) => {
+        console.error('Failed to load customers from API:', error);
+        // Fallback to mock data if API fails
+        this.loadMockData();
+      }
+    });
+  }
+
+  private transformApiCustomers(apiCustomers: any[]): Customer[] {
+    return apiCustomers.map(apiCustomer => ({
+      id: apiCustomer.relationship_id || apiCustomer.id,
+      name: apiCustomer.customer?.name || apiCustomer.name,
+      email: apiCustomer.customer?.email || apiCustomer.email,
+      phone: apiCustomer.customer?.phone || apiCustomer.phone,
+      address: apiCustomer.customer?.address || apiCustomer.address,
+      city: apiCustomer.customer?.city || 'Kigali',
+      region: apiCustomer.customer?.region || 'Kigali',
+      customerType: this.mapCustomerType(apiCustomer.customer?.type || 'Individual'),
+      status: this.mapStatus(apiCustomer.relationship_status || 'active'),
+      registrationDate: new Date(apiCustomer.created_at || new Date()),
+      lastPurchaseDate: apiCustomer.last_purchase_date ? new Date(apiCustomer.last_purchase_date) : undefined,
+      totalPurchases: apiCustomer.total_purchases || 0,
+      totalAmount: apiCustomer.total_amount || 0,
+      preferredDeliveryTime: apiCustomer.preferred_delivery_time || 'Morning (8:00-10:00)',
+      notes: apiCustomer.notes,
+      avatar: apiCustomer.avatar || 'assets/img/user.png',
+      pricePerLiter: apiCustomer.price_per_liter || 0,
+      relationshipId: apiCustomer.relationship_id,
+      averageSupplyQuantity: apiCustomer.average_supply_quantity || 0,
+      relationshipStatus: apiCustomer.relationship_status,
+      userCode: apiCustomer.customer?.code || apiCustomer.user_code,
+      accountCode: apiCustomer.customer?.account?.code || apiCustomer.account_code,
+      accountName: apiCustomer.customer?.account?.name || apiCustomer.account_name
+    }));
+  }
+
+  private mapCustomerType(type: string): 'Individual' | 'Business' | 'Restaurant' | 'School' | 'Hospital' {
+    const typeMap: { [key: string]: 'Individual' | 'Business' | 'Restaurant' | 'School' | 'Hospital' } = {
+      'individual': 'Individual',
+      'business': 'Business',
+      'restaurant': 'Restaurant',
+      'school': 'School',
+      'hospital': 'Hospital'
+    };
+    return typeMap[type.toLowerCase()] || 'Individual';
+  }
+
+  private mapStatus(status: string): 'Active' | 'Inactive' | 'Suspended' {
+    const statusMap: { [key: string]: 'Active' | 'Inactive' | 'Suspended' } = {
+      'active': 'Active',
+      'inactive': 'Inactive',
+      'suspended': 'Suspended'
+    };
+    return statusMap[status.toLowerCase()] || 'Inactive';
   }
 
   private loadMockData() {

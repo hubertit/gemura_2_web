@@ -15,8 +15,10 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
     <div class="customers-container">
       <!-- Header -->
       <div class="page-header">
-        <h1>Customers</h1>
-        <p class="page-description">Manage your customer database and track sales</p>
+        <div class="header-content">
+          <h1>Customers</h1>
+          <p class="page-description">Manage your customer database and track sales</p>
+        </div>
         <div class="header-actions">
           <button class="btn-primary" (click)="openAddCustomerModal()">
             <app-feather-icon name="plus" size="16px"></app-feather-icon>
@@ -65,17 +67,6 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
         </div>
       </div>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <div class="filter-dropdown">
-          <select [(ngModel)]="statusFilter" (change)="filterCustomers()" class="filter-select">
-            <option value="">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-            <option value="Suspended">Suspended</option>
-          </select>
-        </div>
-      </div>
 
       <!-- Customers Table -->
       <div class="card">
@@ -111,7 +102,6 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
 export class CustomersListComponent implements OnInit {
   customers: Customer[] = [];
   filteredCustomers: Customer[] = [];
-  statusFilter = '';
   stats: any = {};
   showAddCustomerModal = false;
 
@@ -127,16 +117,15 @@ export class CustomersListComponent implements OnInit {
 
   initializeColumns() {
     this.columns = [
-      { key: 'name', title: 'Customer', type: 'custom', sortable: true, template: this.customerTemplate },
-      { key: 'customerType', title: 'Type', type: 'custom', sortable: true, template: this.typeTemplate },
+      { key: 'name', title: 'Customer', type: 'text', sortable: true },
+      { key: 'customerType', title: 'Type', type: 'text', sortable: true },
       { key: 'phone', title: 'Phone', type: 'text', sortable: true },
       { key: 'email', title: 'Email', type: 'text', sortable: true },
       { key: 'city', title: 'Location', type: 'text', sortable: true },
-      { key: 'status', title: 'Status', type: 'custom', sortable: true, template: this.statusTemplate },
+      { key: 'status', title: 'Status', type: 'text', sortable: true },
       { key: 'totalPurchases', title: 'Orders', type: 'number', sortable: true },
-      { key: 'totalAmount', title: 'Total Spent', type: 'custom', sortable: true, template: this.amountTemplate },
-      { key: 'lastPurchaseDate', title: 'Last Purchase', type: 'date', sortable: true },
-      { key: 'actions', title: 'Actions', type: 'custom', template: this.actionsTemplate }
+      { key: 'totalAmount', title: 'Total Spent', type: 'number', sortable: true },
+      { key: 'lastPurchaseDate', title: 'Last Purchase', type: 'date', sortable: true }
     ];
   }
 
@@ -150,10 +139,7 @@ export class CustomersListComponent implements OnInit {
   }
 
   filterCustomers() {
-    this.filteredCustomers = this.customers.filter(customer => {
-      const matchesStatus = !this.statusFilter || customer.status === this.statusFilter;
-      return matchesStatus;
-    });
+    this.filteredCustomers = [...this.customers];
   }
 
   handleSort(event: { column: string; direction: 'asc' | 'desc' }) {
@@ -206,42 +192,6 @@ export class CustomersListComponent implements OnInit {
     }).format(new Date(date));
   }
 
-  // Template functions
-  customerTemplate = (customer: Customer) => `
-    <div class="customer-info">
-      <img src="${customer.avatar || 'assets/img/user.png'}" alt="${customer.name}" class="customer-avatar">
-      <div class="customer-details">
-        <div class="customer-name">${customer.name}</div>
-        <div class="customer-id">ID: ${customer.id}</div>
-      </div>
-    </div>
-  `;
-
-  typeTemplate = (customer: Customer) => `
-    <span class="customer-type ${customer.customerType.toLowerCase()}">${customer.customerType}</span>
-  `;
-
-  statusTemplate = (customer: Customer) => `
-    <span class="status-badge ${customer.status.toLowerCase()}">${customer.status}</span>
-  `;
-
-  amountTemplate = (customer: Customer) => `
-    <div class="amount">${this.formatCurrency(customer.totalAmount)}</div>
-  `;
-
-  actionsTemplate = (customer: Customer) => `
-    <div class="action-buttons">
-      <button class="btn-icon" title="View" (click)="viewCustomer(customer)">
-        <app-feather-icon name="eye" size="16px"></app-feather-icon>
-      </button>
-      <button class="btn-icon" title="Edit" (click)="editCustomer(customer)">
-        <app-feather-icon name="edit" size="16px"></app-feather-icon>
-      </button>
-      <button class="btn-icon danger" title="Delete" (click)="deleteCustomer(customer)">
-        <app-feather-icon name="trash-2" size="16px"></app-feather-icon>
-      </button>
-    </div>
-  `;
 
   // Modal methods
   openAddCustomerModal() {
@@ -253,31 +203,24 @@ export class CustomersListComponent implements OnInit {
   }
 
   onCustomerAdded(customerData: any) {
-    // Add the new customer to the list
-    const newCustomer: Customer = {
-      id: Date.now().toString(),
+    // Call API to create customer
+    this.customerService.addCustomer({
       name: customerData.name,
-      email: customerData.email,
       phone: customerData.phone,
+      email: customerData.email,
       address: customerData.address,
-      city: '',
-      region: '',
-      customerType: 'Individual',
-      status: 'Active',
-      registrationDate: new Date(),
-      lastPurchaseDate: new Date(),
-      totalPurchases: 0,
-      totalAmount: 0,
-      preferredDeliveryTime: '',
-      notes: '',
-      avatar: undefined
-    };
-
-    this.customers.unshift(newCustomer);
-    this.filterCustomers();
-    this.loadStats();
-    
-    // Show success message
-    console.log('Customer added successfully:', newCustomer);
+      pricePerLiter: customerData.pricePerLiter
+    }).subscribe({
+      next: (response) => {
+        console.log('Customer created successfully:', response);
+        // Reload customers from API
+        this.loadCustomers();
+        this.loadStats();
+      },
+      error: (error) => {
+        console.error('Failed to create customer:', error);
+        // You might want to show an error message to the user
+      }
+    });
   }
 }

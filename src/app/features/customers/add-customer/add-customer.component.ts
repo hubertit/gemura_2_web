@@ -227,34 +227,29 @@ export class AddCustomerComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    try {
-      const newCustomer = this.customerService.addCustomer({
-        name: this.customer.name!,
-        email: this.customer.email!,
-        phone: this.customer.phone!,
-        address: this.customer.address!,
-        city: this.customer.city!,
-        region: this.customer.region!,
-        customerType: this.customer.customerType!,
-        status: this.customer.status!,
-        preferredDeliveryTime: this.customer.preferredDeliveryTime || '',
-        notes: this.customer.notes || ''
-      });
-
-      console.log('Customer created:', newCustomer);
-      
-      // Show success message
-      alert('Customer created successfully!');
-      
-      // Navigate back to customers list
-      this.router.navigate(['/customers/list']);
-      
-    } catch (error) {
-      console.error('Error creating customer:', error);
-      alert('Error creating customer. Please try again.');
-    } finally {
-      this.isSubmitting = false;
-    }
+    this.customerService.addCustomer({
+      name: this.customer.name!,
+      phone: this.customer.phone!,
+      email: this.customer.email,
+      address: this.customer.address,
+      pricePerLiter: this.customer.pricePerLiter || 0
+    }).subscribe({
+      next: (response) => {
+        console.log('Customer created:', response);
+        
+        // Show success message
+        alert('Customer created successfully!');
+        
+        // Navigate back to customers list
+        this.router.navigate(['/customers/list']);
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        console.error('Error creating customer:', error);
+        alert('Error creating customer. Please try again.');
+        this.isSubmitting = false;
+      }
+    });
   }
 
   goBack() {

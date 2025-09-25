@@ -11,19 +11,30 @@
 
 // Page Header
 .page-header {
-  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  gap: 20px;
 
-  h1 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0 0 16px 0;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
   }
 
-  .page-description {
-    color: #64748b;
-    font-size: 14px;
-    margin: 0 0 16px 0;
+  .header-content {
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 8px 0;
+    }
+
+    .page-description {
+      color: #64748b;
+      font-size: 16px;
+      margin: 0;
+    }
   }
 
   .header-actions {
@@ -51,31 +62,6 @@
   }
 }
 
-// Filter Bar
-.filter-bar {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  align-items: center;
-
-  .filter-dropdown {
-    .filter-select {
-      padding: 12px 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 14px;
-      background: white;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      min-width: 150px;
-
-      &:focus {
-        outline: none;
-        border-color: #004AAD;
-      }
-    }
-  }
-}
 
 .stat-card {
   background: white;
