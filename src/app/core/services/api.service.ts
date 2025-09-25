@@ -38,7 +38,19 @@ export class ApiService {
   }
 
   post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}${endpoint}`, data, { headers: this.getHeaders() })
+    // Add token to request body for API compatibility
+    const requestData = {
+      ...data,
+      token: this.token
+    };
+    
+    console.log('API Request:', {
+      url: `${this.baseUrl}${endpoint}`,
+      data: requestData,
+      headers: this.getHeaders()
+    });
+    
+    return this.http.post<T>(`${this.baseUrl}${endpoint}`, requestData, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
@@ -81,6 +93,12 @@ export class ApiService {
   setToken(token: string) {
     this.token = token;
     localStorage.setItem('auth_token', token);
+    console.log('Token set:', token);
+  }
+
+  // Get current token
+  getToken(): string | null {
+    return this.token;
   }
 
   // Clear token method

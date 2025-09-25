@@ -57781,7 +57781,15 @@ var _ApiService = class _ApiService {
     return this.http.get(`${this.baseUrl}${endpoint}`, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
   }
   post(endpoint, data) {
-    return this.http.post(`${this.baseUrl}${endpoint}`, data, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+    const requestData = __spreadProps(__spreadValues({}, data), {
+      token: this.token
+    });
+    console.log("API Request:", {
+      url: `${this.baseUrl}${endpoint}`,
+      data: requestData,
+      headers: this.getHeaders()
+    });
+    return this.http.post(`${this.baseUrl}${endpoint}`, requestData, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
   }
   put(endpoint, data) {
     return this.http.put(`${this.baseUrl}${endpoint}`, data, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
@@ -57812,6 +57820,11 @@ var _ApiService = class _ApiService {
   setToken(token) {
     this.token = token;
     localStorage.setItem("auth_token", token);
+    console.log("Token set:", token);
+  }
+  // Get current token
+  getToken() {
+    return this.token;
   }
   // Clear token method
   clearToken() {
@@ -57841,6 +57854,12 @@ var _CustomerService = class _CustomerService {
   milkSales = [];
   constructor(apiService) {
     this.apiService = apiService;
+    this.loadCustomersFromAPI();
+  }
+  // Debug method to set a test token
+  setTestToken(token) {
+    this.apiService.setToken(token);
+    console.log("Test token set, reloading customers...");
     this.loadCustomersFromAPI();
   }
   // Customer methods
@@ -57933,10 +57952,16 @@ var _CustomerService = class _CustomerService {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
   loadCustomersFromAPI() {
+    console.log("Loading customers from API...");
     this.getCustomersFromAPI().subscribe({
       next: /* @__PURE__ */ __name((response) => {
+        console.log("API Response:", response);
         if (response.code === 200 || response.status === "success") {
           this.customers = this.transformApiCustomers(response.data || []);
+          console.log("Transformed customers:", this.customers);
+        } else {
+          console.error("API returned error:", response);
+          this.loadMockData();
         }
       }, "next"),
       error: /* @__PURE__ */ __name((error) => {
@@ -58145,23 +58170,23 @@ var CustomerService = _CustomerService;
 })();
 
 // src/app/features/customers/customers-list/customers-list.component.ts
-function CustomersListComponent_app_add_customer_modal_53_Template(rf, ctx) {
+function CustomersListComponent_app_add_customer_modal_56_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "app-add-customer-modal", 24);
-    \u0275\u0275listener("customerAdded", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_customerAdded_0_listener($event) {
+    \u0275\u0275elementStart(0, "app-add-customer-modal", 26);
+    \u0275\u0275listener("customerAdded", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_56_Template_app_add_customer_modal_customerAdded_0_listener($event) {
       \u0275\u0275restoreView(_r1);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.onCustomerAdded($event));
-    }, "CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_customerAdded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_modalClosed_0_listener() {
+    }, "CustomersListComponent_app_add_customer_modal_56_Template_app_add_customer_modal_customerAdded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_56_Template_app_add_customer_modal_modalClosed_0_listener() {
       \u0275\u0275restoreView(_r1);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.closeAddCustomerModal());
-    }, "CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_modalClosed_0_listener"));
+    }, "CustomersListComponent_app_add_customer_modal_56_Template_app_add_customer_modal_modalClosed_0_listener"));
     \u0275\u0275elementEnd();
   }
 }
-__name(CustomersListComponent_app_add_customer_modal_53_Template, "CustomersListComponent_app_add_customer_modal_53_Template");
+__name(CustomersListComponent_app_add_customer_modal_56_Template, "CustomersListComponent_app_add_customer_modal_56_Template");
 var _CustomersListComponent = class _CustomersListComponent {
   customerService;
   customers = [];
@@ -58260,12 +58285,17 @@ var _CustomersListComponent = class _CustomersListComponent {
       }, "error")
     });
   }
+  testAPI() {
+    console.log("Testing API...");
+    const testToken = "test-token-123";
+    this.customerService.setTestToken(testToken);
+  }
 };
 __name(_CustomersListComponent, "CustomersListComponent");
 __publicField(_CustomersListComponent, "\u0275fac", /* @__PURE__ */ __name(function CustomersListComponent_Factory(__ngFactoryType__) {
   return new (__ngFactoryType__ || _CustomersListComponent)(\u0275\u0275directiveInject(CustomerService));
 }, "CustomersListComponent_Factory"));
-__publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CustomersListComponent, selectors: [["app-customers-list"]], decls: 54, vars: 10, consts: [[1, "customers-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "users", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "user-check", "size", "24px"], ["name", "shopping-cart", "size", "24px"], ["name", "dollar-sign", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "customer-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover"], [3, "customerAdded", "modalClosed", 4, "ngIf"], [3, "customerAdded", "modalClosed"]], template: /* @__PURE__ */ __name(function CustomersListComponent_Template(rf, ctx) {
+__publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CustomersListComponent, selectors: [["app-customers-list"]], decls: 57, vars: 10, consts: [[1, "customers-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-secondary", 2, "margin-right", "8px", 3, "click"], ["name", "refresh-cw", "size", "16px"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "users", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "user-check", "size", "24px"], ["name", "shopping-cart", "size", "24px"], ["name", "dollar-sign", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "customer-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover"], [3, "customerAdded", "modalClosed", 4, "ngIf"], [3, "customerAdded", "modalClosed"]], template: /* @__PURE__ */ __name(function CustomersListComponent_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "h1");
     \u0275\u0275text(4, "Customers");
@@ -58275,67 +58305,74 @@ __publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(7, "div", 4)(8, "button", 5);
     \u0275\u0275listener("click", /* @__PURE__ */ __name(function CustomersListComponent_Template_button_click_8_listener() {
-      return ctx.openAddCustomerModal();
+      return ctx.testAPI();
     }, "CustomersListComponent_Template_button_click_8_listener"));
     \u0275\u0275element(9, "app-feather-icon", 6);
-    \u0275\u0275text(10, " Add Customer ");
+    \u0275\u0275text(10, " Test API ");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "button", 7);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CustomersListComponent_Template_button_click_11_listener() {
+      return ctx.openAddCustomerModal();
+    }, "CustomersListComponent_Template_button_click_11_listener"));
+    \u0275\u0275element(12, "app-feather-icon", 8);
+    \u0275\u0275text(13, " Add Customer ");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(11, "div", 7)(12, "div", 8)(13, "div", 9);
-    \u0275\u0275element(14, "app-feather-icon", 10);
+    \u0275\u0275elementStart(14, "div", 9)(15, "div", 10)(16, "div", 11);
+    \u0275\u0275element(17, "app-feather-icon", 12);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(15, "div", 11)(16, "div", 12);
-    \u0275\u0275text(17);
+    \u0275\u0275elementStart(18, "div", 13)(19, "div", 14);
+    \u0275\u0275text(20);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(18, "div", 13);
-    \u0275\u0275text(19, "Total Customers");
+    \u0275\u0275elementStart(21, "div", 15);
+    \u0275\u0275text(22, "Total Customers");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(20, "div", 8)(21, "div", 9);
-    \u0275\u0275element(22, "app-feather-icon", 14);
+    \u0275\u0275elementStart(23, "div", 10)(24, "div", 11);
+    \u0275\u0275element(25, "app-feather-icon", 16);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(23, "div", 11)(24, "div", 12);
-    \u0275\u0275text(25);
+    \u0275\u0275elementStart(26, "div", 13)(27, "div", 14);
+    \u0275\u0275text(28);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(26, "div", 13);
-    \u0275\u0275text(27, "Active Customers");
+    \u0275\u0275elementStart(29, "div", 15);
+    \u0275\u0275text(30, "Active Customers");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(28, "div", 8)(29, "div", 9);
-    \u0275\u0275element(30, "app-feather-icon", 15);
+    \u0275\u0275elementStart(31, "div", 10)(32, "div", 11);
+    \u0275\u0275element(33, "app-feather-icon", 17);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(31, "div", 11)(32, "div", 12);
-    \u0275\u0275text(33);
+    \u0275\u0275elementStart(34, "div", 13)(35, "div", 14);
+    \u0275\u0275text(36);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(34, "div", 13);
-    \u0275\u0275text(35, "Total Sales");
+    \u0275\u0275elementStart(37, "div", 15);
+    \u0275\u0275text(38, "Total Sales");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(36, "div", 8)(37, "div", 9);
-    \u0275\u0275element(38, "app-feather-icon", 16);
+    \u0275\u0275elementStart(39, "div", 10)(40, "div", 11);
+    \u0275\u0275element(41, "app-feather-icon", 18);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(39, "div", 11)(40, "div", 12);
-    \u0275\u0275text(41);
+    \u0275\u0275elementStart(42, "div", 13)(43, "div", 14);
+    \u0275\u0275text(44);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(42, "div", 13);
-    \u0275\u0275text(43, "Total Revenue");
+    \u0275\u0275elementStart(45, "div", 15);
+    \u0275\u0275text(46, "Total Revenue");
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(44, "div", 17)(45, "div", 18)(46, "div", 19)(47, "h3");
-    \u0275\u0275text(48, "All Customers");
+    \u0275\u0275elementStart(47, "div", 19)(48, "div", 20)(49, "div", 21)(50, "h3");
+    \u0275\u0275text(51, "All Customers");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(49, "span", 20);
-    \u0275\u0275text(50);
+    \u0275\u0275elementStart(52, "span", 22);
+    \u0275\u0275text(53);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(51, "div", 21)(52, "app-data-table", 22);
-    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onSort_52_listener($event) {
+    \u0275\u0275elementStart(54, "div", 23)(55, "app-data-table", 24);
+    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onSort_55_listener($event) {
       return ctx.handleSort($event);
-    }, "CustomersListComponent_Template_app_data_table_onSort_52_listener"))("onPageChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageChange_52_listener($event) {
+    }, "CustomersListComponent_Template_app_data_table_onSort_55_listener"))("onPageChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageChange_55_listener($event) {
       return ctx.handlePageChange($event);
-    }, "CustomersListComponent_Template_app_data_table_onPageChange_52_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageSizeChange_52_listener($event) {
+    }, "CustomersListComponent_Template_app_data_table_onPageChange_55_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageSizeChange_55_listener($event) {
       return ctx.handlePageSizeChange($event);
-    }, "CustomersListComponent_Template_app_data_table_onPageSizeChange_52_listener"));
+    }, "CustomersListComponent_Template_app_data_table_onPageSizeChange_55_listener"));
     \u0275\u0275elementEnd()()();
-    \u0275\u0275template(53, CustomersListComponent_app_add_customer_modal_53_Template, 1, 0, "app-add-customer-modal", 23);
+    \u0275\u0275template(56, CustomersListComponent_app_add_customer_modal_56_Template, 1, 0, "app-add-customer-modal", 25);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    \u0275\u0275advance(17);
+    \u0275\u0275advance(20);
     \u0275\u0275textInterpolate(ctx.stats.totalCustomers);
     \u0275\u0275advance(8);
     \u0275\u0275textInterpolate(ctx.stats.activeCustomers);
@@ -58364,6 +58401,10 @@ var CustomersListComponent = _CustomersListComponent;
           <p class="page-description">Manage your customer database and track sales</p>
         </div>
         <div class="header-actions">
+          <button class="btn-secondary" (click)="testAPI()" style="margin-right: 8px;">
+            <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
+            Test API
+          </button>
           <button class="btn-primary" (click)="openAddCustomerModal()">
             <app-feather-icon name="plus" size="16px"></app-feather-icon>
             Add Customer
@@ -58444,7 +58485,7 @@ var CustomersListComponent = _CustomersListComponent;
   }], () => [{ type: CustomerService }], null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CustomersListComponent, { className: "CustomersListComponent", filePath: "src/app/features/customers/customers-list/customers-list.component.ts", lineNumber: 102 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CustomersListComponent, { className: "CustomersListComponent", filePath: "src/app/features/customers/customers-list/customers-list.component.ts", lineNumber: 106 });
 })();
 
 // src/app/features/customers/add-customer/add-customer.component.ts

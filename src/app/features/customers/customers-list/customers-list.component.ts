@@ -20,6 +20,10 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
           <p class="page-description">Manage your customer database and track sales</p>
         </div>
         <div class="header-actions">
+          <button class="btn-secondary" (click)="testAPI()" style="margin-right: 8px;">
+            <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
+            Test API
+          </button>
           <button class="btn-primary" (click)="openAddCustomerModal()">
             <app-feather-icon name="plus" size="16px"></app-feather-icon>
             Add Customer
@@ -222,5 +226,12 @@ export class CustomersListComponent implements OnInit {
         // You might want to show an error message to the user
       }
     });
+  }
+
+  testAPI() {
+    console.log('Testing API...');
+    // Set a test token (you can replace this with a real token)
+    const testToken = 'test-token-123';
+    this.customerService.setTestToken(testToken);
   }
 }

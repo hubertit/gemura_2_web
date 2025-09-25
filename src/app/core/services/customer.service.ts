@@ -55,6 +55,13 @@ export class CustomerService {
     this.loadCustomersFromAPI();
   }
 
+  // Debug method to set a test token
+  setTestToken(token: string) {
+    this.apiService.setToken(token);
+    console.log('Test token set, reloading customers...');
+    this.loadCustomersFromAPI();
+  }
+
   // Customer methods
   getCustomers(): Customer[] {
     return this.customers;
@@ -169,10 +176,16 @@ export class CustomerService {
   }
 
   private loadCustomersFromAPI() {
+    console.log('Loading customers from API...');
     this.getCustomersFromAPI().subscribe({
       next: (response: any) => {
+        console.log('API Response:', response);
         if (response.code === 200 || response.status === 'success') {
           this.customers = this.transformApiCustomers(response.data || []);
+          console.log('Transformed customers:', this.customers);
+        } else {
+          console.error('API returned error:', response);
+          this.loadMockData();
         }
       },
       error: (error) => {
