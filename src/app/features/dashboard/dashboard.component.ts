@@ -44,6 +44,54 @@ export interface ChartOptions {
   imports: [CommonModule, RouterModule, FeatherIconComponent, NgApexchartsModule],
   template: `
     <div class="dashboard-container">
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="actions-grid">
+          <button class="action-btn" (click)="quickAction('new-collection')">
+            <div class="action-icon">
+              <app-feather-icon name="truck" size="20px"></app-feather-icon>
+            </div>
+            <span class="action-label">New Collection</span>
+          </button>
+          
+          <button class="action-btn" (click)="quickAction('new-sale')">
+            <div class="action-icon">
+              <app-feather-icon name="shopping-cart" size="20px"></app-feather-icon>
+            </div>
+            <span class="action-label">New Sale</span>
+          </button>
+          
+          <button class="action-btn" (click)="quickAction('add-supplier')">
+            <div class="action-icon">
+              <app-feather-icon name="user-plus" size="20px"></app-feather-icon>
+            </div>
+            <span class="action-label">Add Supplier</span>
+          </button>
+          
+          <button class="action-btn" (click)="quickAction('add-customer')">
+            <div class="action-icon">
+              <app-feather-icon name="users" size="20px"></app-feather-icon>
+            </div>
+            <span class="action-label">Add Customer</span>
+          </button>
+          
+          <button class="action-btn" (click)="quickAction('generate-report')">
+            <div class="action-icon">
+              <app-feather-icon name="file-text" size="20px"></app-feather-icon>
+            </div>
+            <span class="action-label">Generate Report</span>
+          </button>
+          
+          <button class="action-btn" (click)="quickAction('view-analytics')">
+            <div class="action-icon">
+              <app-feather-icon name="bar-chart-2" size="20px"></app-feather-icon>
+            </div>
+            <span class="action-label">View Analytics</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Stats Cards -->
       <div class="stats-grid">
         <!-- Milk Collections -->
@@ -389,5 +437,30 @@ export class DashboardComponent implements OnInit {
       name: 'Revenue (RWF)',
       data: newData
     }];
+  }
+
+  quickAction(action: string) {
+    console.log('Quick action triggered:', action);
+    // TODO: Implement navigation or modal opening based on action
+    switch(action) {
+      case 'new-collection':
+        // Navigate to new collection form
+        break;
+      case 'new-sale':
+        // Navigate to new sale form
+        break;
+      case 'add-supplier':
+        // Navigate to add supplier form
+        break;
+      case 'add-customer':
+        // Navigate to add customer form
+        break;
+      case 'generate-report':
+        // Open report generation modal
+        break;
+      case 'view-analytics':
+        // Navigate to analytics page
+        break;
+    }
   }
 }
