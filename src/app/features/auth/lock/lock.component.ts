@@ -59,7 +59,7 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
     </app-auth-layout>
   `,
   styles: [`
-    @import '../../../../styles/variables';
+    @use '../../../../styles/variables' as *;
 
     :root {
       --second-rotation: 0deg;

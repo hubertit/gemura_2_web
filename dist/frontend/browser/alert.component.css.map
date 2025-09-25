@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/shared/components/alert/alert.component.scss"],
-  "sourcesContent": ["@import '../../../../styles/variables';\n\n.alert {\n  padding: 12px 16px;\n  border-radius: 4px;\n  margin-bottom: 1rem;\n  font-size: 0.9rem;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n\n  &.alert-success {\n    background-color: #d4edda;\n    color: #155724;\n    border: 1px solid #c3e6cb;\n\n    i {\n      color: #28a745;\n    }\n  }\n\n  &.alert-danger {\n    background-color: #f8d7da;\n    color: #721c24;\n    border: 1px solid #f5c6cb;\n\n    i {\n      color: #dc3545;\n    }\n  }\n\n  &.alert-warning {\n    background-color: #fff3cd;\n    color: #856404;\n    border: 1px solid #ffeaa7;\n\n    i {\n      color: #ffc107;\n    }\n  }\n\n  &.alert-info {\n    background-color: #d1ecf1;\n    color: #0c5460;\n    border: 1px solid #bee5eb;\n\n    i {\n      color: #17a2b8;\n    }\n  }\n}\n"],
-  "mappings": ";AAEA,CAAA;AACE,WAAA,KAAA;AACA,iBAAA;AACA,iBAAA;AACA,aAAA;AACA,WAAA;AACA,eAAA;AACA,OAAA;;AAEA,CATF,KASE,CAAA;AACE,oBAAA;AACA,SAAA;AACA,UAAA,IAAA,MAAA;;AAEA,CAdJ,KAcI,CALF,cAKE;AACE,SAAA;;AAIJ,CAnBF,KAmBE,CAAA;AACE,oBAAA;AACA,SAAA;AACA,UAAA,IAAA,MAAA;;AAEA,CAxBJ,KAwBI,CALF,aAKE;AACE,SAAA;;AAIJ,CA7BF,KA6BE,CAAA;AACE,oBAAA;AACA,SAAA;AACA,UAAA,IAAA,MAAA;;AAEA,CAlCJ,KAkCI,CALF,cAKE;AACE,SAAA;;AAIJ,CAvCF,KAuCE,CAAA;AACE,oBAAA;AACA,SAAA;AACA,UAAA,IAAA,MAAA;;AAEA,CA5CJ,KA4CI,CALF,WAKE;AACE,SAAA;;",
-  "names": []
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/features/entities/entities.component.ts"],
-  "sourcesContent": ["\n    .dashboard-container {\n      padding: 12px;\n      display: flex;\n      flex-direction: column;\n      gap: 16px;\n    }\n\n    .card {\n      background: white;\n      border: 1px solid #e5e7eb;\n      border-radius: 8px;\n      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    }\n\n    .card-header {\n      padding: 1rem 1.5rem;\n      border-bottom: 1px solid #e5e7eb;\n      background-color: #fff;\n    }\n\n    .card-title {\n      color: #1e293b;\n      font-size: 1.25rem;\n      font-weight: 600;\n    }\n\n    .card-body {\n      padding: 1rem;\n    }\n\n    .btn-primary {\n      background-color: #1b2e4b;\n      border-color: #1b2e4b;\n\n      &:hover {\n        background-color: #3498db;\n        border-color: #3498db;\n      }\n\n      app-feather-icon {\n        color: white;\n      }\n    }\n  "],
-  "mappings": ";AACI,CAAA;AACE,WAAA;AACA,WAAA;AACA,kBAAA;AACA,OAAA;;AAGF,CAAA;AACE,cAAA;AACA,UAAA,IAAA,MAAA;AACA,iBAAA;AACA,cAAA,EAAA,IAAA,IAAA,KAAA,CAAA,EAAA,CAAA,EAAA,CAAA,EAAA;;AAGF,CAAA;AACE,WAAA,KAAA;AACA,iBAAA,IAAA,MAAA;AACA,oBAAA;;AAGF,CAAA;AACE,SAAA;AACA,aAAA;AACA,eAAA;;AAGF,CAAA;AACE,WAAA;;AAGF,CAAA;AACE,oBAAA;AACA,gBAAA;;AAEA,CAJF,WAIE;AACE,oBAAA;AACA,gBAAA;;AAGF,CATF,YASE;AACE,SAAA;;",
-  "names": []
-}

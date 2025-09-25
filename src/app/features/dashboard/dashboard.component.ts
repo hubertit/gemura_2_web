@@ -30,9 +30,9 @@ export interface ChartOptions {
   dataLabels: ApexDataLabels;
   stroke: ApexStroke;
   yaxis: ApexYAxis | ApexYAxis[];
-  title: ApexTitleSubtitle;
+  title?: ApexTitleSubtitle;
   labels?: string[];
-  legend: ApexLegend;
+  legend?: ApexLegend;
   fill: ApexFill;
   tooltip: ApexTooltip;
   colors: string[];
@@ -121,9 +121,9 @@ export interface ChartOptions {
           <div class="chart-header">
             <h3>Milk Collection Trends</h3>
             <div class="chart-controls">
-              <button class="btn-small active" (click)="updateCollectionChart('7D')">7D</button>
-              <button class="btn-small" (click)="updateCollectionChart('30D')">30D</button>
-              <button class="btn-small" (click)="updateCollectionChart('90D')">90D</button>
+              <button class="btn-small active" (click)="updateCollectionChart('7D', $event)">7D</button>
+              <button class="btn-small" (click)="updateCollectionChart('30D', $event)">30D</button>
+              <button class="btn-small" (click)="updateCollectionChart('90D', $event)">90D</button>
             </div>
           </div>
           <div class="chart-wrapper">
@@ -146,9 +146,9 @@ export interface ChartOptions {
           <div class="chart-header">
             <h3>Revenue Overview</h3>
             <div class="chart-controls">
-              <button class="btn-small active" (click)="updateRevenueChart('7D')">7D</button>
-              <button class="btn-small" (click)="updateRevenueChart('30D')">30D</button>
-              <button class="btn-small" (click)="updateRevenueChart('90D')">90D</button>
+              <button class="btn-small active" (click)="updateRevenueChart('7D', $event)">7D</button>
+              <button class="btn-small" (click)="updateRevenueChart('30D', $event)">30D</button>
+              <button class="btn-small" (click)="updateRevenueChart('90D', $event)">90D</button>
             </div>
           </div>
           <div class="chart-wrapper">
@@ -225,8 +225,8 @@ export interface ChartOptions {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  collectionChartOptions: ChartOptions;
-  revenueChartOptions: ChartOptions;
+  collectionChartOptions!: ChartOptions;
+  revenueChartOptions!: ChartOptions;
 
   constructor(private authService: AuthService) {
     this.initializeCharts();
@@ -333,10 +333,12 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  updateCollectionChart(period: string) {
+  updateCollectionChart(period: string, event?: Event) {
     // Update active button
     document.querySelectorAll('.chart-controls button').forEach(btn => btn.classList.remove('active'));
-    event?.target?.classList.add('active');
+    if (event?.target && event.target instanceof HTMLElement) {
+      event.target.classList.add('active');
+    }
 
     // Update chart data based on period
     let newData: number[];
@@ -360,10 +362,12 @@ export class DashboardComponent implements OnInit {
     }];
   }
 
-  updateRevenueChart(period: string) {
+  updateRevenueChart(period: string, event?: Event) {
     // Update active button
     document.querySelectorAll('.chart-controls button').forEach(btn => btn.classList.remove('active'));
-    event?.target?.classList.add('active');
+    if (event?.target && event.target instanceof HTMLElement) {
+      event.target.classList.add('active');
+    }
 
     // Update chart data based on period
     let newData: number[];

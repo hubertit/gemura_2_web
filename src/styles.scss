@@ -1,11 +1,11 @@
 // Import variables first
-@import 'styles/variables';
+@use 'styles/variables' as *;
 
 // Import Bootstrap
-@import 'bootstrap/scss/bootstrap';
+@use 'bootstrap/scss/bootstrap';
 
 // Import custom components
-@import 'styles/components';
+@use 'styles/components';
 
 // Global styles
 html, body {
@@ -57,7 +57,7 @@ body {
 .font-weight-semibold { font-weight: $font-weight-semibold !important; }
 
 // Responsive breakpoints
-@include media-breakpoint-down(md) {
+@media (max-width: 767.98px) {
   .main-content {
     padding-left: 0;
   }
