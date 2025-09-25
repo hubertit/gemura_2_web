@@ -53,6 +53,37 @@
     }
   }
 
+  .datetime-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 1rem;
+    padding: 0.5rem 0;
+
+    @media (max-width: 768px) {
+      margin-left: 0.5rem;
+    }
+
+    @media (max-width: 576px) {
+      display: none;
+    }
+
+    .time {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $gray-800;
+      line-height: 1.2;
+      font-family: 'Courier New', monospace;
+    }
+
+    .date {
+      font-size: 0.8rem;
+      color: $gray-600;
+      line-height: 1.2;
+      margin-top: 0.125rem;
+    }
+  }
+
 }
 
 .navbar-right {
