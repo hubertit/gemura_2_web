@@ -34,10 +34,6 @@ export class NavigationService {
           path: 'customers/list'
         },
         {
-          title: 'Add Customer',
-          path: 'customers/add'
-        },
-        {
           title: 'Sold Milk',
           path: 'customers/sold-milk'
         }

@@ -70,31 +70,33 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
         </div>
       </div>
 
+      <!-- Search and Filter Bar -->
+      <div class="search-filter-bar">
+        <div class="search-box">
+          <app-feather-icon name="search" size="16px"></app-feather-icon>
+          <input 
+            type="text" 
+            placeholder="Search customers..." 
+            [(ngModel)]="searchTerm"
+            (input)="filterCustomers()"
+            class="search-input">
+        </div>
+        <div class="filter-dropdown">
+          <select [(ngModel)]="statusFilter" (change)="filterCustomers()" class="filter-select">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Suspended">Suspended</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Customers Table -->
       <div class="card">
         <div class="card-header">
           <div class="card-title-section">
             <h3>All Customers</h3>
             <span class="customer-count">{{ customers.length }} customers</span>
-          </div>
-          <div class="card-actions">
-            <div class="search-box">
-              <app-feather-icon name="search" size="16px"></app-feather-icon>
-              <input 
-                type="text" 
-                placeholder="Search customers..." 
-                [(ngModel)]="searchTerm"
-                (input)="filterCustomers()"
-                class="search-input">
-            </div>
-            <div class="filter-dropdown">
-              <select [(ngModel)]="statusFilter" (change)="filterCustomers()" class="filter-select">
-                <option value="">All Status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Suspended">Suspended</option>
-              </select>
-            </div>
           </div>
         </div>
         <div class="card-body">
@@ -104,7 +106,6 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
             [striped]="true"
             [hover]="true"
             (onSort)="handleSort($event)"
-            (onSearch)="handleSearch($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">
           </app-data-table>
@@ -173,10 +174,6 @@ export class CustomersListComponent implements OnInit {
     console.log('Sort:', event);
   }
 
-  handleSearch(term: string) {
-    this.searchTerm = term;
-    this.filterCustomers();
-  }
 
   handlePageChange(page: number) {
     // TODO: Implement pagination
