@@ -6,6 +6,9 @@ import { TestApiComponent } from './features/auth/test-api/test-api.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { FeedComponent } from './features/feed/feed.component';
+import { CustomersListComponent } from './features/customers/customers-list/customers-list.component';
+import { AddCustomerComponent } from './features/customers/add-customer/add-customer.component';
+import { SoldMilkComponent } from './features/customers/sold-milk/sold-milk.component';
 import { EntitiesComponent } from './features/entities/entities.component';
 import { UsersComponent } from './features/users/users.component';
 import { RolesComponent } from './features/roles/roles.component';
@@ -47,6 +50,18 @@ export const routes: Routes = [
       {
         path: 'feed',
         component: FeedComponent
+      },
+      {
+        path: 'customers/list',
+        component: CustomersListComponent
+      },
+      {
+        path: 'customers/add',
+        component: AddCustomerComponent
+      },
+      {
+        path: 'customers/sold-milk',
+        component: SoldMilkComponent
       },
       {
         path: 'entities',
