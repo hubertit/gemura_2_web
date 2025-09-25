@@ -5,6 +5,7 @@ import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-
 import { TestApiComponent } from './features/auth/test-api/test-api.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { FeedComponent } from './features/feed/feed.component';
 import { EntitiesComponent } from './features/entities/entities.component';
 import { UsersComponent } from './features/users/users.component';
 import { RolesComponent } from './features/roles/roles.component';
@@ -42,6 +43,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent
+      },
+      {
+        path: 'feed',
+        component: FeedComponent
       },
       {
         path: 'entities',

@@ -26,24 +26,6 @@ export class NavigationService {
       path: 'feed'
     },
     {
-      title: 'Market',
-      icon: 'shopping-cart',
-      children: [
-        {
-          title: 'Products',
-          path: 'market/products'
-        },
-        {
-          title: 'Categories',
-          path: 'market/categories'
-        },
-        {
-          title: 'Search',
-          path: 'market/search'
-        }
-      ]
-    },
-    {
       title: 'Customers',
       icon: 'users',
       children: [
