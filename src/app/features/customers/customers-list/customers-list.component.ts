@@ -20,10 +20,6 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
           <p class="page-description">Manage your customer database and track sales</p>
         </div>
         <div class="header-actions">
-          <button class="btn-secondary" (click)="testAPI()" style="margin-right: 8px;">
-            <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
-            Test API
-          </button>
           <button class="btn-primary" (click)="openAddCustomerModal()">
             <app-feather-icon name="plus" size="16px"></app-feather-icon>
             Add Customer
@@ -53,16 +49,16 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="shopping-cart" size="24px"></app-feather-icon>
+            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ stats.totalSales }}</div>
-            <div class="stat-label">Total Sales</div>
+            <div class="stat-value">{{ formatCurrency(stats.averagePrice) }}</div>
+            <div class="stat-label">Avg Price/Liter</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
+            <app-feather-icon name="trending-up" size="24px"></app-feather-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatCurrency(stats.totalRevenue) }}</div>
@@ -117,33 +113,51 @@ export class CustomersListComponent implements OnInit {
     this.initializeColumns();
     this.loadCustomers();
     this.loadStats();
+    
+    // Reload customers from API if token is available
+    this.customerService.reloadCustomers();
   }
 
   initializeColumns() {
     this.columns = [
+      { key: 'index', title: 'No.', type: 'number', sortable: false },
       { key: 'name', title: 'Customer', type: 'text', sortable: true },
-      { key: 'customerType', title: 'Type', type: 'text', sortable: true },
       { key: 'phone', title: 'Phone', type: 'text', sortable: true },
-      { key: 'email', title: 'Email', type: 'text', sortable: true },
-      { key: 'city', title: 'Location', type: 'text', sortable: true },
+      { key: 'address', title: 'Address', type: 'text', sortable: true },
+      { key: 'pricePerLiter', title: 'Price/Liter (RWF)', type: 'number', sortable: true },
+      { key: 'averageSupplyQuantity', title: 'Avg Supply (L)', type: 'number', sortable: true },
       { key: 'status', title: 'Status', type: 'text', sortable: true },
-      { key: 'totalPurchases', title: 'Orders', type: 'number', sortable: true },
-      { key: 'totalAmount', title: 'Total Spent', type: 'number', sortable: true },
-      { key: 'lastPurchaseDate', title: 'Last Purchase', type: 'date', sortable: true }
+      { key: 'registrationDate', title: 'Registered', type: 'date', sortable: true }
     ];
   }
 
   loadCustomers() {
     this.customers = this.customerService.getCustomers();
+    // Add index to each customer for the No. column
+    this.customers = this.customers.map((customer, index) => ({
+      ...customer,
+      index: index + 1
+    }));
     this.filteredCustomers = [...this.customers];
   }
 
   loadStats() {
-    this.stats = this.customerService.getCustomerStats();
+    const customers = this.customerService.getCustomers();
+    this.stats = {
+      totalCustomers: customers.length,
+      activeCustomers: customers.filter(c => c.status === 'Active').length,
+      totalRevenue: customers.reduce((sum, c) => sum + c.totalAmount, 0),
+      averagePrice: customers.length > 0 ? customers.reduce((sum, c) => sum + (c.pricePerLiter || 0), 0) / customers.length : 0
+    };
   }
 
   filterCustomers() {
     this.filteredCustomers = [...this.customers];
+    // Re-index filtered customers
+    this.filteredCustomers = this.filteredCustomers.map((customer, index) => ({
+      ...customer,
+      index: index + 1
+    }));
   }
 
   handleSort(event: { column: string; direction: 'asc' | 'desc' }) {
@@ -228,10 +242,4 @@ export class CustomersListComponent implements OnInit {
     });
   }
 
-  testAPI() {
-    console.log('Testing API...');
-    // Set a test token (you can replace this with a real token)
-    const testToken = 'test-token-123';
-    this.customerService.setTestToken(testToken);
-  }
 }

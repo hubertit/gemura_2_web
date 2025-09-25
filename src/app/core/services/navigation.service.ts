@@ -28,30 +28,12 @@ export class NavigationService {
     {
       title: 'Customers',
       icon: 'users',
-      children: [
-        {
-          title: 'All Customers',
-          path: 'customers/list'
-        },
-        {
-          title: 'Sold Milk',
-          path: 'customers/sold-milk'
-        }
-      ]
+      path: 'customers/list'
     },
     {
       title: 'Suppliers',
       icon: 'truck',
-      children: [
-        {
-          title: 'All Suppliers',
-          path: 'suppliers/list'
-        },
-        {
-          title: 'Collected Milk',
-          path: 'suppliers/collected-milk'
-        }
-      ]
+      path: 'suppliers/list'
     },
     {
       title: 'Collections',
@@ -68,7 +50,7 @@ export class NavigationService {
       ]
     },
     {
-      title: 'Financial Services',
+      title: 'Ikofi',
       icon: 'dollar-sign',
       children: [
         {
@@ -90,18 +72,9 @@ export class NavigationService {
       ]
     },
     {
-      title: 'Chat & Communication',
+      title: 'Chats',
       icon: 'message-circle',
-      children: [
-        {
-          title: 'Chat List',
-          path: 'chat/list'
-        },
-        {
-          title: 'Bot Chat',
-          path: 'chat/bot'
-        }
-      ]
+      path: 'chats'
     },
     {
       title: 'Reports & Analytics',

@@ -51,8 +51,16 @@ export class CustomerService {
   private milkSales: MilkSale[] = [];
 
   constructor(private apiService: ApiService) {
-    // Load initial data from API
-    this.loadCustomersFromAPI();
+    // Load token from localStorage if it exists
+    const storedToken = localStorage.getItem('gemura.token');
+    if (storedToken) {
+      this.apiService.setToken(storedToken);
+      // Load initial data from API
+      this.loadCustomersFromAPI();
+    } else {
+      // Fallback to mock data if no token
+      this.loadMockData();
+    }
   }
 
   // Debug method to set a test token
@@ -60,6 +68,15 @@ export class CustomerService {
     this.apiService.setToken(token);
     console.log('Test token set, reloading customers...');
     this.loadCustomersFromAPI();
+  }
+
+  // Method to reload customers from API (useful after login)
+  reloadCustomers() {
+    const storedToken = localStorage.getItem('gemura.token');
+    if (storedToken) {
+      this.apiService.setToken(storedToken);
+      this.loadCustomersFromAPI();
+    }
   }
 
   // Customer methods
@@ -199,28 +216,28 @@ export class CustomerService {
   private transformApiCustomers(apiCustomers: any[]): Customer[] {
     return apiCustomers.map(apiCustomer => ({
       id: apiCustomer.relationship_id || apiCustomer.id,
-      name: apiCustomer.customer?.name || apiCustomer.name,
-      email: apiCustomer.customer?.email || apiCustomer.email,
-      phone: apiCustomer.customer?.phone || apiCustomer.phone,
-      address: apiCustomer.customer?.address || apiCustomer.address,
-      city: apiCustomer.customer?.city || 'Kigali',
-      region: apiCustomer.customer?.region || 'Kigali',
-      customerType: this.mapCustomerType(apiCustomer.customer?.type || 'Individual'),
+      name: apiCustomer.name,
+      email: apiCustomer.email || '',
+      phone: apiCustomer.phone,
+      address: apiCustomer.address || '',
+      city: 'Kigali', // Default city
+      region: 'Kigali', // Default region
+      customerType: 'Individual', // Default type
       status: this.mapStatus(apiCustomer.relationship_status || 'active'),
       registrationDate: new Date(apiCustomer.created_at || new Date()),
-      lastPurchaseDate: apiCustomer.last_purchase_date ? new Date(apiCustomer.last_purchase_date) : undefined,
-      totalPurchases: apiCustomer.total_purchases || 0,
-      totalAmount: apiCustomer.total_amount || 0,
-      preferredDeliveryTime: apiCustomer.preferred_delivery_time || 'Morning (8:00-10:00)',
-      notes: apiCustomer.notes,
-      avatar: apiCustomer.avatar || 'assets/img/user.png',
-      pricePerLiter: apiCustomer.price_per_liter || 0,
+      lastPurchaseDate: undefined,
+      totalPurchases: 0,
+      totalAmount: 0,
+      preferredDeliveryTime: 'Morning (8:00-10:00)',
+      notes: '',
+      avatar: 'assets/img/user.png',
+      pricePerLiter: parseFloat(apiCustomer.price_per_liter) || 0,
       relationshipId: apiCustomer.relationship_id,
-      averageSupplyQuantity: apiCustomer.average_supply_quantity || 0,
+      averageSupplyQuantity: parseFloat(apiCustomer.average_supply_quantity) || 0,
       relationshipStatus: apiCustomer.relationship_status,
-      userCode: apiCustomer.customer?.code || apiCustomer.user_code,
-      accountCode: apiCustomer.customer?.account?.code || apiCustomer.account_code,
-      accountName: apiCustomer.customer?.account?.name || apiCustomer.account_name
+      userCode: apiCustomer.code,
+      accountCode: apiCustomer.account?.code,
+      accountName: apiCustomer.account?.name
     }));
   }
 

@@ -54224,30 +54224,12 @@ var _NavigationService = class _NavigationService {
     {
       title: "Customers",
       icon: "users",
-      children: [
-        {
-          title: "All Customers",
-          path: "customers/list"
-        },
-        {
-          title: "Sold Milk",
-          path: "customers/sold-milk"
-        }
-      ]
+      path: "customers/list"
     },
     {
       title: "Suppliers",
       icon: "truck",
-      children: [
-        {
-          title: "All Suppliers",
-          path: "suppliers/list"
-        },
-        {
-          title: "Collected Milk",
-          path: "suppliers/collected-milk"
-        }
-      ]
+      path: "suppliers/list"
     },
     {
       title: "Collections",
@@ -54264,7 +54246,7 @@ var _NavigationService = class _NavigationService {
       ]
     },
     {
-      title: "Financial Services",
+      title: "Ikofi",
       icon: "dollar-sign",
       children: [
         {
@@ -54286,18 +54268,9 @@ var _NavigationService = class _NavigationService {
       ]
     },
     {
-      title: "Chat & Communication",
+      title: "Chats",
       icon: "message-circle",
-      children: [
-        {
-          title: "Chat List",
-          path: "chat/list"
-        },
-        {
-          title: "Bot Chat",
-          path: "chat/bot"
-        }
-      ]
+      path: "chats"
     },
     {
       title: "Reports & Analytics",
@@ -56475,6 +56448,1534 @@ var FeedComponent = _FeedComponent;
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(FeedComponent, { className: "FeedComponent", filePath: "src/app/features/feed/feed.component.ts", lineNumber: 217 });
 })();
 
+// src/app/core/services/api.service.ts
+var _ApiService = class _ApiService {
+  http;
+  baseUrl = "https://api.gemura.rw/v2";
+  token = null;
+  constructor(http) {
+    this.http = http;
+    this.loadToken();
+  }
+  loadToken() {
+    this.token = localStorage.getItem("gemura.token");
+  }
+  getHeaders() {
+    const headers = new HttpHeaders({
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    });
+    if (this.token) {
+      return headers.set("Authorization", `Bearer ${this.token}`);
+    }
+    return headers;
+  }
+  // Generic HTTP methods
+  get(endpoint) {
+    return this.http.get(`${this.baseUrl}${endpoint}`, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+  }
+  post(endpoint, data) {
+    let requestData;
+    if (endpoint === "/customers/get") {
+      requestData = {
+        token: this.token
+      };
+    } else {
+      requestData = __spreadProps(__spreadValues({}, data), {
+        token: this.token
+      });
+    }
+    console.log("API Request:", {
+      url: `${this.baseUrl}${endpoint}`,
+      data: requestData,
+      headers: this.getHeaders()
+    });
+    return this.http.post(`${this.baseUrl}${endpoint}`, requestData, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+  }
+  put(endpoint, data) {
+    return this.http.put(`${this.baseUrl}${endpoint}`, data, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+  }
+  delete(endpoint) {
+    return this.http.delete(`${this.baseUrl}${endpoint}`, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
+  }
+  handleError(error) {
+    let errorMessage = "An error occurred";
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = error.error.message;
+    } else {
+      if (error.status === 401) {
+        errorMessage = "Authentication failed. Please login again.";
+        localStorage.removeItem("auth_token");
+        window.location.href = "/auth/login";
+      } else if (error.status === 404) {
+        errorMessage = "Service not found.";
+      } else if (error.status === 500) {
+        errorMessage = "Server error. Please try again later.";
+      } else {
+        errorMessage = error.error?.message || `Error Code: ${error.status}`;
+      }
+    }
+    return throwError(() => new Error(errorMessage));
+  }
+  // Set token method
+  setToken(token) {
+    this.token = token;
+    localStorage.setItem("gemura.token", token);
+    console.log("Token set:", token);
+  }
+  // Get current token
+  getToken() {
+    return this.token;
+  }
+  // Clear token method
+  clearToken() {
+    this.token = null;
+    localStorage.removeItem("auth_token");
+  }
+};
+__name(_ApiService, "ApiService");
+__publicField(_ApiService, "\u0275fac", /* @__PURE__ */ __name(function ApiService_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _ApiService)(\u0275\u0275inject(HttpClient));
+}, "ApiService_Factory"));
+__publicField(_ApiService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ApiService, factory: _ApiService.\u0275fac, providedIn: "root" }));
+var ApiService = _ApiService;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ApiService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [{ type: HttpClient }], null);
+})();
+
+// src/app/core/services/customer.service.ts
+var _CustomerService = class _CustomerService {
+  apiService;
+  customers = [];
+  milkSales = [];
+  constructor(apiService) {
+    this.apiService = apiService;
+    const storedToken = localStorage.getItem("gemura.token");
+    if (storedToken) {
+      this.apiService.setToken(storedToken);
+      this.loadCustomersFromAPI();
+    } else {
+      this.loadMockData();
+    }
+  }
+  // Debug method to set a test token
+  setTestToken(token) {
+    this.apiService.setToken(token);
+    console.log("Test token set, reloading customers...");
+    this.loadCustomersFromAPI();
+  }
+  // Method to reload customers from API (useful after login)
+  reloadCustomers() {
+    const storedToken = localStorage.getItem("gemura.token");
+    if (storedToken) {
+      this.apiService.setToken(storedToken);
+      this.loadCustomersFromAPI();
+    }
+  }
+  // Customer methods
+  getCustomers() {
+    return this.customers;
+  }
+  getCustomersFromAPI() {
+    return this.apiService.post("/customers/get", {});
+  }
+  getCustomerById(id) {
+    return this.customers.find((customer) => customer.id === id);
+  }
+  addCustomer(customerData) {
+    return this.apiService.post("/customers/create", {
+      name: customerData.name,
+      phone: customerData.phone,
+      email: customerData.email,
+      address: customerData.address,
+      price_per_liter: customerData.pricePerLiter
+    });
+  }
+  updateCustomer(id, updates) {
+    const index = this.customers.findIndex((customer) => customer.id === id);
+    if (index !== -1) {
+      this.customers[index] = __spreadValues(__spreadValues({}, this.customers[index]), updates);
+      return this.customers[index];
+    }
+    return null;
+  }
+  deleteCustomer(id) {
+    const index = this.customers.findIndex((customer) => customer.id === id);
+    if (index !== -1) {
+      this.customers.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+  // Milk sales methods
+  getMilkSales() {
+    return this.milkSales;
+  }
+  getMilkSalesByCustomer(customerId) {
+    return this.milkSales.filter((sale) => sale.customerId === customerId);
+  }
+  addMilkSale(sale) {
+    const newSale = __spreadProps(__spreadValues({}, sale), {
+      id: this.generateId()
+    });
+    this.milkSales.push(newSale);
+    const customer = this.getCustomerById(sale.customerId);
+    if (customer) {
+      customer.totalPurchases += 1;
+      customer.totalAmount += sale.totalAmount;
+      customer.lastPurchaseDate = sale.date;
+    }
+    return newSale;
+  }
+  updateMilkSale(id, updates) {
+    const index = this.milkSales.findIndex((sale) => sale.id === id);
+    if (index !== -1) {
+      this.milkSales[index] = __spreadValues(__spreadValues({}, this.milkSales[index]), updates);
+      return this.milkSales[index];
+    }
+    return null;
+  }
+  deleteMilkSale(id) {
+    const index = this.milkSales.findIndex((sale) => sale.id === id);
+    if (index !== -1) {
+      this.milkSales.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+  // Statistics
+  getCustomerStats() {
+    const totalCustomers = this.customers.length;
+    const activeCustomers = this.customers.filter((c) => c.status === "Active").length;
+    const totalSales = this.milkSales.length;
+    const totalRevenue = this.milkSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+    const averageOrderValue = totalSales > 0 ? totalRevenue / totalSales : 0;
+    return {
+      totalCustomers,
+      activeCustomers,
+      totalSales,
+      totalRevenue,
+      averageOrderValue
+    };
+  }
+  generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+  loadCustomersFromAPI() {
+    console.log("Loading customers from API...");
+    this.getCustomersFromAPI().subscribe({
+      next: /* @__PURE__ */ __name((response) => {
+        console.log("API Response:", response);
+        if (response.code === 200 || response.status === "success") {
+          this.customers = this.transformApiCustomers(response.data || []);
+          console.log("Transformed customers:", this.customers);
+        } else {
+          console.error("API returned error:", response);
+          this.loadMockData();
+        }
+      }, "next"),
+      error: /* @__PURE__ */ __name((error) => {
+        console.error("Failed to load customers from API:", error);
+        this.loadMockData();
+      }, "error")
+    });
+  }
+  transformApiCustomers(apiCustomers) {
+    return apiCustomers.map((apiCustomer) => ({
+      id: apiCustomer.relationship_id || apiCustomer.id,
+      name: apiCustomer.name,
+      email: apiCustomer.email || "",
+      phone: apiCustomer.phone,
+      address: apiCustomer.address || "",
+      city: "Kigali",
+      // Default city
+      region: "Kigali",
+      // Default region
+      customerType: "Individual",
+      // Default type
+      status: this.mapStatus(apiCustomer.relationship_status || "active"),
+      registrationDate: new Date(apiCustomer.created_at || /* @__PURE__ */ new Date()),
+      lastPurchaseDate: void 0,
+      totalPurchases: 0,
+      totalAmount: 0,
+      preferredDeliveryTime: "Morning (8:00-10:00)",
+      notes: "",
+      avatar: "assets/img/user.png",
+      pricePerLiter: parseFloat(apiCustomer.price_per_liter) || 0,
+      relationshipId: apiCustomer.relationship_id,
+      averageSupplyQuantity: parseFloat(apiCustomer.average_supply_quantity) || 0,
+      relationshipStatus: apiCustomer.relationship_status,
+      userCode: apiCustomer.code,
+      accountCode: apiCustomer.account?.code,
+      accountName: apiCustomer.account?.name
+    }));
+  }
+  mapCustomerType(type) {
+    const typeMap = {
+      "individual": "Individual",
+      "business": "Business",
+      "restaurant": "Restaurant",
+      "school": "School",
+      "hospital": "Hospital"
+    };
+    return typeMap[type.toLowerCase()] || "Individual";
+  }
+  mapStatus(status) {
+    const statusMap = {
+      "active": "Active",
+      "inactive": "Inactive",
+      "suspended": "Suspended"
+    };
+    return statusMap[status.toLowerCase()] || "Inactive";
+  }
+  loadMockData() {
+    this.customers = [
+      {
+        id: "1",
+        name: "John Mukamana",
+        email: "john.mukamana@email.com",
+        phone: "+250788123456",
+        address: "KG 123 St, Kigali",
+        city: "Kigali",
+        region: "Kigali",
+        customerType: "Individual",
+        status: "Active",
+        registrationDate: /* @__PURE__ */ new Date("2024-01-15"),
+        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-20"),
+        totalPurchases: 45,
+        totalAmount: 225e3,
+        preferredDeliveryTime: "Morning (8:00-10:00)",
+        notes: "Prefers fresh milk, regular customer",
+        avatar: "assets/img/user.png"
+      },
+      {
+        id: "2",
+        name: "Rwanda School Complex",
+        email: "admin@rwandaschool.rw",
+        phone: "+250788234567",
+        address: "KG 456 St, Kigali",
+        city: "Kigali",
+        region: "Kigali",
+        customerType: "School",
+        status: "Active",
+        registrationDate: /* @__PURE__ */ new Date("2024-02-10"),
+        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-22"),
+        totalPurchases: 120,
+        totalAmount: 6e5,
+        preferredDeliveryTime: "Early Morning (6:00-8:00)",
+        notes: "Large quantity orders for school meals",
+        avatar: "assets/img/user.png"
+      },
+      {
+        id: "3",
+        name: "Marie Uwimana",
+        email: "marie.uwimana@email.com",
+        phone: "+250788345678",
+        address: "KG 789 St, Kigali",
+        city: "Kigali",
+        region: "Kigali",
+        customerType: "Individual",
+        status: "Active",
+        registrationDate: /* @__PURE__ */ new Date("2024-03-05"),
+        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-18"),
+        totalPurchases: 28,
+        totalAmount: 14e4,
+        preferredDeliveryTime: "Evening (17:00-19:00)",
+        notes: "Prefers organic milk",
+        avatar: "assets/img/user.png"
+      },
+      {
+        id: "4",
+        name: "Hotel des Mille Collines",
+        email: "purchasing@millecollines.rw",
+        phone: "+250788456789",
+        address: "KG 321 St, Kigali",
+        city: "Kigali",
+        region: "Kigali",
+        customerType: "Business",
+        status: "Active",
+        registrationDate: /* @__PURE__ */ new Date("2024-01-20"),
+        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-23"),
+        totalPurchases: 200,
+        totalAmount: 1e6,
+        preferredDeliveryTime: "Morning (7:00-9:00)",
+        notes: "Premium hotel, requires high quality milk",
+        avatar: "assets/img/user.png"
+      },
+      {
+        id: "5",
+        name: "Kigali Hospital",
+        email: "supplies@kigalihospital.rw",
+        phone: "+250788567890",
+        address: "KG 654 St, Kigali",
+        city: "Kigali",
+        region: "Kigali",
+        customerType: "Hospital",
+        status: "Active",
+        registrationDate: /* @__PURE__ */ new Date("2024-02-15"),
+        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-21"),
+        totalPurchases: 150,
+        totalAmount: 75e4,
+        preferredDeliveryTime: "Early Morning (5:00-7:00)",
+        notes: "Medical facility, requires pasteurized milk",
+        avatar: "assets/img/user.png"
+      }
+    ];
+    this.milkSales = [
+      {
+        id: "s1",
+        customerId: "1",
+        customerName: "John Mukamana",
+        date: /* @__PURE__ */ new Date("2024-09-20"),
+        quantity: 5,
+        pricePerLiter: 1e3,
+        totalAmount: 5e3,
+        paymentMethod: "Mobile Money",
+        paymentStatus: "Paid",
+        deliveryMethod: "Delivery",
+        deliveryAddress: "KG 123 St, Kigali",
+        notes: "Regular order"
+      },
+      {
+        id: "s2",
+        customerId: "2",
+        customerName: "Rwanda School Complex",
+        date: /* @__PURE__ */ new Date("2024-09-22"),
+        quantity: 20,
+        pricePerLiter: 1e3,
+        totalAmount: 2e4,
+        paymentMethod: "Bank Transfer",
+        paymentStatus: "Paid",
+        deliveryMethod: "Delivery",
+        deliveryAddress: "KG 456 St, Kigali",
+        notes: "Weekly school order"
+      },
+      {
+        id: "s3",
+        customerId: "4",
+        customerName: "Hotel des Mille Collines",
+        date: /* @__PURE__ */ new Date("2024-09-23"),
+        quantity: 15,
+        pricePerLiter: 1200,
+        totalAmount: 18e3,
+        paymentMethod: "Bank Transfer",
+        paymentStatus: "Paid",
+        deliveryMethod: "Delivery",
+        deliveryAddress: "KG 321 St, Kigali",
+        notes: "Premium quality milk"
+      }
+    ];
+  }
+};
+__name(_CustomerService, "CustomerService");
+__publicField(_CustomerService, "\u0275fac", /* @__PURE__ */ __name(function CustomerService_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _CustomerService)(\u0275\u0275inject(ApiService));
+}, "CustomerService_Factory"));
+__publicField(_CustomerService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _CustomerService, factory: _CustomerService.\u0275fac, providedIn: "root" }));
+var CustomerService = _CustomerService;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CustomerService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [{ type: ApiService }], null);
+})();
+
+// src/app/core/services/chat.service.ts
+var _ChatService = class _ChatService {
+  customerService;
+  chats = [];
+  messages = [];
+  currentChatId = new BehaviorSubject(null);
+  constructor(customerService) {
+    this.customerService = customerService;
+    this.loadChatsFromCustomers();
+  }
+  // Chat methods
+  getChats() {
+    return of(this.chats);
+  }
+  // Method to reload chats when customers are updated
+  reloadChats() {
+    this.loadChatsFromCustomers();
+  }
+  getChatById(id) {
+    return this.chats.find((chat) => chat.id === id);
+  }
+  getCurrentChatId() {
+    return this.currentChatId.asObservable();
+  }
+  setCurrentChat(chatId) {
+    this.currentChatId.next(chatId);
+  }
+  getCurrentChat() {
+    const currentId = this.currentChatId.value;
+    return currentId ? this.getChatById(currentId) : void 0;
+  }
+  // Message methods
+  getMessages(chatId) {
+    const chatMessages = this.messages.filter((msg) => msg.chatId === chatId);
+    return of(chatMessages);
+  }
+  sendMessage(chatId, content, type = "text") {
+    const newMessage = {
+      id: this.generateId(),
+      chatId,
+      senderId: "current-user",
+      senderName: "You",
+      senderAvatar: "assets/img/user.png",
+      content,
+      timestamp: /* @__PURE__ */ new Date(),
+      type,
+      status: "sent",
+      isOwn: true
+    };
+    this.messages.push(newMessage);
+    const chat = this.getChatById(chatId);
+    if (chat) {
+      chat.lastMessage = newMessage;
+      chat.updatedAt = /* @__PURE__ */ new Date();
+    }
+    if (chatId === "bot-chat") {
+      setTimeout(() => {
+        this.generateBotResponse(chatId, content);
+      }, 1500);
+    }
+    return newMessage;
+  }
+  markAsRead(chatId, messageId) {
+    const message = this.messages.find((msg) => msg.id === messageId && msg.chatId === chatId);
+    if (message && !message.isOwn) {
+      message.status = "read";
+    }
+  }
+  markChatAsRead(chatId) {
+    const chat = this.getChatById(chatId);
+    if (chat) {
+      chat.unreadCount = 0;
+    }
+  }
+  // Group chat methods
+  createGroupChat(name, participants) {
+    const newChat = {
+      id: this.generateId(),
+      name,
+      type: "group",
+      unreadCount: 0,
+      isOnline: false,
+      participants,
+      createdAt: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    this.chats.unshift(newChat);
+    return newChat;
+  }
+  addParticipantToGroup(chatId, participant) {
+    const chat = this.getChatById(chatId);
+    if (chat && chat.type === "group") {
+      chat.participants.push(participant);
+      chat.updatedAt = /* @__PURE__ */ new Date();
+    }
+  }
+  removeParticipantFromGroup(chatId, participantId) {
+    const chat = this.getChatById(chatId);
+    if (chat && chat.type === "group") {
+      chat.participants = chat.participants.filter((p) => p.id !== participantId);
+      chat.updatedAt = /* @__PURE__ */ new Date();
+    }
+  }
+  // Search methods
+  searchChats(query) {
+    const filteredChats = this.chats.filter((chat) => chat.name.toLowerCase().includes(query.toLowerCase()) || chat.lastMessage?.content.toLowerCase().includes(query.toLowerCase()));
+    return of(filteredChats);
+  }
+  searchMessages(chatId, query) {
+    const chatMessages = this.messages.filter((msg) => msg.chatId === chatId && msg.content.toLowerCase().includes(query.toLowerCase()));
+    return of(chatMessages);
+  }
+  generateId() {
+    return Math.random().toString(36).substr(2, 9);
+  }
+  loadChatsFromCustomers() {
+    const customers = this.customerService.getCustomers();
+    const botChat = {
+      id: "bot-chat",
+      name: "Gemura Assistant",
+      avatar: "bot-icon",
+      // Use icon instead of image
+      type: "individual",
+      unreadCount: 0,
+      isOnline: true,
+      lastSeen: /* @__PURE__ */ new Date(),
+      participants: [
+        {
+          id: "bot",
+          name: "Gemura Assistant",
+          avatar: "bot-icon",
+          // Use icon instead of image
+          role: "member",
+          isOnline: true,
+          lastSeen: /* @__PURE__ */ new Date()
+        }
+      ],
+      lastMessage: {
+        id: "bot-welcome",
+        chatId: "bot-chat",
+        senderId: "bot",
+        senderName: "Gemura Assistant",
+        content: "Hello! I'm here to help you with any questions about your milk business. How can I assist you today?",
+        timestamp: new Date(Date.now() - 1e3 * 60 * 30),
+        // 30 minutes ago
+        type: "text",
+        status: "delivered",
+        isOwn: false
+      },
+      createdAt: /* @__PURE__ */ new Date(),
+      updatedAt: new Date(Date.now() - 1e3 * 60 * 30)
+    };
+    let customerChats = [];
+    if (customers && customers.length > 0) {
+      customerChats = customers.map((customer, index) => {
+        const chatId = `chat-${customer.id}`;
+        const isOnline = Math.random() > 0.5;
+        const unreadCount = Math.floor(Math.random() * 5);
+        return {
+          id: chatId,
+          name: customer.name,
+          avatar: customer.avatar || "assets/img/user.png",
+          type: "individual",
+          unreadCount,
+          isOnline,
+          lastSeen: isOnline ? /* @__PURE__ */ new Date() : new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24),
+          participants: [
+            {
+              id: customer.id,
+              name: customer.name,
+              avatar: customer.avatar || "assets/img/user.png",
+              role: "member",
+              isOnline,
+              lastSeen: isOnline ? /* @__PURE__ */ new Date() : new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24)
+            }
+          ],
+          lastMessage: this.generateRandomLastMessage(chatId, customer.name),
+          createdAt: customer.registrationDate,
+          updatedAt: new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24)
+        };
+      });
+    } else {
+      customerChats = this.createMockCustomerChats();
+    }
+    this.chats = [botChat, ...customerChats];
+    this.generateSampleMessages();
+  }
+  createMockCustomerChats() {
+    const mockCustomers = [
+      { id: "mock-1", name: "John Doe", avatar: "assets/img/user.png" },
+      { id: "mock-2", name: "Jane Smith", avatar: "assets/img/user.png" },
+      { id: "mock-3", name: "Mike Johnson", avatar: "assets/img/user.png" }
+    ];
+    return mockCustomers.map((customer) => {
+      const chatId = `chat-${customer.id}`;
+      const isOnline = Math.random() > 0.5;
+      const unreadCount = Math.floor(Math.random() * 5);
+      return {
+        id: chatId,
+        name: customer.name,
+        avatar: customer.avatar,
+        type: "individual",
+        unreadCount,
+        isOnline,
+        lastSeen: isOnline ? /* @__PURE__ */ new Date() : new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24),
+        participants: [
+          {
+            id: customer.id,
+            name: customer.name,
+            avatar: customer.avatar,
+            role: "member",
+            isOnline,
+            lastSeen: isOnline ? /* @__PURE__ */ new Date() : new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24)
+          }
+        ],
+        lastMessage: this.generateRandomLastMessage(chatId, customer.name),
+        createdAt: new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24 * 7),
+        // Random date in past week
+        updatedAt: new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24)
+      };
+    });
+  }
+  generateRandomLastMessage(chatId, customerName) {
+    const messages = [
+      "Hello! How can I help you today?",
+      "Thanks for your message!",
+      "I'll get back to you soon.",
+      "Is there anything else I can help with?",
+      "Have a great day!",
+      "Let me know if you need anything.",
+      "Perfect! I'll take care of that.",
+      "Thanks for reaching out!"
+    ];
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    const isOwn = Math.random() > 0.5;
+    return {
+      id: `msg-${chatId}-${Date.now()}`,
+      chatId,
+      senderId: isOwn ? "current-user" : customerName.toLowerCase().replace(" ", "-"),
+      senderName: isOwn ? "You" : customerName,
+      content: randomMessage,
+      timestamp: new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24),
+      type: "text",
+      status: isOwn ? "sent" : "delivered",
+      isOwn
+    };
+  }
+  generateSampleMessages() {
+    const sampleMessages = [];
+    const botChat = this.chats.find((chat) => chat.id === "bot-chat");
+    if (botChat) {
+      const botMessages = [
+        {
+          id: "bot-welcome",
+          chatId: "bot-chat",
+          senderId: "bot",
+          senderName: "Gemura Assistant",
+          senderAvatar: "bot-icon",
+          content: "Hello! I'm here to help you with any questions about your milk business. How can I assist you today?",
+          timestamp: new Date(Date.now() - 1e3 * 60 * 30),
+          // 30 minutes ago
+          type: "text",
+          status: "delivered",
+          isOwn: false
+        },
+        {
+          id: "bot-tip-1",
+          chatId: "bot-chat",
+          senderId: "bot",
+          senderName: "Gemura Assistant",
+          senderAvatar: "bot-icon",
+          content: "\u{1F4A1} Tip: You can ask me about customers, sales, inventory, or any aspect of your milk business!",
+          timestamp: new Date(Date.now() - 1e3 * 60 * 25),
+          // 25 minutes ago
+          type: "text",
+          status: "delivered",
+          isOwn: false
+        }
+      ];
+      sampleMessages.push(...botMessages);
+    }
+    this.chats.slice(1, 4).forEach((chat) => {
+      const messageCount = Math.floor(Math.random() * 3) + 1;
+      for (let i = 0; i < messageCount; i++) {
+        const isOwn = Math.random() > 0.5;
+        const messages = [
+          "Hello! How are you?",
+          "Thanks for your message!",
+          "I'll get back to you soon.",
+          "Is there anything else I can help with?",
+          "Have a great day!",
+          "Let me know if you need anything.",
+          "Perfect! I'll take care of that.",
+          "Thanks for reaching out!"
+        ];
+        sampleMessages.push({
+          id: `msg-${chat.id}-${i}`,
+          chatId: chat.id,
+          senderId: isOwn ? "current-user" : chat.participants[0].id,
+          senderName: isOwn ? "You" : chat.participants[0].name,
+          senderAvatar: isOwn ? "assets/img/user.png" : chat.participants[0].avatar,
+          content: messages[Math.floor(Math.random() * messages.length)],
+          timestamp: new Date(Date.now() - Math.random() * 1e3 * 60 * 60 * 24),
+          type: "text",
+          status: isOwn ? "sent" : "delivered",
+          isOwn
+        });
+      }
+    });
+    this.messages = sampleMessages;
+  }
+  generateBotResponse(chatId, userMessage) {
+    const botResponses = this.getBotResponses(userMessage);
+    const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+    const botMessage = {
+      id: this.generateId(),
+      chatId,
+      senderId: "bot",
+      senderName: "Gemura Assistant",
+      senderAvatar: "bot-icon",
+      content: randomResponse,
+      timestamp: /* @__PURE__ */ new Date(),
+      type: "text",
+      status: "delivered",
+      isOwn: false
+    };
+    this.messages.push(botMessage);
+    const chat = this.getChatById(chatId);
+    if (chat) {
+      chat.lastMessage = botMessage;
+      chat.updatedAt = /* @__PURE__ */ new Date();
+    }
+  }
+  getBotResponses(userMessage) {
+    const message = userMessage.toLowerCase();
+    if (message.includes("customer") || message.includes("client")) {
+      return [
+        "I can help you manage your customers. You can view all customers, add new ones, or track their purchase history.",
+        "Your customer database is accessible from the Customers section. Would you like me to show you how to add a new customer?",
+        "Customer management is essential for your business. I can guide you through the process of adding or updating customer information."
+      ];
+    }
+    if (message.includes("milk") || message.includes("supply") || message.includes("delivery")) {
+      return [
+        "I can help you track milk supplies and deliveries. You can monitor inventory levels and schedule deliveries to your customers.",
+        "Managing milk supply is crucial for your business. I can assist you with inventory tracking and delivery scheduling.",
+        "Your milk business requires careful supply management. I can help you optimize your delivery routes and track customer orders."
+      ];
+    }
+    if (message.includes("sales") || message.includes("revenue") || message.includes("profit")) {
+      return [
+        "I can help you analyze your sales data and revenue. You can view detailed reports and track your business performance.",
+        "Sales analytics are important for business growth. I can help you understand your revenue patterns and customer behavior.",
+        "Tracking sales and revenue helps you make informed decisions. I can assist you with financial reporting and analysis."
+      ];
+    }
+    if (message.includes("help") || message.includes("support")) {
+      return [
+        "I'm here to help you with your milk business! I can assist with customer management, sales tracking, inventory, and more.",
+        "I can guide you through various aspects of your business including customer relations, supply management, and financial tracking.",
+        "Feel free to ask me about any aspect of your milk business. I'm here to help you succeed!"
+      ];
+    }
+    if (message.includes("hello") || message.includes("hi") || message.includes("hey")) {
+      return [
+        "Hello! I'm your Gemura Assistant. How can I help you with your milk business today?",
+        "Hi there! I'm here to assist you with managing your milk business. What would you like to know?",
+        "Greetings! I'm ready to help you with any questions about your business operations."
+      ];
+    }
+    return [
+      "I understand you're asking about that. Let me help you with information about your milk business.",
+      "That's a great question! I can help you find the information you need about your business operations.",
+      "I'm here to assist you with your milk business. Could you be more specific about what you'd like to know?",
+      "I can help you with various aspects of your business including customers, sales, inventory, and more. What specific area interests you?"
+    ];
+  }
+};
+__name(_ChatService, "ChatService");
+__publicField(_ChatService, "\u0275fac", /* @__PURE__ */ __name(function ChatService_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _ChatService)(\u0275\u0275inject(CustomerService));
+}, "ChatService_Factory"));
+__publicField(_ChatService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ChatService, factory: _ChatService.\u0275fac, providedIn: "root" }));
+var ChatService = _ChatService;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ChatService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [{ type: CustomerService }], null);
+})();
+
+// src/app/features/chats/chats.component.ts
+function ChatsComponent_div_14_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 15)(1, "div", 16);
+    \u0275\u0275element(2, "app-feather-icon", 9);
+    \u0275\u0275elementStart(3, "input", 17);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function ChatsComponent_div_14_Template_input_ngModelChange_3_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      \u0275\u0275twoWayBindingSet(ctx_r1.searchQuery, $event) || (ctx_r1.searchQuery = $event);
+      return \u0275\u0275resetView($event);
+    }, "ChatsComponent_div_14_Template_input_ngModelChange_3_listener"));
+    \u0275\u0275listener("input", /* @__PURE__ */ __name(function ChatsComponent_div_14_Template_input_input_3_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.onSearch());
+    }, "ChatsComponent_div_14_Template_input_input_3_listener"));
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(4, "button", 18);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function ChatsComponent_div_14_Template_button_click_4_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.toggleSearch());
+    }, "ChatsComponent_div_14_Template_button_click_4_listener"));
+    \u0275\u0275element(5, "app-feather-icon", 19);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(3);
+    \u0275\u0275twoWayProperty("ngModel", ctx_r1.searchQuery);
+  }
+}
+__name(ChatsComponent_div_14_Template, "ChatsComponent_div_14_Template");
+function ChatsComponent_div_15_div_1_div_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 35);
+    \u0275\u0275element(1, "app-feather-icon", 36);
+    \u0275\u0275elementEnd();
+  }
+}
+__name(ChatsComponent_div_15_div_1_div_2_Template, "ChatsComponent_div_15_div_1_div_2_Template");
+function ChatsComponent_div_15_div_1_ng_template_3_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "img", 37);
+  }
+  if (rf & 2) {
+    const chat_r4 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275property("src", chat_r4.avatar || "assets/img/user.png", \u0275\u0275sanitizeUrl)("alt", chat_r4.name);
+  }
+}
+__name(ChatsComponent_div_15_div_1_ng_template_3_Template, "ChatsComponent_div_15_div_1_ng_template_3_Template");
+function ChatsComponent_div_15_div_1_div_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "div", 38);
+  }
+}
+__name(ChatsComponent_div_15_div_1_div_5_Template, "ChatsComponent_div_15_div_1_div_5_Template");
+function ChatsComponent_div_15_div_1_span_16_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 39);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const chat_r4 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(chat_r4.unreadCount);
+  }
+}
+__name(ChatsComponent_div_15_div_1_span_16_Template, "ChatsComponent_div_15_div_1_span_16_Template");
+function ChatsComponent_div_15_div_1_app_feather_icon_17_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "app-feather-icon", 40);
+  }
+  if (rf & 2) {
+    const chat_r4 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275classProp("read", (chat_r4.lastMessage == null ? null : chat_r4.lastMessage.status) === "read");
+  }
+}
+__name(ChatsComponent_div_15_div_1_app_feather_icon_17_Template, "ChatsComponent_div_15_div_1_app_feather_icon_17_Template");
+function ChatsComponent_div_15_div_1_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r3 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 22);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function ChatsComponent_div_15_div_1_Template_div_click_0_listener() {
+      const chat_r4 = \u0275\u0275restoreView(_r3).$implicit;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.selectChat(chat_r4));
+    }, "ChatsComponent_div_15_div_1_Template_div_click_0_listener"));
+    \u0275\u0275elementStart(1, "div", 23);
+    \u0275\u0275template(2, ChatsComponent_div_15_div_1_div_2_Template, 2, 0, "div", 24)(3, ChatsComponent_div_15_div_1_ng_template_3_Template, 1, 2, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(5, ChatsComponent_div_15_div_1_div_5_Template, 1, 0, "div", 25);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "div", 26)(7, "div", 27)(8, "h3", 28);
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "span", 29);
+    \u0275\u0275text(11);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(12, "div", 30)(13, "p", 31);
+    \u0275\u0275text(14);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "div", 32);
+    \u0275\u0275template(16, ChatsComponent_div_15_div_1_span_16_Template, 2, 1, "span", 33)(17, ChatsComponent_div_15_div_1_app_feather_icon_17_Template, 1, 2, "app-feather-icon", 34);
+    \u0275\u0275elementEnd()()()();
+  }
+  if (rf & 2) {
+    const chat_r4 = ctx.$implicit;
+    const userAvatar_r5 = \u0275\u0275reference(4);
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275classProp("active", ctx_r1.currentChatId === chat_r4.id);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", chat_r4.avatar === "bot-icon")("ngIfElse", userAvatar_r5);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngIf", chat_r4.isOnline);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(chat_r4.name);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.formatTime(chat_r4.lastMessage == null ? null : chat_r4.lastMessage.timestamp));
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate((chat_r4.lastMessage == null ? null : chat_r4.lastMessage.content) || "No messages yet");
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", chat_r4.unreadCount > 0);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", chat_r4.lastMessage == null ? null : chat_r4.lastMessage.isOwn);
+  }
+}
+__name(ChatsComponent_div_15_div_1_Template, "ChatsComponent_div_15_div_1_Template");
+function ChatsComponent_div_15_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 20);
+    \u0275\u0275template(1, ChatsComponent_div_15_div_1_Template, 18, 10, "div", 21);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r1.filteredChats);
+  }
+}
+__name(ChatsComponent_div_15_Template, "ChatsComponent_div_15_Template");
+function ChatsComponent_div_16_div_6_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 35);
+    \u0275\u0275element(1, "app-feather-icon", 63);
+    \u0275\u0275elementEnd();
+  }
+}
+__name(ChatsComponent_div_16_div_6_Template, "ChatsComponent_div_16_div_6_Template");
+function ChatsComponent_div_16_ng_template_7_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "img", 37);
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275property("src", ctx_r1.currentChat.avatar || "assets/img/user.png", \u0275\u0275sanitizeUrl)("alt", ctx_r1.currentChat.name);
+  }
+}
+__name(ChatsComponent_div_16_ng_template_7_Template, "ChatsComponent_div_16_ng_template_7_Template");
+function ChatsComponent_div_16_div_9_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "div", 38);
+  }
+}
+__name(ChatsComponent_div_16_div_9_Template, "ChatsComponent_div_16_div_9_Template");
+function ChatsComponent_div_16_p_13_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p");
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", ctx_r1.currentChat.isOnline ? "Online" : "Last seen " + ctx_r1.formatLastSeen(ctx_r1.currentChat.lastSeen), " ");
+  }
+}
+__name(ChatsComponent_div_16_p_13_Template, "ChatsComponent_div_16_p_13_Template");
+function ChatsComponent_div_16_p_14_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p");
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", ctx_r1.currentChat.participants.length, " members ");
+  }
+}
+__name(ChatsComponent_div_16_p_14_Template, "ChatsComponent_div_16_p_14_Template");
+function ChatsComponent_div_16_div_24_div_1_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 72);
+    \u0275\u0275element(1, "img", 37);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const message_r7 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275property("src", message_r7.senderAvatar || "assets/img/user.png", \u0275\u0275sanitizeUrl)("alt", message_r7.senderName);
+  }
+}
+__name(ChatsComponent_div_16_div_24_div_1_Template, "ChatsComponent_div_16_div_24_div_1_Template");
+function ChatsComponent_div_16_div_24_div_3_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 73)(1, "span", 74);
+    \u0275\u0275text(2);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "span", 75);
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const message_r7 = \u0275\u0275nextContext().$implicit;
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(message_r7.senderName);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.formatTime(message_r7.timestamp));
+  }
+}
+__name(ChatsComponent_div_16_div_24_div_3_Template, "ChatsComponent_div_16_div_24_div_3_Template");
+function ChatsComponent_div_16_div_24_div_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 76)(1, "div", 77)(2, "span", 78);
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "p", 79);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const message_r7 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(message_r7.replyTo.senderName);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(message_r7.replyTo.content);
+  }
+}
+__name(ChatsComponent_div_16_div_24_div_5_Template, "ChatsComponent_div_16_div_24_div_5_Template");
+function ChatsComponent_div_16_div_24_div_8_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 80);
+    \u0275\u0275element(1, "app-feather-icon", 40);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const message_r7 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275classProp("read", message_r7.status === "read");
+  }
+}
+__name(ChatsComponent_div_16_div_24_div_8_Template, "ChatsComponent_div_16_div_24_div_8_Template");
+function ChatsComponent_div_16_div_24_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 64);
+    \u0275\u0275template(1, ChatsComponent_div_16_div_24_div_1_Template, 2, 2, "div", 65);
+    \u0275\u0275elementStart(2, "div", 66);
+    \u0275\u0275template(3, ChatsComponent_div_16_div_24_div_3_Template, 5, 2, "div", 67);
+    \u0275\u0275elementStart(4, "div", 68);
+    \u0275\u0275template(5, ChatsComponent_div_16_div_24_div_5_Template, 6, 2, "div", 69);
+    \u0275\u0275elementStart(6, "div", 70);
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(8, ChatsComponent_div_16_div_24_div_8_Template, 2, 2, "div", 71);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const message_r7 = ctx.$implicit;
+    \u0275\u0275classProp("own-message", message_r7.isOwn)("reply-message", message_r7.replyTo);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !message_r7.isOwn);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", !message_r7.isOwn);
+    \u0275\u0275advance();
+    \u0275\u0275classProp("reply-bubble", message_r7.replyTo);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", message_r7.replyTo);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(message_r7.content);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", message_r7.isOwn);
+  }
+}
+__name(ChatsComponent_div_16_div_24_Template, "ChatsComponent_div_16_div_24_Template");
+function ChatsComponent_div_16_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r6 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 41)(1, "div", 42)(2, "button", 43);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function ChatsComponent_div_16_Template_button_click_2_listener() {
+      \u0275\u0275restoreView(_r6);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.closeChat());
+    }, "ChatsComponent_div_16_Template_button_click_2_listener"));
+    \u0275\u0275element(3, "app-feather-icon", 44);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "div", 45)(5, "div", 46);
+    \u0275\u0275template(6, ChatsComponent_div_16_div_6_Template, 2, 0, "div", 24)(7, ChatsComponent_div_16_ng_template_7_Template, 1, 2, "ng-template", null, 1, \u0275\u0275templateRefExtractor)(9, ChatsComponent_div_16_div_9_Template, 1, 0, "div", 25);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "div", 47)(11, "h3");
+    \u0275\u0275text(12);
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(13, ChatsComponent_div_16_p_13_Template, 2, 1, "p", 48)(14, ChatsComponent_div_16_p_14_Template, 2, 1, "p", 48);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(15, "div", 49)(16, "button", 50);
+    \u0275\u0275element(17, "app-feather-icon", 51);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(18, "button", 50);
+    \u0275\u0275element(19, "app-feather-icon", 52);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(20, "button", 50);
+    \u0275\u0275element(21, "app-feather-icon", 53);
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(22, "div", 54, 2);
+    \u0275\u0275template(24, ChatsComponent_div_16_div_24_Template, 9, 11, "div", 55);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(25, "div", 56)(26, "button", 57);
+    \u0275\u0275element(27, "app-feather-icon", 58);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(28, "div", 59)(29, "input", 60);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function ChatsComponent_div_16_Template_input_ngModelChange_29_listener($event) {
+      \u0275\u0275restoreView(_r6);
+      const ctx_r1 = \u0275\u0275nextContext();
+      \u0275\u0275twoWayBindingSet(ctx_r1.newMessage, $event) || (ctx_r1.newMessage = $event);
+      return \u0275\u0275resetView($event);
+    }, "ChatsComponent_div_16_Template_input_ngModelChange_29_listener"));
+    \u0275\u0275listener("keydown.enter", /* @__PURE__ */ __name(function ChatsComponent_div_16_Template_input_keydown_enter_29_listener() {
+      \u0275\u0275restoreView(_r6);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.sendMessage());
+    }, "ChatsComponent_div_16_Template_input_keydown_enter_29_listener"));
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(30, "button", 61);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function ChatsComponent_div_16_Template_button_click_30_listener() {
+      \u0275\u0275restoreView(_r6);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.sendMessage());
+    }, "ChatsComponent_div_16_Template_button_click_30_listener"));
+    \u0275\u0275element(31, "app-feather-icon", 62);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const userAvatarSmall_r8 = \u0275\u0275reference(8);
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(6);
+    \u0275\u0275property("ngIf", ctx_r1.currentChat.avatar === "bot-icon")("ngIfElse", userAvatarSmall_r8);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngIf", ctx_r1.currentChat.isOnline);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(ctx_r1.currentChat.name);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx_r1.currentChat.type === "individual");
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx_r1.currentChat.type === "group");
+    \u0275\u0275advance(10);
+    \u0275\u0275property("ngForOf", ctx_r1.messages);
+    \u0275\u0275advance(5);
+    \u0275\u0275twoWayProperty("ngModel", ctx_r1.newMessage);
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", !ctx_r1.newMessage.trim());
+  }
+}
+__name(ChatsComponent_div_16_Template, "ChatsComponent_div_16_Template");
+var _ChatsComponent = class _ChatsComponent {
+  chatService;
+  chats = [];
+  filteredChats = [];
+  currentChat = null;
+  currentChatId = null;
+  messages = [];
+  newMessage = "";
+  searchQuery = "";
+  showSearch = false;
+  subscriptions = [];
+  constructor(chatService) {
+    this.chatService = chatService;
+  }
+  ngOnInit() {
+    this.loadChats();
+    this.subscribeToCurrentChat();
+    setTimeout(() => {
+      this.chatService.reloadChats();
+      this.loadChats();
+    }, 1e3);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+  loadChats() {
+    this.chatService.getChats().subscribe((chats) => {
+      this.chats = chats;
+      this.filteredChats = chats;
+    });
+  }
+  subscribeToCurrentChat() {
+    const sub = this.chatService.getCurrentChatId().subscribe((chatId) => {
+      this.currentChatId = chatId;
+      if (chatId) {
+        this.currentChat = this.chatService.getChatById(chatId) || null;
+        this.loadMessages(chatId);
+      } else {
+        this.currentChat = null;
+        this.messages = [];
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+  loadMessages(chatId) {
+    this.chatService.getMessages(chatId).subscribe((messages) => {
+      this.messages = messages;
+      this.chatService.markChatAsRead(chatId);
+    });
+  }
+  selectChat(chat) {
+    this.chatService.setCurrentChat(chat.id);
+  }
+  closeChat() {
+    this.chatService.setCurrentChat(null);
+  }
+  sendMessage() {
+    if (!this.newMessage.trim() || !this.currentChatId)
+      return;
+    this.chatService.sendMessage(this.currentChatId, this.newMessage.trim());
+    this.newMessage = "";
+    this.loadMessages(this.currentChatId);
+  }
+  toggleSearch() {
+    this.showSearch = !this.showSearch;
+    if (!this.showSearch) {
+      this.searchQuery = "";
+      this.filteredChats = this.chats;
+    }
+  }
+  onSearch() {
+    if (!this.searchQuery.trim()) {
+      this.filteredChats = this.chats;
+    } else {
+      this.chatService.searchChats(this.searchQuery).subscribe((results) => {
+        this.filteredChats = results;
+      });
+    }
+  }
+  startNewChat() {
+    console.log("Start new chat");
+  }
+  formatTime(date) {
+    if (!date)
+      return "";
+    const now = /* @__PURE__ */ new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / (1e3 * 60));
+    const hours = Math.floor(diff / (1e3 * 60 * 60));
+    const days = Math.floor(diff / (1e3 * 60 * 60 * 24));
+    if (minutes < 1)
+      return "now";
+    if (minutes < 60)
+      return `${minutes}m`;
+    if (hours < 24)
+      return `${hours}h`;
+    if (days < 7)
+      return `${days}d`;
+    return date.toLocaleDateString();
+  }
+  formatLastSeen(date) {
+    if (!date)
+      return "";
+    const now = /* @__PURE__ */ new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / (1e3 * 60));
+    const hours = Math.floor(diff / (1e3 * 60 * 60));
+    if (minutes < 1)
+      return "just now";
+    if (minutes < 60)
+      return `${minutes} minutes ago`;
+    if (hours < 24)
+      return `${hours} hours ago`;
+    return date.toLocaleDateString();
+  }
+};
+__name(_ChatsComponent, "ChatsComponent");
+__publicField(_ChatsComponent, "\u0275fac", /* @__PURE__ */ __name(function ChatsComponent_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _ChatsComponent)(\u0275\u0275directiveInject(ChatService));
+}, "ChatsComponent_Factory"));
+__publicField(_ChatsComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ChatsComponent, selectors: [["app-chats"]], decls: 17, vars: 3, consts: [["userAvatar", ""], ["userAvatarSmall", ""], ["messagesContainer", ""], [1, "chats-container"], [1, "chats-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-secondary", 3, "click"], ["name", "search", "size", "16px"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], ["class", "search-bar", 4, "ngIf"], ["class", "chat-list", 4, "ngIf"], ["class", "chat-view", 4, "ngIf"], [1, "search-bar"], [1, "search-input"], ["type", "text", "placeholder", "Search chats...", 1, "search-field", 3, "ngModelChange", "input", "ngModel"], [1, "search-close", 3, "click"], ["name", "x", "size", "16px"], [1, "chat-list"], ["class", "chat-item", 3, "active", "click", 4, "ngFor", "ngForOf"], [1, "chat-item", 3, "click"], [1, "chat-avatar"], ["class", "avatar-content", 4, "ngIf", "ngIfElse"], ["class", "online-indicator", 4, "ngIf"], [1, "chat-content"], [1, "chat-header"], [1, "chat-name"], [1, "chat-time"], [1, "chat-preview"], [1, "last-message"], [1, "chat-badges"], ["class", "unread-count", 4, "ngIf"], ["name", "check", "size", "12px", 3, "read", 4, "ngIf"], [1, "avatar-content"], ["name", "bot", "size", "24px"], [3, "src", "alt"], [1, "online-indicator"], [1, "unread-count"], ["name", "check", "size", "12px"], [1, "chat-view"], [1, "chat-header-bar"], [1, "back-btn", 3, "click"], ["name", "arrow-left", "size", "20px"], [1, "chat-info"], [1, "chat-avatar-small"], [1, "chat-details"], [4, "ngIf"], [1, "chat-actions"], [1, "action-btn"], ["name", "phone", "size", "18px"], ["name", "video", "size", "18px"], ["name", "more-vertical", "size", "18px"], [1, "messages-container"], ["class", "message", 3, "own-message", "reply-message", 4, "ngFor", "ngForOf"], [1, "message-input"], [1, "attach-btn"], ["name", "paperclip", "size", "20px"], [1, "input-container"], ["type", "text", "placeholder", "Type a message...", 1, "message-field", 3, "ngModelChange", "keydown.enter", "ngModel"], [1, "send-btn", 3, "click", "disabled"], ["name", "send", "size", "18px"], ["name", "bot", "size", "20px"], [1, "message"], ["class", "message-avatar", 4, "ngIf"], [1, "message-content"], ["class", "message-header", 4, "ngIf"], [1, "message-bubble"], ["class", "reply-preview", 4, "ngIf"], [1, "message-text"], ["class", "message-status", 4, "ngIf"], [1, "message-avatar"], [1, "message-header"], [1, "sender-name"], [1, "message-time"], [1, "reply-preview"], [1, "reply-content"], [1, "reply-sender"], [1, "reply-text"], [1, "message-status"]], template: /* @__PURE__ */ __name(function ChatsComponent_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 3)(1, "div", 4)(2, "div", 5)(3, "h1");
+    \u0275\u0275text(4, "Chats");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "p", 6);
+    \u0275\u0275text(6, "Stay connected with your team and customers");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(7, "div", 7)(8, "button", 8);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function ChatsComponent_Template_button_click_8_listener() {
+      return ctx.toggleSearch();
+    }, "ChatsComponent_Template_button_click_8_listener"));
+    \u0275\u0275element(9, "app-feather-icon", 9);
+    \u0275\u0275text(10, " Search ");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "button", 10);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function ChatsComponent_Template_button_click_11_listener() {
+      return ctx.startNewChat();
+    }, "ChatsComponent_Template_button_click_11_listener"));
+    \u0275\u0275element(12, "app-feather-icon", 11);
+    \u0275\u0275text(13, " New Chat ");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275template(14, ChatsComponent_div_14_Template, 6, 1, "div", 12)(15, ChatsComponent_div_15_Template, 2, 1, "div", 13)(16, ChatsComponent_div_16_Template, 32, 9, "div", 14);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    \u0275\u0275advance(14);
+    \u0275\u0275property("ngIf", ctx.showSearch);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !ctx.currentChat);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx.currentChat);
+  }
+}, "ChatsComponent_Template"), dependencies: [CommonModule, NgForOf, NgIf, FormsModule, DefaultValueAccessor, NgControlStatus, NgModel, RouterModule, FeatherIconComponent], styles: ["\n\n.chats-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: 100vh;\n  background: transparent;\n  display: flex;\n  flex-direction: column;\n}\n@media (max-width: 768px) {\n  .chats-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.chats-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 24px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .chats-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.chats-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.chats-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.chats-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .chats-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.chats-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-secondary[_ngcontent-%COMP%] {\n  background: white;\n  color: #1e293b;\n  border: 1px solid #dee2e6;\n  padding: 10px 16px;\n  border-radius: 8px;\n  font-weight: 500;\n  transition: all 0.2s ease;\n}\n.chats-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-secondary[_ngcontent-%COMP%]:hover {\n  background: #fafbfc;\n  border-color: #004AAD;\n  color: #004AAD;\n}\n.chats-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-secondary[_ngcontent-%COMP%]:focus {\n  outline: none;\n  border-color: #004AAD;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.search-bar[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 24px;\n  padding: 16px;\n  background: white;\n  border-radius: 12px;\n  border: 1px solid #e2e8f0;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n.search-bar[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%] {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  padding: 12px 16px;\n  background: #f8fafc;\n  border-radius: 8px;\n  border: 1px solid #e2e8f0;\n}\n.search-bar[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%]   .search-field[_ngcontent-%COMP%] {\n  flex: 1;\n  border: none;\n  background: transparent;\n  outline: none;\n  font-size: 14px;\n  color: #1e293b;\n}\n.search-bar[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%]   .search-field[_ngcontent-%COMP%]::placeholder {\n  color: #94a3b8;\n}\n.search-bar[_ngcontent-%COMP%]   .search-close[_ngcontent-%COMP%] {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n}\n.search-bar[_ngcontent-%COMP%]   .search-close[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n  color: #1e293b;\n}\n.chat-list[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  border: 1px solid #e2e8f0;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  overflow: hidden;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  padding: 16px;\n  border-bottom: 1px solid #f1f5f9;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  gap: 12px;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item.active[_ngcontent-%COMP%] {\n  background: rgba(0, 74, 173, 0.05);\n  border-left: 3px solid #004AAD;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]:last-child {\n  border-bottom: none;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-avatar[_ngcontent-%COMP%] {\n  position: relative;\n  width: 48px;\n  height: 48px;\n  border-radius: 50%;\n  overflow: hidden;\n  flex-shrink: 0;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-avatar[_ngcontent-%COMP%]   img[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-avatar[_ngcontent-%COMP%]   .online-indicator[_ngcontent-%COMP%] {\n  position: absolute;\n  bottom: 2px;\n  right: 2px;\n  width: 12px;\n  height: 12px;\n  background: #10b981;\n  border: 2px solid white;\n  border-radius: 50%;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%] {\n  flex: 1;\n  min-width: 0;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 4px;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-header[_ngcontent-%COMP%]   .chat-name[_ngcontent-%COMP%] {\n  font-size: 16px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-header[_ngcontent-%COMP%]   .chat-time[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #64748b;\n  white-space: nowrap;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-preview[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-preview[_ngcontent-%COMP%]   .last-message[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #64748b;\n  margin: 0;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  flex: 1;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-preview[_ngcontent-%COMP%]   .chat-badges[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-left: 8px;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-preview[_ngcontent-%COMP%]   .chat-badges[_ngcontent-%COMP%]   .unread-count[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n  font-size: 12px;\n  font-weight: 600;\n  padding: 2px 6px;\n  border-radius: 10px;\n  min-width: 18px;\n  text-align: center;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-preview[_ngcontent-%COMP%]   .chat-badges[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #94a3b8;\n}\n.chat-list[_ngcontent-%COMP%]   .chat-item[_ngcontent-%COMP%]   .chat-content[_ngcontent-%COMP%]   .chat-preview[_ngcontent-%COMP%]   .chat-badges[_ngcontent-%COMP%]   app-feather-icon.read[_ngcontent-%COMP%] {\n  color: #004AAD;\n}\n.chat-view[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  border: 1px solid #e2e8f0;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  display: flex;\n  flex-direction: column;\n  height: calc(100vh - 200px);\n  min-height: 600px;\n}\n@media (max-width: 768px) {\n  .chat-view[_ngcontent-%COMP%] {\n    height: calc(100vh - 120px);\n    min-height: 500px;\n  }\n}\n.chat-header-bar[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  padding: 16px 20px;\n  border-bottom: 1px solid #e2e8f0;\n  background: white;\n  border-radius: 12px 12px 0 0;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .back-btn[_ngcontent-%COMP%] {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  margin-right: 12px;\n  transition: all 0.2s ease;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .back-btn[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n  color: #1e293b;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-info[_ngcontent-%COMP%] {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-info[_ngcontent-%COMP%]   .chat-avatar-small[_ngcontent-%COMP%] {\n  position: relative;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  overflow: hidden;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-info[_ngcontent-%COMP%]   .chat-avatar-small[_ngcontent-%COMP%]   img[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-info[_ngcontent-%COMP%]   .chat-avatar-small[_ngcontent-%COMP%]   .online-indicator[_ngcontent-%COMP%] {\n  position: absolute;\n  bottom: 0;\n  right: 0;\n  width: 12px;\n  height: 12px;\n  background: #10b981;\n  border: 2px solid white;\n  border-radius: 50%;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-info[_ngcontent-%COMP%]   .chat-details[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 16px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 2px 0;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-info[_ngcontent-%COMP%]   .chat-details[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #64748b;\n  margin: 0;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-actions[_ngcontent-%COMP%]   .action-btn[_ngcontent-%COMP%] {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n}\n.chat-header-bar[_ngcontent-%COMP%]   .chat-actions[_ngcontent-%COMP%]   .action-btn[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n  color: #1e293b;\n}\n.messages-container[_ngcontent-%COMP%] {\n  flex: 1;\n  padding: 20px;\n  overflow-y: auto;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n  background: #f8fafc;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  align-items: flex-end;\n}\n.messages-container[_ngcontent-%COMP%]   .message.own-message[_ngcontent-%COMP%] {\n  flex-direction: row-reverse;\n}\n.messages-container[_ngcontent-%COMP%]   .message.own-message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%] {\n  align-items: flex-end;\n}\n.messages-container[_ngcontent-%COMP%]   .message.own-message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n  border-radius: 18px 18px 4px 18px;\n}\n.messages-container[_ngcontent-%COMP%]   .message.own-message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%]   .message-status[_ngcontent-%COMP%] {\n  color: rgba(255, 255, 255, 0.7);\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-avatar[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  overflow: hidden;\n  flex-shrink: 0;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-avatar[_ngcontent-%COMP%]   img[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  max-width: 70%;\n  gap: 4px;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-header[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-bottom: 4px;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-header[_ngcontent-%COMP%]   .sender-name[_ngcontent-%COMP%] {\n  font-size: 12px;\n  font-weight: 600;\n  color: #1e293b;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-header[_ngcontent-%COMP%]   .message-time[_ngcontent-%COMP%] {\n  font-size: 11px;\n  color: #94a3b8;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%] {\n  background: white;\n  padding: 12px 16px;\n  border-radius: 18px 18px 18px 4px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  position: relative;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble.reply-bubble[_ngcontent-%COMP%] {\n  border-left: 3px solid #004AAD;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%]   .reply-preview[_ngcontent-%COMP%] {\n  margin-bottom: 8px;\n  padding: 8px;\n  background: rgba(0, 74, 173, 0.1);\n  border-radius: 8px;\n  border-left: 3px solid #004AAD;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%]   .reply-preview[_ngcontent-%COMP%]   .reply-sender[_ngcontent-%COMP%] {\n  font-size: 12px;\n  font-weight: 600;\n  color: #004AAD;\n  display: block;\n  margin-bottom: 2px;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%]   .reply-preview[_ngcontent-%COMP%]   .reply-text[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #64748b;\n  margin: 0;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%]   .message-text[_ngcontent-%COMP%] {\n  font-size: 14px;\n  line-height: 1.4;\n  margin: 0;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%]   .message-status[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  margin-top: 4px;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%]   .message-status[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #94a3b8;\n}\n.messages-container[_ngcontent-%COMP%]   .message[_ngcontent-%COMP%]   .message-content[_ngcontent-%COMP%]   .message-bubble[_ngcontent-%COMP%]   .message-status[_ngcontent-%COMP%]   app-feather-icon.read[_ngcontent-%COMP%] {\n  color: #004AAD;\n}\n.message-input[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  padding: 16px 20px;\n  border-top: 1px solid #e2e8f0;\n  background: white;\n  border-radius: 0 0 12px 12px;\n  gap: 12px;\n}\n.message-input[_ngcontent-%COMP%]   .attach-btn[_ngcontent-%COMP%] {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n}\n.message-input[_ngcontent-%COMP%]   .attach-btn[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n  color: #1e293b;\n}\n.message-input[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%] {\n  flex: 1;\n  position: relative;\n}\n.message-input[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .message-field[_ngcontent-%COMP%] {\n  width: 100%;\n  padding: 12px 16px;\n  border: 1px solid #e2e8f0;\n  border-radius: 20px;\n  background: #f8fafc;\n  font-size: 14px;\n  color: #1e293b;\n  outline: none;\n  transition: all 0.2s ease;\n}\n.message-input[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .message-field[_ngcontent-%COMP%]:focus {\n  border-color: #004AAD;\n  background: white;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.message-input[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .message-field[_ngcontent-%COMP%]::placeholder {\n  color: #94a3b8;\n}\n.message-input[_ngcontent-%COMP%]   .send-btn[_ngcontent-%COMP%] {\n  background: #004AAD;\n  border: none;\n  color: white;\n  cursor: pointer;\n  padding: 10px;\n  border-radius: 50%;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.message-input[_ngcontent-%COMP%]   .send-btn[_ngcontent-%COMP%]:hover:not(:disabled) {\n  background: rgb(0, 63.0924855491, 147.5);\n  transform: scale(1.05);\n}\n.message-input[_ngcontent-%COMP%]   .send-btn[_ngcontent-%COMP%]:disabled {\n  background: #cbd5e1;\n  cursor: not-allowed;\n  transform: none;\n}\n.btn-primary[_ngcontent-%COMP%], \n.btn-secondary[_ngcontent-%COMP%] {\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-size: 14px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  text-decoration: none;\n  border: none;\n}\n.btn-primary.btn-primary[_ngcontent-%COMP%], \n.btn-secondary.btn-primary[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n}\n.btn-primary.btn-primary[_ngcontent-%COMP%]:hover, \n.btn-secondary.btn-primary[_ngcontent-%COMP%]:hover {\n  background: rgb(0, 63.0924855491, 147.5);\n  transform: translateY(-1px);\n  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.3);\n}\n.btn-primary.btn-secondary[_ngcontent-%COMP%], \n.btn-secondary.btn-secondary[_ngcontent-%COMP%] {\n  background: white;\n  color: #64748b;\n  border: 1px solid #e2e8f0;\n}\n.btn-primary.btn-secondary[_ngcontent-%COMP%]:hover, \n.btn-secondary.btn-secondary[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n  border-color: #004AAD;\n  color: #004AAD;\n}\n/*# sourceMappingURL=chats.component.css.map */"] }));
+var ChatsComponent = _ChatsComponent;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ChatsComponent, [{
+    type: Component,
+    args: [{ selector: "app-chats", standalone: true, imports: [CommonModule, FormsModule, RouterModule, FeatherIconComponent], template: `
+    <div class="chats-container">
+      <!-- Header -->
+      <div class="chats-header">
+        <div class="header-content">
+          <h1>Chats</h1>
+          <p class="page-description">Stay connected with your team and customers</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-secondary" (click)="toggleSearch()">
+            <app-feather-icon name="search" size="16px"></app-feather-icon>
+            Search
+          </button>
+          <button class="btn-primary" (click)="startNewChat()">
+            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            New Chat
+          </button>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-bar" *ngIf="showSearch">
+        <div class="search-input">
+          <app-feather-icon name="search" size="16px"></app-feather-icon>
+          <input 
+            type="text" 
+            placeholder="Search chats..." 
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+            class="search-field">
+        </div>
+        <button class="search-close" (click)="toggleSearch()">
+          <app-feather-icon name="x" size="16px"></app-feather-icon>
+        </button>
+      </div>
+
+      <!-- Chat List -->
+      <div class="chat-list" *ngIf="!currentChat">
+        <div class="chat-item" 
+             *ngFor="let chat of filteredChats" 
+             (click)="selectChat(chat)"
+             [class.active]="currentChatId === chat.id">
+          <div class="chat-avatar">
+            <div class="avatar-content" *ngIf="chat.avatar === 'bot-icon'; else userAvatar">
+              <app-feather-icon name="bot" size="24px"></app-feather-icon>
+            </div>
+            <ng-template #userAvatar>
+              <img [src]="chat.avatar || 'assets/img/user.png'" [alt]="chat.name">
+            </ng-template>
+            <div class="online-indicator" *ngIf="chat.isOnline"></div>
+          </div>
+          <div class="chat-content">
+            <div class="chat-header">
+              <h3 class="chat-name">{{ chat.name }}</h3>
+              <span class="chat-time">{{ formatTime(chat.lastMessage?.timestamp) }}</span>
+            </div>
+            <div class="chat-preview">
+              <p class="last-message">{{ chat.lastMessage?.content || 'No messages yet' }}</p>
+              <div class="chat-badges">
+                <span class="unread-count" *ngIf="chat.unreadCount > 0">{{ chat.unreadCount }}</span>
+                <app-feather-icon 
+                  name="check" 
+                  size="12px" 
+                  *ngIf="chat.lastMessage?.isOwn"
+                  [class.read]="chat.lastMessage?.status === 'read'">
+                </app-feather-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Chat View -->
+      <div class="chat-view" *ngIf="currentChat">
+        <!-- Chat Header -->
+        <div class="chat-header-bar">
+          <button class="back-btn" (click)="closeChat()">
+            <app-feather-icon name="arrow-left" size="20px"></app-feather-icon>
+          </button>
+          <div class="chat-info">
+            <div class="chat-avatar-small">
+              <div class="avatar-content" *ngIf="currentChat.avatar === 'bot-icon'; else userAvatarSmall">
+                <app-feather-icon name="bot" size="20px"></app-feather-icon>
+              </div>
+              <ng-template #userAvatarSmall>
+                <img [src]="currentChat.avatar || 'assets/img/user.png'" [alt]="currentChat.name">
+              </ng-template>
+              <div class="online-indicator" *ngIf="currentChat.isOnline"></div>
+            </div>
+            <div class="chat-details">
+              <h3>{{ currentChat.name }}</h3>
+              <p *ngIf="currentChat.type === 'individual'">
+                {{ currentChat.isOnline ? 'Online' : 'Last seen ' + formatLastSeen(currentChat.lastSeen) }}
+              </p>
+              <p *ngIf="currentChat.type === 'group'">
+                {{ currentChat.participants.length }} members
+              </p>
+            </div>
+          </div>
+          <div class="chat-actions">
+            <button class="action-btn">
+              <app-feather-icon name="phone" size="18px"></app-feather-icon>
+            </button>
+            <button class="action-btn">
+              <app-feather-icon name="video" size="18px"></app-feather-icon>
+            </button>
+            <button class="action-btn">
+              <app-feather-icon name="more-vertical" size="18px"></app-feather-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages-container" #messagesContainer>
+          <div class="message" 
+               *ngFor="let message of messages" 
+               [class.own-message]="message.isOwn"
+               [class.reply-message]="message.replyTo">
+            <div class="message-avatar" *ngIf="!message.isOwn">
+              <img [src]="message.senderAvatar || 'assets/img/user.png'" [alt]="message.senderName">
+            </div>
+            <div class="message-content">
+              <div class="message-header" *ngIf="!message.isOwn">
+                <span class="sender-name">{{ message.senderName }}</span>
+                <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+              </div>
+              <div class="message-bubble" [class.reply-bubble]="message.replyTo">
+                <div class="reply-preview" *ngIf="message.replyTo">
+                  <div class="reply-content">
+                    <span class="reply-sender">{{ message.replyTo.senderName }}</span>
+                    <p class="reply-text">{{ message.replyTo.content }}</p>
+                  </div>
+                </div>
+                <div class="message-text">{{ message.content }}</div>
+                <div class="message-status" *ngIf="message.isOwn">
+                  <app-feather-icon 
+                    name="check" 
+                    size="12px"
+                    [class.read]="message.status === 'read'">
+                  </app-feather-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Input -->
+        <div class="message-input">
+          <button class="attach-btn">
+            <app-feather-icon name="paperclip" size="20px"></app-feather-icon>
+          </button>
+          <div class="input-container">
+            <input 
+              type="text" 
+              placeholder="Type a message..." 
+              [(ngModel)]="newMessage"
+              (keydown.enter)="sendMessage()"
+              class="message-field">
+          </div>
+          <button class="send-btn" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+            <app-feather-icon name="send" size="18px"></app-feather-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  `, styles: ["/* src/app/features/chats/chats.component.scss */\n.chats-container {\n  padding: 12px;\n  min-height: 100vh;\n  background: transparent;\n  display: flex;\n  flex-direction: column;\n}\n@media (max-width: 768px) {\n  .chats-container {\n    padding: 8px;\n  }\n}\n.chats-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 24px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .chats-header {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.chats-header .header-content h1 {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.chats-header .header-content .page-description {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.chats-header .header-actions {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .chats-header .header-actions {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.chats-header .header-actions .btn-secondary {\n  background: white;\n  color: #1e293b;\n  border: 1px solid #dee2e6;\n  padding: 10px 16px;\n  border-radius: 8px;\n  font-weight: 500;\n  transition: all 0.2s ease;\n}\n.chats-header .header-actions .btn-secondary:hover {\n  background: #fafbfc;\n  border-color: #004AAD;\n  color: #004AAD;\n}\n.chats-header .header-actions .btn-secondary:focus {\n  outline: none;\n  border-color: #004AAD;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.search-bar {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 24px;\n  padding: 16px;\n  background: white;\n  border-radius: 12px;\n  border: 1px solid #e2e8f0;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n.search-bar .search-input {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  padding: 12px 16px;\n  background: #f8fafc;\n  border-radius: 8px;\n  border: 1px solid #e2e8f0;\n}\n.search-bar .search-input .search-field {\n  flex: 1;\n  border: none;\n  background: transparent;\n  outline: none;\n  font-size: 14px;\n  color: #1e293b;\n}\n.search-bar .search-input .search-field::placeholder {\n  color: #94a3b8;\n}\n.search-bar .search-close {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n}\n.search-bar .search-close:hover {\n  background: #f1f5f9;\n  color: #1e293b;\n}\n.chat-list {\n  background: white;\n  border-radius: 12px;\n  border: 1px solid #e2e8f0;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  overflow: hidden;\n}\n.chat-list .chat-item {\n  display: flex;\n  align-items: center;\n  padding: 16px;\n  border-bottom: 1px solid #f1f5f9;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  gap: 12px;\n}\n.chat-list .chat-item:hover {\n  background: #f8fafc;\n}\n.chat-list .chat-item.active {\n  background: rgba(0, 74, 173, 0.05);\n  border-left: 3px solid #004AAD;\n}\n.chat-list .chat-item:last-child {\n  border-bottom: none;\n}\n.chat-list .chat-item .chat-avatar {\n  position: relative;\n  width: 48px;\n  height: 48px;\n  border-radius: 50%;\n  overflow: hidden;\n  flex-shrink: 0;\n}\n.chat-list .chat-item .chat-avatar img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.chat-list .chat-item .chat-avatar .online-indicator {\n  position: absolute;\n  bottom: 2px;\n  right: 2px;\n  width: 12px;\n  height: 12px;\n  background: #10b981;\n  border: 2px solid white;\n  border-radius: 50%;\n}\n.chat-list .chat-item .chat-content {\n  flex: 1;\n  min-width: 0;\n}\n.chat-list .chat-item .chat-content .chat-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 4px;\n}\n.chat-list .chat-item .chat-content .chat-header .chat-name {\n  font-size: 16px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.chat-list .chat-item .chat-content .chat-header .chat-time {\n  font-size: 12px;\n  color: #64748b;\n  white-space: nowrap;\n}\n.chat-list .chat-item .chat-content .chat-preview {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n.chat-list .chat-item .chat-content .chat-preview .last-message {\n  font-size: 14px;\n  color: #64748b;\n  margin: 0;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  flex: 1;\n}\n.chat-list .chat-item .chat-content .chat-preview .chat-badges {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-left: 8px;\n}\n.chat-list .chat-item .chat-content .chat-preview .chat-badges .unread-count {\n  background: #004AAD;\n  color: white;\n  font-size: 12px;\n  font-weight: 600;\n  padding: 2px 6px;\n  border-radius: 10px;\n  min-width: 18px;\n  text-align: center;\n}\n.chat-list .chat-item .chat-content .chat-preview .chat-badges app-feather-icon {\n  color: #94a3b8;\n}\n.chat-list .chat-item .chat-content .chat-preview .chat-badges app-feather-icon.read {\n  color: #004AAD;\n}\n.chat-view {\n  background: white;\n  border-radius: 12px;\n  border: 1px solid #e2e8f0;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  display: flex;\n  flex-direction: column;\n  height: calc(100vh - 200px);\n  min-height: 600px;\n}\n@media (max-width: 768px) {\n  .chat-view {\n    height: calc(100vh - 120px);\n    min-height: 500px;\n  }\n}\n.chat-header-bar {\n  display: flex;\n  align-items: center;\n  padding: 16px 20px;\n  border-bottom: 1px solid #e2e8f0;\n  background: white;\n  border-radius: 12px 12px 0 0;\n}\n.chat-header-bar .back-btn {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  margin-right: 12px;\n  transition: all 0.2s ease;\n}\n.chat-header-bar .back-btn:hover {\n  background: #f1f5f9;\n  color: #1e293b;\n}\n.chat-header-bar .chat-info {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.chat-header-bar .chat-info .chat-avatar-small {\n  position: relative;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  overflow: hidden;\n}\n.chat-header-bar .chat-info .chat-avatar-small img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.chat-header-bar .chat-info .chat-avatar-small .online-indicator {\n  position: absolute;\n  bottom: 0;\n  right: 0;\n  width: 12px;\n  height: 12px;\n  background: #10b981;\n  border: 2px solid white;\n  border-radius: 50%;\n}\n.chat-header-bar .chat-info .chat-details h3 {\n  font-size: 16px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 2px 0;\n}\n.chat-header-bar .chat-info .chat-details p {\n  font-size: 12px;\n  color: #64748b;\n  margin: 0;\n}\n.chat-header-bar .chat-actions {\n  display: flex;\n  gap: 8px;\n}\n.chat-header-bar .chat-actions .action-btn {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n}\n.chat-header-bar .chat-actions .action-btn:hover {\n  background: #f1f5f9;\n  color: #1e293b;\n}\n.messages-container {\n  flex: 1;\n  padding: 20px;\n  overflow-y: auto;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n  background: #f8fafc;\n}\n.messages-container .message {\n  display: flex;\n  gap: 12px;\n  align-items: flex-end;\n}\n.messages-container .message.own-message {\n  flex-direction: row-reverse;\n}\n.messages-container .message.own-message .message-content {\n  align-items: flex-end;\n}\n.messages-container .message.own-message .message-content .message-bubble {\n  background: #004AAD;\n  color: white;\n  border-radius: 18px 18px 4px 18px;\n}\n.messages-container .message.own-message .message-content .message-bubble .message-status {\n  color: rgba(255, 255, 255, 0.7);\n}\n.messages-container .message .message-avatar {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  overflow: hidden;\n  flex-shrink: 0;\n}\n.messages-container .message .message-avatar img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.messages-container .message .message-content {\n  display: flex;\n  flex-direction: column;\n  max-width: 70%;\n  gap: 4px;\n}\n.messages-container .message .message-content .message-header {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-bottom: 4px;\n}\n.messages-container .message .message-content .message-header .sender-name {\n  font-size: 12px;\n  font-weight: 600;\n  color: #1e293b;\n}\n.messages-container .message .message-content .message-header .message-time {\n  font-size: 11px;\n  color: #94a3b8;\n}\n.messages-container .message .message-content .message-bubble {\n  background: white;\n  padding: 12px 16px;\n  border-radius: 18px 18px 18px 4px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  position: relative;\n}\n.messages-container .message .message-content .message-bubble.reply-bubble {\n  border-left: 3px solid #004AAD;\n}\n.messages-container .message .message-content .message-bubble .reply-preview {\n  margin-bottom: 8px;\n  padding: 8px;\n  background: rgba(0, 74, 173, 0.1);\n  border-radius: 8px;\n  border-left: 3px solid #004AAD;\n}\n.messages-container .message .message-content .message-bubble .reply-preview .reply-sender {\n  font-size: 12px;\n  font-weight: 600;\n  color: #004AAD;\n  display: block;\n  margin-bottom: 2px;\n}\n.messages-container .message .message-content .message-bubble .reply-preview .reply-text {\n  font-size: 12px;\n  color: #64748b;\n  margin: 0;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.messages-container .message .message-content .message-bubble .message-text {\n  font-size: 14px;\n  line-height: 1.4;\n  margin: 0;\n}\n.messages-container .message .message-content .message-bubble .message-status {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  margin-top: 4px;\n}\n.messages-container .message .message-content .message-bubble .message-status app-feather-icon {\n  color: #94a3b8;\n}\n.messages-container .message .message-content .message-bubble .message-status app-feather-icon.read {\n  color: #004AAD;\n}\n.message-input {\n  display: flex;\n  align-items: center;\n  padding: 16px 20px;\n  border-top: 1px solid #e2e8f0;\n  background: white;\n  border-radius: 0 0 12px 12px;\n  gap: 12px;\n}\n.message-input .attach-btn {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n}\n.message-input .attach-btn:hover {\n  background: #f1f5f9;\n  color: #1e293b;\n}\n.message-input .input-container {\n  flex: 1;\n  position: relative;\n}\n.message-input .input-container .message-field {\n  width: 100%;\n  padding: 12px 16px;\n  border: 1px solid #e2e8f0;\n  border-radius: 20px;\n  background: #f8fafc;\n  font-size: 14px;\n  color: #1e293b;\n  outline: none;\n  transition: all 0.2s ease;\n}\n.message-input .input-container .message-field:focus {\n  border-color: #004AAD;\n  background: white;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.message-input .input-container .message-field::placeholder {\n  color: #94a3b8;\n}\n.message-input .send-btn {\n  background: #004AAD;\n  border: none;\n  color: white;\n  cursor: pointer;\n  padding: 10px;\n  border-radius: 50%;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.message-input .send-btn:hover:not(:disabled) {\n  background: rgb(0, 63.0924855491, 147.5);\n  transform: scale(1.05);\n}\n.message-input .send-btn:disabled {\n  background: #cbd5e1;\n  cursor: not-allowed;\n  transform: none;\n}\n.btn-primary,\n.btn-secondary {\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-size: 14px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  text-decoration: none;\n  border: none;\n}\n.btn-primary.btn-primary,\n.btn-secondary.btn-primary {\n  background: #004AAD;\n  color: white;\n}\n.btn-primary.btn-primary:hover,\n.btn-secondary.btn-primary:hover {\n  background: rgb(0, 63.0924855491, 147.5);\n  transform: translateY(-1px);\n  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.3);\n}\n.btn-primary.btn-secondary,\n.btn-secondary.btn-secondary {\n  background: white;\n  color: #64748b;\n  border: 1px solid #e2e8f0;\n}\n.btn-primary.btn-secondary:hover,\n.btn-secondary.btn-secondary:hover {\n  background: #f8fafc;\n  border-color: #004AAD;\n  color: #004AAD;\n}\n/*# sourceMappingURL=chats.component.css.map */\n"] }]
+  }], () => [{ type: ChatService }], null);
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ChatsComponent, { className: "ChatsComponent", filePath: "src/app/features/chats/chats.component.ts", lineNumber: 182 });
+})();
+
 // src/app/shared/components/data-table/data-table.component.ts
 var _c04 = [[["", "table-actions-left", ""]], [["", "table-actions-right", ""]], [["", "row-actions", ""]]];
 var _c1 = ["[table-actions-left]", "[table-actions-right]", "[row-actions]"];
@@ -57754,439 +59255,24 @@ var AddCustomerModalComponent = _AddCustomerModalComponent;
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AddCustomerModalComponent, { className: "AddCustomerModalComponent", filePath: "src/app/shared/components/add-customer-modal/add-customer-modal.component.ts", lineNumber: 148 });
 })();
 
-// src/app/core/services/api.service.ts
-var _ApiService = class _ApiService {
-  http;
-  baseUrl = "https://api.gemura.rw/v2";
-  token = null;
-  constructor(http) {
-    this.http = http;
-    this.loadToken();
-  }
-  loadToken() {
-    this.token = localStorage.getItem("auth_token");
-  }
-  getHeaders() {
-    const headers = new HttpHeaders({
-      "Accept": "application/json",
-      "Content-Type": "application/json"
-    });
-    if (this.token) {
-      return headers.set("Authorization", `Bearer ${this.token}`);
-    }
-    return headers;
-  }
-  // Generic HTTP methods
-  get(endpoint) {
-    return this.http.get(`${this.baseUrl}${endpoint}`, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
-  }
-  post(endpoint, data) {
-    const requestData = __spreadProps(__spreadValues({}, data), {
-      token: this.token
-    });
-    console.log("API Request:", {
-      url: `${this.baseUrl}${endpoint}`,
-      data: requestData,
-      headers: this.getHeaders()
-    });
-    return this.http.post(`${this.baseUrl}${endpoint}`, requestData, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
-  }
-  put(endpoint, data) {
-    return this.http.put(`${this.baseUrl}${endpoint}`, data, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
-  }
-  delete(endpoint) {
-    return this.http.delete(`${this.baseUrl}${endpoint}`, { headers: this.getHeaders() }).pipe(catchError(this.handleError));
-  }
-  handleError(error) {
-    let errorMessage = "An error occurred";
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = error.error.message;
-    } else {
-      if (error.status === 401) {
-        errorMessage = "Authentication failed. Please login again.";
-        localStorage.removeItem("auth_token");
-        window.location.href = "/auth/login";
-      } else if (error.status === 404) {
-        errorMessage = "Service not found.";
-      } else if (error.status === 500) {
-        errorMessage = "Server error. Please try again later.";
-      } else {
-        errorMessage = error.error?.message || `Error Code: ${error.status}`;
-      }
-    }
-    return throwError(() => new Error(errorMessage));
-  }
-  // Set token method
-  setToken(token) {
-    this.token = token;
-    localStorage.setItem("auth_token", token);
-    console.log("Token set:", token);
-  }
-  // Get current token
-  getToken() {
-    return this.token;
-  }
-  // Clear token method
-  clearToken() {
-    this.token = null;
-    localStorage.removeItem("auth_token");
-  }
-};
-__name(_ApiService, "ApiService");
-__publicField(_ApiService, "\u0275fac", /* @__PURE__ */ __name(function ApiService_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _ApiService)(\u0275\u0275inject(HttpClient));
-}, "ApiService_Factory"));
-__publicField(_ApiService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ApiService, factory: _ApiService.\u0275fac, providedIn: "root" }));
-var ApiService = _ApiService;
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ApiService, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [{ type: HttpClient }], null);
-})();
-
-// src/app/core/services/customer.service.ts
-var _CustomerService = class _CustomerService {
-  apiService;
-  customers = [];
-  milkSales = [];
-  constructor(apiService) {
-    this.apiService = apiService;
-    this.loadCustomersFromAPI();
-  }
-  // Debug method to set a test token
-  setTestToken(token) {
-    this.apiService.setToken(token);
-    console.log("Test token set, reloading customers...");
-    this.loadCustomersFromAPI();
-  }
-  // Customer methods
-  getCustomers() {
-    return this.customers;
-  }
-  getCustomersFromAPI() {
-    return this.apiService.post("/customers/get", {});
-  }
-  getCustomerById(id) {
-    return this.customers.find((customer) => customer.id === id);
-  }
-  addCustomer(customerData) {
-    return this.apiService.post("/customers/create", {
-      name: customerData.name,
-      phone: customerData.phone,
-      email: customerData.email,
-      address: customerData.address,
-      price_per_liter: customerData.pricePerLiter
-    });
-  }
-  updateCustomer(id, updates) {
-    const index = this.customers.findIndex((customer) => customer.id === id);
-    if (index !== -1) {
-      this.customers[index] = __spreadValues(__spreadValues({}, this.customers[index]), updates);
-      return this.customers[index];
-    }
-    return null;
-  }
-  deleteCustomer(id) {
-    const index = this.customers.findIndex((customer) => customer.id === id);
-    if (index !== -1) {
-      this.customers.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
-  // Milk sales methods
-  getMilkSales() {
-    return this.milkSales;
-  }
-  getMilkSalesByCustomer(customerId) {
-    return this.milkSales.filter((sale) => sale.customerId === customerId);
-  }
-  addMilkSale(sale) {
-    const newSale = __spreadProps(__spreadValues({}, sale), {
-      id: this.generateId()
-    });
-    this.milkSales.push(newSale);
-    const customer = this.getCustomerById(sale.customerId);
-    if (customer) {
-      customer.totalPurchases += 1;
-      customer.totalAmount += sale.totalAmount;
-      customer.lastPurchaseDate = sale.date;
-    }
-    return newSale;
-  }
-  updateMilkSale(id, updates) {
-    const index = this.milkSales.findIndex((sale) => sale.id === id);
-    if (index !== -1) {
-      this.milkSales[index] = __spreadValues(__spreadValues({}, this.milkSales[index]), updates);
-      return this.milkSales[index];
-    }
-    return null;
-  }
-  deleteMilkSale(id) {
-    const index = this.milkSales.findIndex((sale) => sale.id === id);
-    if (index !== -1) {
-      this.milkSales.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
-  // Statistics
-  getCustomerStats() {
-    const totalCustomers = this.customers.length;
-    const activeCustomers = this.customers.filter((c) => c.status === "Active").length;
-    const totalSales = this.milkSales.length;
-    const totalRevenue = this.milkSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
-    const averageOrderValue = totalSales > 0 ? totalRevenue / totalSales : 0;
-    return {
-      totalCustomers,
-      activeCustomers,
-      totalSales,
-      totalRevenue,
-      averageOrderValue
-    };
-  }
-  generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-  }
-  loadCustomersFromAPI() {
-    console.log("Loading customers from API...");
-    this.getCustomersFromAPI().subscribe({
-      next: /* @__PURE__ */ __name((response) => {
-        console.log("API Response:", response);
-        if (response.code === 200 || response.status === "success") {
-          this.customers = this.transformApiCustomers(response.data || []);
-          console.log("Transformed customers:", this.customers);
-        } else {
-          console.error("API returned error:", response);
-          this.loadMockData();
-        }
-      }, "next"),
-      error: /* @__PURE__ */ __name((error) => {
-        console.error("Failed to load customers from API:", error);
-        this.loadMockData();
-      }, "error")
-    });
-  }
-  transformApiCustomers(apiCustomers) {
-    return apiCustomers.map((apiCustomer) => ({
-      id: apiCustomer.relationship_id || apiCustomer.id,
-      name: apiCustomer.customer?.name || apiCustomer.name,
-      email: apiCustomer.customer?.email || apiCustomer.email,
-      phone: apiCustomer.customer?.phone || apiCustomer.phone,
-      address: apiCustomer.customer?.address || apiCustomer.address,
-      city: apiCustomer.customer?.city || "Kigali",
-      region: apiCustomer.customer?.region || "Kigali",
-      customerType: this.mapCustomerType(apiCustomer.customer?.type || "Individual"),
-      status: this.mapStatus(apiCustomer.relationship_status || "active"),
-      registrationDate: new Date(apiCustomer.created_at || /* @__PURE__ */ new Date()),
-      lastPurchaseDate: apiCustomer.last_purchase_date ? new Date(apiCustomer.last_purchase_date) : void 0,
-      totalPurchases: apiCustomer.total_purchases || 0,
-      totalAmount: apiCustomer.total_amount || 0,
-      preferredDeliveryTime: apiCustomer.preferred_delivery_time || "Morning (8:00-10:00)",
-      notes: apiCustomer.notes,
-      avatar: apiCustomer.avatar || "assets/img/user.png",
-      pricePerLiter: apiCustomer.price_per_liter || 0,
-      relationshipId: apiCustomer.relationship_id,
-      averageSupplyQuantity: apiCustomer.average_supply_quantity || 0,
-      relationshipStatus: apiCustomer.relationship_status,
-      userCode: apiCustomer.customer?.code || apiCustomer.user_code,
-      accountCode: apiCustomer.customer?.account?.code || apiCustomer.account_code,
-      accountName: apiCustomer.customer?.account?.name || apiCustomer.account_name
-    }));
-  }
-  mapCustomerType(type) {
-    const typeMap = {
-      "individual": "Individual",
-      "business": "Business",
-      "restaurant": "Restaurant",
-      "school": "School",
-      "hospital": "Hospital"
-    };
-    return typeMap[type.toLowerCase()] || "Individual";
-  }
-  mapStatus(status) {
-    const statusMap = {
-      "active": "Active",
-      "inactive": "Inactive",
-      "suspended": "Suspended"
-    };
-    return statusMap[status.toLowerCase()] || "Inactive";
-  }
-  loadMockData() {
-    this.customers = [
-      {
-        id: "1",
-        name: "John Mukamana",
-        email: "john.mukamana@email.com",
-        phone: "+250788123456",
-        address: "KG 123 St, Kigali",
-        city: "Kigali",
-        region: "Kigali",
-        customerType: "Individual",
-        status: "Active",
-        registrationDate: /* @__PURE__ */ new Date("2024-01-15"),
-        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-20"),
-        totalPurchases: 45,
-        totalAmount: 225e3,
-        preferredDeliveryTime: "Morning (8:00-10:00)",
-        notes: "Prefers fresh milk, regular customer",
-        avatar: "assets/img/user.png"
-      },
-      {
-        id: "2",
-        name: "Rwanda School Complex",
-        email: "admin@rwandaschool.rw",
-        phone: "+250788234567",
-        address: "KG 456 St, Kigali",
-        city: "Kigali",
-        region: "Kigali",
-        customerType: "School",
-        status: "Active",
-        registrationDate: /* @__PURE__ */ new Date("2024-02-10"),
-        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-22"),
-        totalPurchases: 120,
-        totalAmount: 6e5,
-        preferredDeliveryTime: "Early Morning (6:00-8:00)",
-        notes: "Large quantity orders for school meals",
-        avatar: "assets/img/user.png"
-      },
-      {
-        id: "3",
-        name: "Marie Uwimana",
-        email: "marie.uwimana@email.com",
-        phone: "+250788345678",
-        address: "KG 789 St, Kigali",
-        city: "Kigali",
-        region: "Kigali",
-        customerType: "Individual",
-        status: "Active",
-        registrationDate: /* @__PURE__ */ new Date("2024-03-05"),
-        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-18"),
-        totalPurchases: 28,
-        totalAmount: 14e4,
-        preferredDeliveryTime: "Evening (17:00-19:00)",
-        notes: "Prefers organic milk",
-        avatar: "assets/img/user.png"
-      },
-      {
-        id: "4",
-        name: "Hotel des Mille Collines",
-        email: "purchasing@millecollines.rw",
-        phone: "+250788456789",
-        address: "KG 321 St, Kigali",
-        city: "Kigali",
-        region: "Kigali",
-        customerType: "Business",
-        status: "Active",
-        registrationDate: /* @__PURE__ */ new Date("2024-01-20"),
-        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-23"),
-        totalPurchases: 200,
-        totalAmount: 1e6,
-        preferredDeliveryTime: "Morning (7:00-9:00)",
-        notes: "Premium hotel, requires high quality milk",
-        avatar: "assets/img/user.png"
-      },
-      {
-        id: "5",
-        name: "Kigali Hospital",
-        email: "supplies@kigalihospital.rw",
-        phone: "+250788567890",
-        address: "KG 654 St, Kigali",
-        city: "Kigali",
-        region: "Kigali",
-        customerType: "Hospital",
-        status: "Active",
-        registrationDate: /* @__PURE__ */ new Date("2024-02-15"),
-        lastPurchaseDate: /* @__PURE__ */ new Date("2024-09-21"),
-        totalPurchases: 150,
-        totalAmount: 75e4,
-        preferredDeliveryTime: "Early Morning (5:00-7:00)",
-        notes: "Medical facility, requires pasteurized milk",
-        avatar: "assets/img/user.png"
-      }
-    ];
-    this.milkSales = [
-      {
-        id: "s1",
-        customerId: "1",
-        customerName: "John Mukamana",
-        date: /* @__PURE__ */ new Date("2024-09-20"),
-        quantity: 5,
-        pricePerLiter: 1e3,
-        totalAmount: 5e3,
-        paymentMethod: "Mobile Money",
-        paymentStatus: "Paid",
-        deliveryMethod: "Delivery",
-        deliveryAddress: "KG 123 St, Kigali",
-        notes: "Regular order"
-      },
-      {
-        id: "s2",
-        customerId: "2",
-        customerName: "Rwanda School Complex",
-        date: /* @__PURE__ */ new Date("2024-09-22"),
-        quantity: 20,
-        pricePerLiter: 1e3,
-        totalAmount: 2e4,
-        paymentMethod: "Bank Transfer",
-        paymentStatus: "Paid",
-        deliveryMethod: "Delivery",
-        deliveryAddress: "KG 456 St, Kigali",
-        notes: "Weekly school order"
-      },
-      {
-        id: "s3",
-        customerId: "4",
-        customerName: "Hotel des Mille Collines",
-        date: /* @__PURE__ */ new Date("2024-09-23"),
-        quantity: 15,
-        pricePerLiter: 1200,
-        totalAmount: 18e3,
-        paymentMethod: "Bank Transfer",
-        paymentStatus: "Paid",
-        deliveryMethod: "Delivery",
-        deliveryAddress: "KG 321 St, Kigali",
-        notes: "Premium quality milk"
-      }
-    ];
-  }
-};
-__name(_CustomerService, "CustomerService");
-__publicField(_CustomerService, "\u0275fac", /* @__PURE__ */ __name(function CustomerService_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _CustomerService)(\u0275\u0275inject(ApiService));
-}, "CustomerService_Factory"));
-__publicField(_CustomerService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _CustomerService, factory: _CustomerService.\u0275fac, providedIn: "root" }));
-var CustomerService = _CustomerService;
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CustomerService, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [{ type: ApiService }], null);
-})();
-
 // src/app/features/customers/customers-list/customers-list.component.ts
-function CustomersListComponent_app_add_customer_modal_56_Template(rf, ctx) {
+function CustomersListComponent_app_add_customer_modal_53_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "app-add-customer-modal", 26);
-    \u0275\u0275listener("customerAdded", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_56_Template_app_add_customer_modal_customerAdded_0_listener($event) {
+    \u0275\u0275elementStart(0, "app-add-customer-modal", 24);
+    \u0275\u0275listener("customerAdded", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_customerAdded_0_listener($event) {
       \u0275\u0275restoreView(_r1);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.onCustomerAdded($event));
-    }, "CustomersListComponent_app_add_customer_modal_56_Template_app_add_customer_modal_customerAdded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_56_Template_app_add_customer_modal_modalClosed_0_listener() {
+    }, "CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_customerAdded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_modalClosed_0_listener() {
       \u0275\u0275restoreView(_r1);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.closeAddCustomerModal());
-    }, "CustomersListComponent_app_add_customer_modal_56_Template_app_add_customer_modal_modalClosed_0_listener"));
+    }, "CustomersListComponent_app_add_customer_modal_53_Template_app_add_customer_modal_modalClosed_0_listener"));
     \u0275\u0275elementEnd();
   }
 }
-__name(CustomersListComponent_app_add_customer_modal_56_Template, "CustomersListComponent_app_add_customer_modal_56_Template");
+__name(CustomersListComponent_app_add_customer_modal_53_Template, "CustomersListComponent_app_add_customer_modal_53_Template");
 var _CustomersListComponent = class _CustomersListComponent {
   customerService;
   customers = [];
@@ -58201,29 +59287,41 @@ var _CustomersListComponent = class _CustomersListComponent {
     this.initializeColumns();
     this.loadCustomers();
     this.loadStats();
+    this.customerService.reloadCustomers();
   }
   initializeColumns() {
     this.columns = [
+      { key: "index", title: "No.", type: "number", sortable: false },
       { key: "name", title: "Customer", type: "text", sortable: true },
-      { key: "customerType", title: "Type", type: "text", sortable: true },
       { key: "phone", title: "Phone", type: "text", sortable: true },
-      { key: "email", title: "Email", type: "text", sortable: true },
-      { key: "city", title: "Location", type: "text", sortable: true },
+      { key: "address", title: "Address", type: "text", sortable: true },
+      { key: "pricePerLiter", title: "Price/Liter (RWF)", type: "number", sortable: true },
+      { key: "averageSupplyQuantity", title: "Avg Supply (L)", type: "number", sortable: true },
       { key: "status", title: "Status", type: "text", sortable: true },
-      { key: "totalPurchases", title: "Orders", type: "number", sortable: true },
-      { key: "totalAmount", title: "Total Spent", type: "number", sortable: true },
-      { key: "lastPurchaseDate", title: "Last Purchase", type: "date", sortable: true }
+      { key: "registrationDate", title: "Registered", type: "date", sortable: true }
     ];
   }
   loadCustomers() {
     this.customers = this.customerService.getCustomers();
+    this.customers = this.customers.map((customer, index) => __spreadProps(__spreadValues({}, customer), {
+      index: index + 1
+    }));
     this.filteredCustomers = [...this.customers];
   }
   loadStats() {
-    this.stats = this.customerService.getCustomerStats();
+    const customers = this.customerService.getCustomers();
+    this.stats = {
+      totalCustomers: customers.length,
+      activeCustomers: customers.filter((c) => c.status === "Active").length,
+      totalRevenue: customers.reduce((sum, c) => sum + c.totalAmount, 0),
+      averagePrice: customers.length > 0 ? customers.reduce((sum, c) => sum + (c.pricePerLiter || 0), 0) / customers.length : 0
+    };
   }
   filterCustomers() {
     this.filteredCustomers = [...this.customers];
+    this.filteredCustomers = this.filteredCustomers.map((customer, index) => __spreadProps(__spreadValues({}, customer), {
+      index: index + 1
+    }));
   }
   handleSort(event) {
     console.log("Sort:", event);
@@ -58285,17 +59383,12 @@ var _CustomersListComponent = class _CustomersListComponent {
       }, "error")
     });
   }
-  testAPI() {
-    console.log("Testing API...");
-    const testToken = "test-token-123";
-    this.customerService.setTestToken(testToken);
-  }
 };
 __name(_CustomersListComponent, "CustomersListComponent");
 __publicField(_CustomersListComponent, "\u0275fac", /* @__PURE__ */ __name(function CustomersListComponent_Factory(__ngFactoryType__) {
   return new (__ngFactoryType__ || _CustomersListComponent)(\u0275\u0275directiveInject(CustomerService));
 }, "CustomersListComponent_Factory"));
-__publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CustomersListComponent, selectors: [["app-customers-list"]], decls: 57, vars: 10, consts: [[1, "customers-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-secondary", 2, "margin-right", "8px", 3, "click"], ["name", "refresh-cw", "size", "16px"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "users", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "user-check", "size", "24px"], ["name", "shopping-cart", "size", "24px"], ["name", "dollar-sign", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "customer-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover"], [3, "customerAdded", "modalClosed", 4, "ngIf"], [3, "customerAdded", "modalClosed"]], template: /* @__PURE__ */ __name(function CustomersListComponent_Template(rf, ctx) {
+__publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CustomersListComponent, selectors: [["app-customers-list"]], decls: 54, vars: 10, consts: [[1, "customers-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "users", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "user-check", "size", "24px"], ["name", "dollar-sign", "size", "24px"], ["name", "trending-up", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "customer-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover"], [3, "customerAdded", "modalClosed", 4, "ngIf"], [3, "customerAdded", "modalClosed"]], template: /* @__PURE__ */ __name(function CustomersListComponent_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "h1");
     \u0275\u0275text(4, "Customers");
@@ -58305,79 +59398,72 @@ __publicField(_CustomersListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(7, "div", 4)(8, "button", 5);
     \u0275\u0275listener("click", /* @__PURE__ */ __name(function CustomersListComponent_Template_button_click_8_listener() {
-      return ctx.testAPI();
+      return ctx.openAddCustomerModal();
     }, "CustomersListComponent_Template_button_click_8_listener"));
     \u0275\u0275element(9, "app-feather-icon", 6);
-    \u0275\u0275text(10, " Test API ");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(11, "button", 7);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CustomersListComponent_Template_button_click_11_listener() {
-      return ctx.openAddCustomerModal();
-    }, "CustomersListComponent_Template_button_click_11_listener"));
-    \u0275\u0275element(12, "app-feather-icon", 8);
-    \u0275\u0275text(13, " Add Customer ");
+    \u0275\u0275text(10, " Add Customer ");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(14, "div", 9)(15, "div", 10)(16, "div", 11);
-    \u0275\u0275element(17, "app-feather-icon", 12);
+    \u0275\u0275elementStart(11, "div", 7)(12, "div", 8)(13, "div", 9);
+    \u0275\u0275element(14, "app-feather-icon", 10);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(18, "div", 13)(19, "div", 14);
-    \u0275\u0275text(20);
+    \u0275\u0275elementStart(15, "div", 11)(16, "div", 12);
+    \u0275\u0275text(17);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(21, "div", 15);
-    \u0275\u0275text(22, "Total Customers");
+    \u0275\u0275elementStart(18, "div", 13);
+    \u0275\u0275text(19, "Total Customers");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(23, "div", 10)(24, "div", 11);
-    \u0275\u0275element(25, "app-feather-icon", 16);
+    \u0275\u0275elementStart(20, "div", 8)(21, "div", 9);
+    \u0275\u0275element(22, "app-feather-icon", 14);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(26, "div", 13)(27, "div", 14);
-    \u0275\u0275text(28);
+    \u0275\u0275elementStart(23, "div", 11)(24, "div", 12);
+    \u0275\u0275text(25);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(29, "div", 15);
-    \u0275\u0275text(30, "Active Customers");
+    \u0275\u0275elementStart(26, "div", 13);
+    \u0275\u0275text(27, "Active Customers");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(31, "div", 10)(32, "div", 11);
-    \u0275\u0275element(33, "app-feather-icon", 17);
+    \u0275\u0275elementStart(28, "div", 8)(29, "div", 9);
+    \u0275\u0275element(30, "app-feather-icon", 15);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(34, "div", 13)(35, "div", 14);
-    \u0275\u0275text(36);
+    \u0275\u0275elementStart(31, "div", 11)(32, "div", 12);
+    \u0275\u0275text(33);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(37, "div", 15);
-    \u0275\u0275text(38, "Total Sales");
+    \u0275\u0275elementStart(34, "div", 13);
+    \u0275\u0275text(35, "Avg Price/Liter");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(39, "div", 10)(40, "div", 11);
-    \u0275\u0275element(41, "app-feather-icon", 18);
+    \u0275\u0275elementStart(36, "div", 8)(37, "div", 9);
+    \u0275\u0275element(38, "app-feather-icon", 16);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(42, "div", 13)(43, "div", 14);
-    \u0275\u0275text(44);
+    \u0275\u0275elementStart(39, "div", 11)(40, "div", 12);
+    \u0275\u0275text(41);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(45, "div", 15);
-    \u0275\u0275text(46, "Total Revenue");
+    \u0275\u0275elementStart(42, "div", 13);
+    \u0275\u0275text(43, "Total Revenue");
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(47, "div", 19)(48, "div", 20)(49, "div", 21)(50, "h3");
-    \u0275\u0275text(51, "All Customers");
+    \u0275\u0275elementStart(44, "div", 17)(45, "div", 18)(46, "div", 19)(47, "h3");
+    \u0275\u0275text(48, "All Customers");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(52, "span", 22);
-    \u0275\u0275text(53);
+    \u0275\u0275elementStart(49, "span", 20);
+    \u0275\u0275text(50);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(54, "div", 23)(55, "app-data-table", 24);
-    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onSort_55_listener($event) {
+    \u0275\u0275elementStart(51, "div", 21)(52, "app-data-table", 22);
+    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onSort_52_listener($event) {
       return ctx.handleSort($event);
-    }, "CustomersListComponent_Template_app_data_table_onSort_55_listener"))("onPageChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageChange_55_listener($event) {
+    }, "CustomersListComponent_Template_app_data_table_onSort_52_listener"))("onPageChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageChange_52_listener($event) {
       return ctx.handlePageChange($event);
-    }, "CustomersListComponent_Template_app_data_table_onPageChange_55_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageSizeChange_55_listener($event) {
+    }, "CustomersListComponent_Template_app_data_table_onPageChange_52_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function CustomersListComponent_Template_app_data_table_onPageSizeChange_52_listener($event) {
       return ctx.handlePageSizeChange($event);
-    }, "CustomersListComponent_Template_app_data_table_onPageSizeChange_55_listener"));
+    }, "CustomersListComponent_Template_app_data_table_onPageSizeChange_52_listener"));
     \u0275\u0275elementEnd()()();
-    \u0275\u0275template(56, CustomersListComponent_app_add_customer_modal_56_Template, 1, 0, "app-add-customer-modal", 25);
+    \u0275\u0275template(53, CustomersListComponent_app_add_customer_modal_53_Template, 1, 0, "app-add-customer-modal", 23);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    \u0275\u0275advance(20);
+    \u0275\u0275advance(17);
     \u0275\u0275textInterpolate(ctx.stats.totalCustomers);
     \u0275\u0275advance(8);
     \u0275\u0275textInterpolate(ctx.stats.activeCustomers);
     \u0275\u0275advance(8);
-    \u0275\u0275textInterpolate(ctx.stats.totalSales);
+    \u0275\u0275textInterpolate(ctx.formatCurrency(ctx.stats.averagePrice));
     \u0275\u0275advance(8);
     \u0275\u0275textInterpolate(ctx.formatCurrency(ctx.stats.totalRevenue));
     \u0275\u0275advance(9);
@@ -58401,10 +59487,6 @@ var CustomersListComponent = _CustomersListComponent;
           <p class="page-description">Manage your customer database and track sales</p>
         </div>
         <div class="header-actions">
-          <button class="btn-secondary" (click)="testAPI()" style="margin-right: 8px;">
-            <app-feather-icon name="refresh-cw" size="16px"></app-feather-icon>
-            Test API
-          </button>
           <button class="btn-primary" (click)="openAddCustomerModal()">
             <app-feather-icon name="plus" size="16px"></app-feather-icon>
             Add Customer
@@ -58434,16 +59516,16 @@ var CustomersListComponent = _CustomersListComponent;
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="shopping-cart" size="24px"></app-feather-icon>
+            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ stats.totalSales }}</div>
-            <div class="stat-label">Total Sales</div>
+            <div class="stat-value">{{ formatCurrency(stats.averagePrice) }}</div>
+            <div class="stat-label">Avg Price/Liter</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
+            <app-feather-icon name="trending-up" size="24px"></app-feather-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatCurrency(stats.totalRevenue) }}</div>
@@ -58485,7 +59567,7 @@ var CustomersListComponent = _CustomersListComponent;
   }], () => [{ type: CustomerService }], null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CustomersListComponent, { className: "CustomersListComponent", filePath: "src/app/features/customers/customers-list/customers-list.component.ts", lineNumber: 106 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CustomersListComponent, { className: "CustomersListComponent", filePath: "src/app/features/customers/customers-list/customers-list.component.ts", lineNumber: 102 });
 })();
 
 // src/app/features/customers/add-customer/add-customer.component.ts
@@ -61671,6 +62753,10 @@ var routes = [
       {
         path: "feed",
         component: FeedComponent
+      },
+      {
+        path: "chats",
+        component: ChatsComponent
       },
       {
         path: "customers/list",

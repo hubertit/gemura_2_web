@@ -15,7 +15,7 @@ export class ApiService {
   }
 
   private loadToken() {
-    this.token = localStorage.getItem('auth_token');
+    this.token = localStorage.getItem('gemura.token');
   }
 
   private getHeaders(): HttpHeaders {
@@ -38,11 +38,19 @@ export class ApiService {
   }
 
   post<T>(endpoint: string, data: any): Observable<T> {
-    // Add token to request body for API compatibility
-    const requestData = {
-      ...data,
-      token: this.token
-    };
+    // For customers/get endpoint, send only token in body
+    let requestData;
+    if (endpoint === '/customers/get') {
+      requestData = {
+        token: this.token
+      };
+    } else {
+      // For other endpoints, merge data with token
+      requestData = {
+        ...data,
+        token: this.token
+      };
+    }
     
     console.log('API Request:', {
       url: `${this.baseUrl}${endpoint}`,
@@ -92,7 +100,7 @@ export class ApiService {
   // Set token method
   setToken(token: string) {
     this.token = token;
-    localStorage.setItem('auth_token', token);
+    localStorage.setItem('gemura.token', token);
     console.log('Token set:', token);
   }
 
