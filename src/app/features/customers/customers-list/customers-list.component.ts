@@ -4,26 +4,21 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
+import { AddCustomerModalComponent } from '../../../shared/components/add-customer-modal/add-customer-modal.component';
 import { CustomerService, Customer } from '../../../core/services/customer.service';
 
 @Component({
   selector: 'app-customers-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent],
+  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, AddCustomerModalComponent],
   template: `
     <div class="customers-container">
       <!-- Header -->
       <div class="page-header">
-        <div class="header-content">
-          <h1>Customers</h1>
-          <p class="page-description">Manage your customer database and track sales</p>
-        </div>
+        <h1>Customers</h1>
+        <p class="page-description">Manage your customer database and track sales</p>
         <div class="header-actions">
-          <button class="btn-secondary" (click)="exportCustomers()">
-            <app-feather-icon name="download" size="16px"></app-feather-icon>
-            Export
-          </button>
-          <button class="btn-primary" routerLink="/customers/add">
+          <button class="btn-primary" (click)="openAddCustomerModal()">
             <app-feather-icon name="plus" size="16px"></app-feather-icon>
             Add Customer
           </button>
@@ -70,17 +65,8 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
         </div>
       </div>
 
-      <!-- Search and Filter Bar -->
-      <div class="search-filter-bar">
-        <div class="search-box">
-          <app-feather-icon name="search" size="16px"></app-feather-icon>
-          <input 
-            type="text" 
-            placeholder="Search customers..." 
-            [(ngModel)]="searchTerm"
-            (input)="filterCustomers()"
-            class="search-input">
-        </div>
+      <!-- Filter Bar -->
+      <div class="filter-bar">
         <div class="filter-dropdown">
           <select [(ngModel)]="statusFilter" (change)="filterCustomers()" class="filter-select">
             <option value="">All Status</option>
@@ -111,6 +97,13 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
           </app-data-table>
         </div>
       </div>
+
+      <!-- Add Customer Modal -->
+      <app-add-customer-modal 
+        *ngIf="showAddCustomerModal"
+        (customerAdded)="onCustomerAdded($event)"
+        (modalClosed)="closeAddCustomerModal()">
+      </app-add-customer-modal>
     </div>
   `,
   styleUrls: ['./customers-list.component.scss']
@@ -118,9 +111,9 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
 export class CustomersListComponent implements OnInit {
   customers: Customer[] = [];
   filteredCustomers: Customer[] = [];
-  searchTerm = '';
   statusFilter = '';
   stats: any = {};
+  showAddCustomerModal = false;
 
   columns: any[] = [];
 
@@ -158,14 +151,8 @@ export class CustomersListComponent implements OnInit {
 
   filterCustomers() {
     this.filteredCustomers = this.customers.filter(customer => {
-      const matchesSearch = !this.searchTerm || 
-        customer.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        customer.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        customer.phone.includes(this.searchTerm);
-      
       const matchesStatus = !this.statusFilter || customer.status === this.statusFilter;
-      
-      return matchesSearch && matchesStatus;
+      return matchesStatus;
     });
   }
 
@@ -185,10 +172,6 @@ export class CustomersListComponent implements OnInit {
     console.log('Page size:', size);
   }
 
-  exportCustomers() {
-    // TODO: Implement export functionality
-    console.log('Export customers');
-  }
 
   viewCustomer(customer: Customer) {
     // TODO: Navigate to customer details
@@ -259,4 +242,42 @@ export class CustomersListComponent implements OnInit {
       </button>
     </div>
   `;
+
+  // Modal methods
+  openAddCustomerModal() {
+    this.showAddCustomerModal = true;
+  }
+
+  closeAddCustomerModal() {
+    this.showAddCustomerModal = false;
+  }
+
+  onCustomerAdded(customerData: any) {
+    // Add the new customer to the list
+    const newCustomer: Customer = {
+      id: Date.now().toString(),
+      name: customerData.name,
+      email: customerData.email,
+      phone: customerData.phone,
+      address: customerData.address,
+      city: '',
+      region: '',
+      customerType: 'Individual',
+      status: 'Active',
+      registrationDate: new Date(),
+      lastPurchaseDate: new Date(),
+      totalPurchases: 0,
+      totalAmount: 0,
+      preferredDeliveryTime: '',
+      notes: '',
+      avatar: undefined
+    };
+
+    this.customers.unshift(newCustomer);
+    this.filterCustomers();
+    this.loadStats();
+    
+    // Show success message
+    console.log('Customer added successfully:', newCustomer);
+  }
 }
