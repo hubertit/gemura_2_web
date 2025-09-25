@@ -40,6 +40,36 @@ export interface Comment {
   replies: Comment[];
 }
 
+export interface TrendingTopic {
+  tag: string;
+  posts: number;
+  trend: 'up' | 'down';
+}
+
+export interface SuggestedUser {
+  id: string;
+  name: string;
+  username: string;
+  avatar: string;
+  verified: boolean;
+  followers: number;
+  isFollowing: boolean;
+}
+
+export interface Activity {
+  id: string;
+  type: 'like' | 'comment' | 'share' | 'follow' | 'post';
+  text: string;
+  timestamp: Date;
+}
+
+export interface FeedStats {
+  posts: number;
+  likes: number;
+  comments: number;
+  shares: number;
+}
+
 @Component({
   selector: 'app-feed',
   standalone: true,
@@ -90,8 +120,12 @@ export interface Comment {
         </div>
       </div>
 
-      <!-- Feed Posts -->
-      <div class="feed-posts">
+      <!-- Main Content Layout -->
+      <div class="feed-layout">
+        <!-- Main Feed Column -->
+        <div class="feed-main">
+          <!-- Feed Posts -->
+          <div class="feed-posts">
         <div class="post-card" *ngFor="let post of posts; trackBy: trackByPostId">
           <!-- Post Header -->
           <div class="post-header">
@@ -209,6 +243,124 @@ export interface Comment {
             </div>
           </div>
         </div>
+        </div>
+
+        <!-- Sidebar Widgets -->
+        <div class="feed-sidebar">
+          <!-- Trending Topics Widget -->
+          <div class="widget trending-widget">
+            <div class="widget-header">
+              <h3>Trending Topics</h3>
+              <app-feather-icon name="trending-up" size="16px"></app-feather-icon>
+            </div>
+            <div class="trending-list">
+              <div class="trending-item" *ngFor="let trend of trendingTopics">
+                <div class="trending-content">
+                  <span class="trending-tag">#{{ trend.tag }}</span>
+                  <span class="trending-posts">{{ trend.posts }} posts</span>
+                </div>
+                <div class="trending-trend" [class.up]="trend.trend === 'up'" [class.down]="trend.trend === 'down'">
+                  <app-feather-icon [name]="trend.trend === 'up' ? 'trending-up' : 'trending-down'" size="12px"></app-feather-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggested Users Widget -->
+          <div class="widget suggested-widget">
+            <div class="widget-header">
+              <h3>Suggested for You</h3>
+              <app-feather-icon name="users" size="16px"></app-feather-icon>
+            </div>
+            <div class="suggested-list">
+              <div class="suggested-user" *ngFor="let user of suggestedUsers">
+                <img [src]="user.avatar" [alt]="user.name" class="user-avatar">
+                <div class="user-info">
+                  <div class="user-name">
+                    {{ user.name }}
+                    <app-feather-icon *ngIf="user.verified" name="check-circle" size="14px" class="verified-icon"></app-feather-icon>
+                  </div>
+                  <div class="user-username">@{{ user.username }}</div>
+                  <div class="user-followers">{{ user.followers }} followers</div>
+                </div>
+                <button class="follow-btn" [class.following]="user.isFollowing" (click)="toggleFollow(user)">
+                  {{ user.isFollowing ? 'Following' : 'Follow' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity Widget -->
+          <div class="widget activity-widget">
+            <div class="widget-header">
+              <h3>Recent Activity</h3>
+              <app-feather-icon name="activity" size="16px"></app-feather-icon>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item" *ngFor="let activity of recentActivity">
+                <div class="activity-icon" [class]="activity.type">
+                  <app-feather-icon [name]="getActivityIcon(activity.type)" size="16px"></app-feather-icon>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-text">{{ activity.text }}</div>
+                  <div class="activity-time">{{ formatTime(activity.timestamp) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feed Stats Widget -->
+          <div class="widget stats-widget">
+            <div class="widget-header">
+              <h3>Your Feed Stats</h3>
+              <app-feather-icon name="bar-chart-2" size="16px"></app-feather-icon>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ feedStats.posts }}</div>
+                <div class="stat-label">Posts</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ feedStats.likes }}</div>
+                <div class="stat-label">Likes</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ feedStats.comments }}</div>
+                <div class="stat-label">Comments</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ feedStats.shares }}</div>
+                <div class="stat-label">Shares</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Widget -->
+          <div class="widget quick-actions-widget">
+            <div class="widget-header">
+              <h3>Quick Actions</h3>
+              <app-feather-icon name="zap" size="16px"></app-feather-icon>
+            </div>
+            <div class="quick-actions-grid">
+              <button class="quick-action-btn" (click)="quickAction('photo')">
+                <app-feather-icon name="camera" size="18px"></app-feather-icon>
+                <span>Photo</span>
+              </button>
+              <button class="quick-action-btn" (click)="quickAction('video')">
+                <app-feather-icon name="video" size="18px"></app-feather-icon>
+                <span>Video</span>
+              </button>
+              <button class="quick-action-btn" (click)="quickAction('poll')">
+                <app-feather-icon name="bar-chart" size="18px"></app-feather-icon>
+                <span>Poll</span>
+              </button>
+              <button class="quick-action-btn" (click)="quickAction('event')">
+                <app-feather-icon name="calendar" size="18px"></app-feather-icon>
+                <span>Event</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   `,
@@ -219,9 +371,17 @@ export class FeedComponent implements OnInit {
   showCreatePost = false;
   newPostText = '';
   newCommentText = '';
+  trendingTopics: TrendingTopic[] = [];
+  suggestedUsers: SuggestedUser[] = [];
+  recentActivity: Activity[] = [];
+  feedStats: FeedStats = { posts: 0, likes: 0, comments: 0, shares: 0 };
 
   ngOnInit() {
     this.loadFeedPosts();
+    this.loadTrendingTopics();
+    this.loadSuggestedUsers();
+    this.loadRecentActivity();
+    this.loadFeedStats();
   }
 
   loadFeedPosts() {
@@ -394,5 +554,136 @@ export class FeedComponent implements OnInit {
 
   trackByPostId(index: number, post: FeedPost): string {
     return post.id;
+  }
+
+  loadTrendingTopics() {
+    this.trendingTopics = [
+      { tag: 'MilkCollection', posts: 1247, trend: 'up' },
+      { tag: 'FarmLife', posts: 892, trend: 'up' },
+      { tag: 'DairyFarming', posts: 654, trend: 'down' },
+      { tag: 'OrganicMilk', posts: 423, trend: 'up' },
+      { tag: 'FarmTech', posts: 312, trend: 'up' },
+      { tag: 'SustainableFarming', posts: 289, trend: 'down' }
+    ];
+  }
+
+  loadSuggestedUsers() {
+    this.suggestedUsers = [
+      {
+        id: '1',
+        name: 'Sarah Johnson',
+        username: 'sarahj_farm',
+        avatar: 'assets/img/user.png',
+        verified: true,
+        followers: 2450,
+        isFollowing: false
+      },
+      {
+        id: '2',
+        name: 'Mike Chen',
+        username: 'mike_dairy',
+        avatar: 'assets/img/user.png',
+        verified: false,
+        followers: 1200,
+        isFollowing: false
+      },
+      {
+        id: '3',
+        name: 'Emma Wilson',
+        username: 'emma_organic',
+        avatar: 'assets/img/user.png',
+        verified: true,
+        followers: 3200,
+        isFollowing: true
+      },
+      {
+        id: '4',
+        name: 'David Brown',
+        username: 'david_farmer',
+        avatar: 'assets/img/user.png',
+        verified: false,
+        followers: 890,
+        isFollowing: false
+      }
+    ];
+  }
+
+  loadRecentActivity() {
+    this.recentActivity = [
+      {
+        id: '1',
+        type: 'like',
+        text: 'Someone liked your post about milk collection',
+        timestamp: new Date(Date.now() - 15 * 60 * 1000) // 15 minutes ago
+      },
+      {
+        id: '2',
+        type: 'comment',
+        text: 'New comment on your farm update',
+        timestamp: new Date(Date.now() - 45 * 60 * 1000) // 45 minutes ago
+      },
+      {
+        id: '3',
+        type: 'follow',
+        text: 'Sarah Johnson started following you',
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours ago
+      },
+      {
+        id: '4',
+        type: 'share',
+        text: 'Your post was shared 3 times',
+        timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000) // 3 hours ago
+      },
+      {
+        id: '5',
+        type: 'post',
+        text: 'You published a new post',
+        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000) // 4 hours ago
+      }
+    ];
+  }
+
+  loadFeedStats() {
+    this.feedStats = {
+      posts: 12,
+      likes: 156,
+      comments: 34,
+      shares: 8
+    };
+  }
+
+  toggleFollow(user: SuggestedUser) {
+    user.isFollowing = !user.isFollowing;
+    user.followers += user.isFollowing ? 1 : -1;
+  }
+
+  getActivityIcon(type: string): string {
+    const iconMap: { [key: string]: string } = {
+      'like': 'heart',
+      'comment': 'message-circle',
+      'share': 'share-2',
+      'follow': 'user-plus',
+      'post': 'edit-3'
+    };
+    return iconMap[type] || 'activity';
+  }
+
+  quickAction(action: string) {
+    console.log('Quick action triggered:', action);
+    // TODO: Implement quick actions
+    switch(action) {
+      case 'photo':
+        this.addImage();
+        break;
+      case 'video':
+        this.addVideo();
+        break;
+      case 'poll':
+        console.log('Create poll');
+        break;
+      case 'event':
+        console.log('Create event');
+        break;
+    }
   }
 }
