@@ -13,7 +13,7 @@ import { AddCustomerComponent } from './features/customers/add-customer/add-cust
 import { SoldMilkComponent } from './features/customers/sold-milk/sold-milk.component';
 import { SuppliersListComponent } from './features/suppliers/suppliers-list/suppliers-list.component';
 import { CollectionsListComponent } from './features/collections/collections-list/collections-list.component';
-import { MilkSalesComponent } from './features/milk-sales/milk-sales.component';
+import { SalesListComponent } from './features/sales/sales-list/sales-list.component';
 import { EntitiesComponent } from './features/entities/entities.component';
 import { UsersComponent } from './features/users/users.component';
 import { RolesComponent } from './features/roles/roles.component';
@@ -85,8 +85,8 @@ export const routes: Routes = [
           component: CollectionsListComponent
         },
       {
-        path: 'milk-sales',
-        component: MilkSalesComponent
+        path: 'sales',
+        component: SalesListComponent
       },
       {
         path: 'entities',

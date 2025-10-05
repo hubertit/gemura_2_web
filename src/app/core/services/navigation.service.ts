@@ -41,9 +41,9 @@ export class NavigationService {
       path: 'collections'
     },
     {
-      title: 'Milk Sales',
+      title: 'Sales',
       icon: 'shopping-cart',
-      path: 'milk-sales'
+      path: 'sales'
     },
       {
         title: 'Ikofi',

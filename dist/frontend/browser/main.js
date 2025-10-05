@@ -55144,9 +55144,9 @@ var _NavigationService = class _NavigationService {
       path: "collections"
     },
     {
-      title: "Milk Sales",
+      title: "Sales",
       icon: "shopping-cart",
-      path: "milk-sales"
+      path: "sales"
     },
     {
       title: "Ikofi",
@@ -67283,57 +67283,1277 @@ var CollectionsListComponent = _CollectionsListComponent;
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CollectionsListComponent, { className: "CollectionsListComponent", filePath: "src/app/features/collections/collections-list/collections-list.component.ts", lineNumber: 155 });
 })();
 
-// src/app/features/milk-sales/milk-sales.component.ts
-var _MilkSalesComponent = class _MilkSalesComponent {
-};
-__name(_MilkSalesComponent, "MilkSalesComponent");
-__publicField(_MilkSalesComponent, "\u0275fac", /* @__PURE__ */ __name(function MilkSalesComponent_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _MilkSalesComponent)();
-}, "MilkSalesComponent_Factory"));
-__publicField(_MilkSalesComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _MilkSalesComponent, selectors: [["app-milk-sales"]], decls: 14, vars: 0, consts: [[1, "milk-sales-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "coming-soon"], [1, "coming-soon-content"], ["name", "shopping-cart", "size", "64px", 1, "coming-soon-icon"]], template: /* @__PURE__ */ __name(function MilkSalesComponent_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "h1");
-    \u0275\u0275text(4, "Milk Sales");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "p", 3);
-    \u0275\u0275text(6, "Track and manage milk sales to customers");
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(7, "div", 4)(8, "div", 5);
-    \u0275\u0275element(9, "app-feather-icon", 6);
-    \u0275\u0275elementStart(10, "h2");
-    \u0275\u0275text(11, "Milk Sales");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(12, "p");
-    \u0275\u0275text(13, "This feature is coming soon. You'll be able to track and manage milk sales to your customers.");
-    \u0275\u0275elementEnd()()()();
+// src/app/features/sales/sales.service.ts
+var _SalesService = class _SalesService {
+  http;
+  configService;
+  authService;
+  constructor(http, configService, authService) {
+    this.http = http;
+    this.configService = configService;
+    this.authService = authService;
   }
-}, "MilkSalesComponent_Template"), dependencies: [CommonModule, FeatherIconComponent], styles: ["\n\n.milk-sales-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .milk-sales-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.coming-soon[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 400px;\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n}\n.coming-soon[_ngcontent-%COMP%]   .coming-soon-content[_ngcontent-%COMP%] {\n  text-align: center;\n  padding: 48px 24px;\n}\n.coming-soon[_ngcontent-%COMP%]   .coming-soon-content[_ngcontent-%COMP%]   .coming-soon-icon[_ngcontent-%COMP%] {\n  color: #004AAD;\n  margin-bottom: 24px;\n}\n.coming-soon[_ngcontent-%COMP%]   .coming-soon-content[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 16px 0;\n}\n.coming-soon[_ngcontent-%COMP%]   .coming-soon-content[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n  max-width: 400px;\n}\n/*# sourceMappingURL=milk-sales.component.css.map */"] }));
-var MilkSalesComponent = _MilkSalesComponent;
+  getAuthToken() {
+    const token = this.authService.getToken();
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    return token;
+  }
+  handleError(error) {
+    let errorMessage = "An unknown error occurred!";
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      if (error.status === 404) {
+        errorMessage = "API endpoint not found.";
+      } else if (error.error && error.error.message) {
+        errorMessage = `Error: ${error.error.message}`;
+      } else {
+        errorMessage = `Error Code: ${error.status}
+Message: ${error.message}`;
+      }
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
+  getSales() {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/sales/sales"), { token }).pipe(map((response) => {
+      if (response.code === 200 || response.status === "success") {
+        const salesData = response.data && response.data.sales ? response.data.sales : response.data;
+        return (salesData || []).map((json) => this.mapToSale(json));
+      } else {
+        throw new Error(response.message || "Failed to get sales");
+      }
+    }), catchError(this.handleError));
+  }
+  getFilteredSales(filters) {
+    const token = this.getAuthToken();
+    const requestData = {
+      token,
+      filters: __spreadProps(__spreadValues({}, filters), {
+        date_from: filters.dateFrom ? filters.dateFrom.toISOString().split("T")[0] : void 0,
+        date_to: filters.dateTo ? filters.dateTo.toISOString().split("T")[0] : void 0
+      })
+    };
+    return this.http.post(this.configService.getFullUrl("/sales/sales"), requestData).pipe(map((response) => {
+      if (response.code === 200 || response.status === "success") {
+        const salesData = response.data && response.data.sales ? response.data.sales : response.data;
+        return (salesData || []).map((json) => this.mapToSale(json));
+      } else {
+        throw new Error(response.message || "Failed to get filtered sales");
+      }
+    }), catchError(this.handleError));
+  }
+  createSale(sale) {
+    const token = this.getAuthToken();
+    const requestData = {
+      token,
+      customer_account_code: sale.customerAccountCode,
+      quantity: sale.quantity,
+      status: sale.status,
+      sale_at: sale.saleAt.toISOString().replace("T", " ").substring(0, 19),
+      notes: sale.notes
+    };
+    return this.http.post(this.configService.getFullUrl("/sales/sell"), requestData).pipe(catchError(this.handleError));
+  }
+  updateSale(updateRequest) {
+    const token = this.getAuthToken();
+    const requestData = {
+      token,
+      sale_id: updateRequest.saleId
+    };
+    if (updateRequest.customerAccountCode !== void 0)
+      requestData.customer_account_code = updateRequest.customerAccountCode;
+    if (updateRequest.quantity !== void 0)
+      requestData.quantity = updateRequest.quantity;
+    if (updateRequest.pricePerLiter !== void 0)
+      requestData.unit_price = updateRequest.pricePerLiter;
+    if (updateRequest.status !== void 0)
+      requestData.status = updateRequest.status;
+    if (updateRequest.saleAt !== void 0)
+      requestData.sale_at = updateRequest.saleAt.toISOString().replace("T", " ").substring(0, 19);
+    if (updateRequest.notes !== void 0)
+      requestData.notes = updateRequest.notes;
+    return this.http.post(this.configService.getFullUrl("/sales/update"), requestData).pipe(catchError(this.handleError));
+  }
+  cancelSale(saleId) {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/sales/cancel"), { token, sale_id: saleId }).pipe(catchError(this.handleError));
+  }
+  getSaleStats() {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/sales/stats"), { token }).pipe(map((response) => {
+      if (response.code === 200 || response.status === "success") {
+        return response.data || {};
+      } else {
+        throw new Error(response.message || "Failed to get sale stats");
+      }
+    }), catchError(this.handleError));
+  }
+  mapToSale(json) {
+    const customerAccount = json["customer_account"];
+    return {
+      id: json["id"]?.toString() ?? "",
+      customerId: customerAccount?.code?.toString() ?? json["customer_account_code"]?.toString() ?? "",
+      customerName: customerAccount?.name?.toString() ?? json["customer_name"]?.toString() ?? "",
+      customerPhone: json["customer_phone"]?.toString() ?? "",
+      quantity: parseFloat(json["quantity"]?.toString() ?? "0"),
+      pricePerLiter: parseFloat(json["unit_price"]?.toString() ?? "0"),
+      totalValue: parseFloat(json["total_amount"]?.toString() ?? "0"),
+      status: json["status"]?.toString() ?? "pending",
+      rejectionReason: json["rejection_reason"]?.toString(),
+      notes: json["notes"]?.toString(),
+      saleDate: new Date(json["sale_at"] ?? Date.now()),
+      createdAt: new Date(json["created_at"] ?? Date.now()),
+      updatedAt: new Date(json["updated_at"] ?? Date.now())
+    };
+  }
+};
+__name(_SalesService, "SalesService");
+__publicField(_SalesService, "\u0275fac", /* @__PURE__ */ __name(function SalesService_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _SalesService)(\u0275\u0275inject(HttpClient), \u0275\u0275inject(ConfigService), \u0275\u0275inject(AuthService));
+}, "SalesService_Factory"));
+__publicField(_SalesService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _SalesService, factory: _SalesService.\u0275fac, providedIn: "root" }));
+var SalesService = _SalesService;
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MilkSalesComponent, [{
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SalesService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [{ type: HttpClient }, { type: ConfigService }, { type: AuthService }], null);
+})();
+
+// src/app/shared/components/record-sale-modal/record-sale-modal.component.ts
+function RecordSaleModalComponent_option_19_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 39);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const customer_r2 = ctx.$implicit;
+    \u0275\u0275property("value", customer_r2.accountCode);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate2(" ", customer_r2.name, " (", customer_r2.accountCode, ") ");
+  }
+}
+__name(RecordSaleModalComponent_option_19_Template, "RecordSaleModalComponent_option_19_Template");
+function RecordSaleModalComponent_div_21_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 40);
+    \u0275\u0275text(1, " Please select a customer ");
+    \u0275\u0275elementEnd();
+  }
+}
+__name(RecordSaleModalComponent_div_21_Template, "RecordSaleModalComponent_div_21_Template");
+function RecordSaleModalComponent_div_29_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 40);
+    \u0275\u0275text(1, " Please enter a valid quantity ");
+    \u0275\u0275elementEnd();
+  }
+}
+__name(RecordSaleModalComponent_div_29_Template, "RecordSaleModalComponent_div_29_Template");
+function RecordSaleModalComponent_div_43_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 40);
+    \u0275\u0275text(1, " Please select a status ");
+    \u0275\u0275elementEnd();
+  }
+}
+__name(RecordSaleModalComponent_div_43_Template, "RecordSaleModalComponent_div_43_Template");
+function RecordSaleModalComponent_div_50_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 40);
+    \u0275\u0275text(1, " Please select sale date and time ");
+    \u0275\u0275elementEnd();
+  }
+}
+__name(RecordSaleModalComponent_div_50_Template, "RecordSaleModalComponent_div_50_Template");
+function RecordSaleModalComponent_span_61_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span");
+    \u0275\u0275text(1, "Record Sale");
+    \u0275\u0275elementEnd();
+  }
+}
+__name(RecordSaleModalComponent_span_61_Template, "RecordSaleModalComponent_span_61_Template");
+function RecordSaleModalComponent_span_62_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span");
+    \u0275\u0275text(1, "Recording...");
+    \u0275\u0275elementEnd();
+  }
+}
+__name(RecordSaleModalComponent_span_62_Template, "RecordSaleModalComponent_span_62_Template");
+function RecordSaleModalComponent_app_feather_icon_63_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "app-feather-icon", 41);
+  }
+}
+__name(RecordSaleModalComponent_app_feather_icon_63_Template, "RecordSaleModalComponent_app_feather_icon_63_Template");
+var _RecordSaleModalComponent = class _RecordSaleModalComponent {
+  saleRecorded = new EventEmitter();
+  modalClosed = new EventEmitter();
+  saleData = {
+    customerAccountCode: "",
+    quantity: 0,
+    status: "accepted",
+    notes: "",
+    saleAt: /* @__PURE__ */ new Date()
+  };
+  selectedCustomerAccountCode = "";
+  saleDateTimeLocal = "";
+  // For datetime-local input
+  isSubmitting = false;
+  customers$ = of([]);
+  salesService = inject2(SalesService);
+  customerService = inject2(CustomerService);
+  ngOnInit() {
+    this.loadCustomers();
+    this.setInitialDateTime();
+  }
+  loadCustomers() {
+    this.customers$ = of(this.customerService.getCustomers());
+  }
+  setInitialDateTime() {
+    const now = /* @__PURE__ */ new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    this.saleDateTimeLocal = now.toISOString().slice(0, 16);
+    this.saleData.saleAt = now;
+  }
+  onSubmit() {
+    if (this.isSubmitting)
+      return;
+    this.isSubmitting = true;
+    this.saleData.customerAccountCode = this.selectedCustomerAccountCode;
+    this.saleData.saleAt = new Date(this.saleDateTimeLocal);
+    this.salesService.createSale(this.saleData).subscribe({
+      next: /* @__PURE__ */ __name((response) => {
+        console.log("Sale recorded successfully:", response);
+        this.saleRecorded.emit(response);
+        this.isSubmitting = false;
+        this.closeModal();
+      }, "next"),
+      error: /* @__PURE__ */ __name((error) => {
+        console.error("Failed to record sale:", error);
+        alert("Failed to record sale: " + error.message);
+        this.isSubmitting = false;
+      }, "error")
+    });
+  }
+  closeModal() {
+    this.modalClosed.emit();
+  }
+};
+__name(_RecordSaleModalComponent, "RecordSaleModalComponent");
+__publicField(_RecordSaleModalComponent, "\u0275fac", /* @__PURE__ */ __name(function RecordSaleModalComponent_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _RecordSaleModalComponent)();
+}, "RecordSaleModalComponent_Factory"));
+__publicField(_RecordSaleModalComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _RecordSaleModalComponent, selectors: [["app-record-sale-modal"]], outputs: { saleRecorded: "saleRecorded", modalClosed: "modalClosed" }, decls: 64, vars: 16, consts: [["saleForm", "ngForm"], ["customerField", "ngModel"], ["quantityField", "ngModel"], ["statusField", "ngModel"], ["saleAtField", "ngModel"], [1, "modal-overlay", 3, "click"], [1, "modal-container", 3, "click"], [1, "modal-header"], [1, "close-btn", 3, "click"], ["name", "x", "size", "20px"], [1, "modal-body"], [3, "ngSubmit"], [1, "form-group"], ["for", "customer"], [1, "input-container"], ["name", "user", "size", "18px", 1, "input-icon"], ["id", "customer", "name", "customer", "required", "", 1, "form-select", 3, "ngModelChange", "ngModel"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["class", "error-message", 4, "ngIf"], ["for", "quantity"], ["name", "droplet", "size", "18px", 1, "input-icon"], ["type", "number", "id", "quantity", "name", "quantity", "required", "", "min", "0.1", "step", "0.1", "placeholder", "Enter quantity in liters", 1, "form-input", 3, "ngModelChange", "ngModel"], ["for", "status"], ["name", "check-circle", "size", "18px", 1, "input-icon"], ["id", "status", "name", "status", "required", "", 1, "form-select", 3, "ngModelChange", "ngModel"], ["value", "accepted"], ["value", "rejected"], ["value", "pending"], ["for", "saleAt"], ["type", "datetime-local", "id", "saleAt", "name", "saleAt", "required", "", 1, "form-input", 3, "ngModelChange", "ngModel"], ["for", "notes"], ["name", "file-text", "size", "18px", 1, "input-icon"], ["id", "notes", "name", "notes", "placeholder", "Add any additional notes", "rows", "3", 1, "form-textarea", 3, "ngModelChange", "ngModel"], [1, "form-actions"], ["type", "button", 1, "btn", "btn-danger-outline", 3, "click"], ["type", "submit", 1, "btn", "btn-primary", 3, "disabled"], [4, "ngIf"], ["name", "loader", "size", "16px", "class", "spinning", 4, "ngIf"], [3, "value"], [1, "error-message"], ["name", "loader", "size", "16px", 1, "spinning"]], template: /* @__PURE__ */ __name(function RecordSaleModalComponent_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 5);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_div_click_0_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.closeModal());
+    }, "RecordSaleModalComponent_Template_div_click_0_listener"));
+    \u0275\u0275elementStart(1, "div", 6);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_div_click_1_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView($event.stopPropagation());
+    }, "RecordSaleModalComponent_Template_div_click_1_listener"));
+    \u0275\u0275elementStart(2, "div", 7)(3, "h2");
+    \u0275\u0275text(4, "Record Milk Sale");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "button", 8);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_button_click_5_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.closeModal());
+    }, "RecordSaleModalComponent_Template_button_click_5_listener"));
+    \u0275\u0275element(6, "app-feather-icon", 9);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(7, "div", 10)(8, "form", 11, 0);
+    \u0275\u0275listener("ngSubmit", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_form_ngSubmit_8_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.onSubmit());
+    }, "RecordSaleModalComponent_Template_form_ngSubmit_8_listener"));
+    \u0275\u0275elementStart(10, "div", 12)(11, "label", 13);
+    \u0275\u0275text(12, "Select Customer *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "div", 14);
+    \u0275\u0275element(14, "app-feather-icon", 15);
+    \u0275\u0275elementStart(15, "select", 16, 1);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_select_ngModelChange_15_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.selectedCustomerAccountCode, $event) || (ctx.selectedCustomerAccountCode = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordSaleModalComponent_Template_select_ngModelChange_15_listener"));
+    \u0275\u0275elementStart(17, "option", 17);
+    \u0275\u0275text(18, "-- Select Customer --");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(19, RecordSaleModalComponent_option_19_Template, 2, 3, "option", 18);
+    \u0275\u0275pipe(20, "async");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(21, RecordSaleModalComponent_div_21_Template, 2, 0, "div", 19);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(22, "div", 12)(23, "label", 20);
+    \u0275\u0275text(24, "Quantity (Liters) *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(25, "div", 14);
+    \u0275\u0275element(26, "app-feather-icon", 21);
+    \u0275\u0275elementStart(27, "input", 22, 2);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_input_ngModelChange_27_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.saleData.quantity, $event) || (ctx.saleData.quantity = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordSaleModalComponent_Template_input_ngModelChange_27_listener"));
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(29, RecordSaleModalComponent_div_29_Template, 2, 0, "div", 19);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(30, "div", 12)(31, "label", 23);
+    \u0275\u0275text(32, "Status *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(33, "div", 14);
+    \u0275\u0275element(34, "app-feather-icon", 24);
+    \u0275\u0275elementStart(35, "select", 25, 3);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_select_ngModelChange_35_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.saleData.status, $event) || (ctx.saleData.status = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordSaleModalComponent_Template_select_ngModelChange_35_listener"));
+    \u0275\u0275elementStart(37, "option", 26);
+    \u0275\u0275text(38, "Accepted");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(39, "option", 27);
+    \u0275\u0275text(40, "Rejected");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(41, "option", 28);
+    \u0275\u0275text(42, "Pending");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275template(43, RecordSaleModalComponent_div_43_Template, 2, 0, "div", 19);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(44, "div", 12)(45, "label", 29);
+    \u0275\u0275text(46, "Sale Date & Time *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(47, "div", 14)(48, "input", 30, 4);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_input_ngModelChange_48_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.saleDateTimeLocal, $event) || (ctx.saleDateTimeLocal = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordSaleModalComponent_Template_input_ngModelChange_48_listener"));
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(50, RecordSaleModalComponent_div_50_Template, 2, 0, "div", 19);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(51, "div", 12)(52, "label", 31);
+    \u0275\u0275text(53, "Notes (Optional)");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(54, "div", 14);
+    \u0275\u0275element(55, "app-feather-icon", 32);
+    \u0275\u0275elementStart(56, "textarea", 33);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_textarea_ngModelChange_56_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.saleData.notes, $event) || (ctx.saleData.notes = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordSaleModalComponent_Template_textarea_ngModelChange_56_listener"));
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(57, "div", 34)(58, "button", 35);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function RecordSaleModalComponent_Template_button_click_58_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.closeModal());
+    }, "RecordSaleModalComponent_Template_button_click_58_listener"));
+    \u0275\u0275text(59, " Cancel ");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(60, "button", 36);
+    \u0275\u0275template(61, RecordSaleModalComponent_span_61_Template, 2, 0, "span", 37)(62, RecordSaleModalComponent_span_62_Template, 2, 0, "span", 37)(63, RecordSaleModalComponent_app_feather_icon_63_Template, 1, 0, "app-feather-icon", 38);
+    \u0275\u0275elementEnd()()()()()();
+  }
+  if (rf & 2) {
+    const saleForm_r3 = \u0275\u0275reference(9);
+    const customerField_r4 = \u0275\u0275reference(16);
+    const quantityField_r5 = \u0275\u0275reference(28);
+    const statusField_r6 = \u0275\u0275reference(36);
+    const saleAtField_r7 = \u0275\u0275reference(49);
+    \u0275\u0275advance(15);
+    \u0275\u0275twoWayProperty("ngModel", ctx.selectedCustomerAccountCode);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngForOf", \u0275\u0275pipeBind1(20, 14, ctx.customers$));
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", customerField_r4.invalid && customerField_r4.touched);
+    \u0275\u0275advance(6);
+    \u0275\u0275twoWayProperty("ngModel", ctx.saleData.quantity);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", quantityField_r5.invalid && quantityField_r5.touched);
+    \u0275\u0275advance(6);
+    \u0275\u0275twoWayProperty("ngModel", ctx.saleData.status);
+    \u0275\u0275advance(8);
+    \u0275\u0275property("ngIf", statusField_r6.invalid && statusField_r6.touched);
+    \u0275\u0275advance(5);
+    \u0275\u0275twoWayProperty("ngModel", ctx.saleDateTimeLocal);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", saleAtField_r7.invalid && saleAtField_r7.touched);
+    \u0275\u0275advance(6);
+    \u0275\u0275twoWayProperty("ngModel", ctx.saleData.notes);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("disabled", saleForm_r3.invalid || ctx.isSubmitting);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !ctx.isSubmitting);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx.isSubmitting);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx.isSubmitting);
+  }
+}, "RecordSaleModalComponent_Template"), dependencies: [CommonModule, NgForOf, NgIf, FormsModule, \u0275NgNoValidate, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgControlStatusGroup, RequiredValidator, MinValidator, NgModel, NgForm, FeatherIconComponent, AsyncPipe], styles: ['@charset "UTF-8";\n\n\n\n.modal-overlay[_ngcontent-%COMP%] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n  padding: 16px;\n}\n.modal-container[_ngcontent-%COMP%] {\n  background-color: #ffffff;\n  border-radius: 8px;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);\n  width: 100%;\n  max-width: 500px;\n  max-height: 90vh;\n  overflow-y: auto;\n  animation: _ngcontent-%COMP%_modalSlideIn 0.3s ease-out;\n}\n@keyframes _ngcontent-%COMP%_modalSlideIn {\n  from {\n    opacity: 0;\n    transform: translateY(-20px) scale(0.95);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n.modal-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 20px 24px;\n  border-bottom: 1px solid #e9ecef;\n}\n.modal-header[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  color: #1e293b;\n  margin: 0;\n  font-weight: 600;\n}\n.modal-header[_ngcontent-%COMP%]   .close-btn[_ngcontent-%COMP%] {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-header[_ngcontent-%COMP%]   .close-btn[_ngcontent-%COMP%]:hover {\n  background-color: #f8f9fa;\n  color: #1e293b;\n}\n.modal-header[_ngcontent-%COMP%]   .close-btn[_ngcontent-%COMP%]:active {\n  background-color: rgb(233.125, 236.25, 239.375);\n}\n.modal-body[_ngcontent-%COMP%] {\n  padding: 24px;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%] {\n  margin-bottom: 20px;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   label[_ngcontent-%COMP%] {\n  display: block;\n  font-size: 1rem;\n  font-weight: 500;\n  color: #1e293b;\n  margin-bottom: 8px;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%] {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .input-icon[_ngcontent-%COMP%] {\n  position: absolute;\n  left: 12px;\n  color: #64748b;\n  z-index: 1;\n  pointer-events: none;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-input[_ngcontent-%COMP%], \n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-select[_ngcontent-%COMP%], \n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-textarea[_ngcontent-%COMP%] {\n  width: 100%;\n  padding: 12px 12px 12px 40px;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  font-size: 1rem;\n  color: #1e293b;\n  background-color: #ffffff;\n  transition: all 0.2s ease;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-input[_ngcontent-%COMP%]:focus, \n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-select[_ngcontent-%COMP%]:focus, \n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-textarea[_ngcontent-%COMP%]:focus {\n  outline: none;\n  border-color: #004AAD;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-input[_ngcontent-%COMP%]::placeholder, \n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-select[_ngcontent-%COMP%]::placeholder, \n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-textarea[_ngcontent-%COMP%]::placeholder {\n  color: #94a3b8;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-input[_ngcontent-%COMP%]:disabled, \n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-select[_ngcontent-%COMP%]:disabled, \n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-textarea[_ngcontent-%COMP%]:disabled {\n  background-color: #f8f9fa;\n  color: #6c757d;\n  cursor: not-allowed;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-textarea[_ngcontent-%COMP%] {\n  resize: vertical;\n  min-height: 80px;\n  padding-top: 12px;\n  padding-bottom: 12px;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .error-message[_ngcontent-%COMP%] {\n  color: #e74c3c;\n  font-size: 0.875rem;\n  margin-top: 4px;\n  display: flex;\n  align-items: center;\n  gap: 4px;\n}\n.modal-body[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%]   .error-message[_ngcontent-%COMP%]::before {\n  content: "\\26a0";\n  font-size: 12px;\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: flex-end;\n  gap: 12px;\n  margin-top: 24px;\n  padding-top: 20px;\n  border-top: 1px solid #e9ecef;\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn[_ngcontent-%COMP%] {\n  padding: 10px 20px;\n  border-radius: 6px;\n  font-size: 1rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  text-decoration: none;\n  border: none;\n  min-width: 100px;\n  justify-content: center;\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn[_ngcontent-%COMP%]:disabled {\n  opacity: 0.6;\n  cursor: not-allowed;\n  pointer-events: none;\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn.btn-primary[_ngcontent-%COMP%] {\n  background-color: #004AAD;\n  color: white;\n  border: 1px solid #004AAD;\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn.btn-primary[_ngcontent-%COMP%]:hover:not(:disabled) {\n  background-color: rgb(0, 63.0924855491, 147.5);\n  border-color: rgb(0, 63.0924855491, 147.5);\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn.btn-primary[_ngcontent-%COMP%]:active:not(:disabled) {\n  background-color: rgb(0, 52.1849710983, 122);\n  border-color: rgb(0, 52.1849710983, 122);\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn.btn-danger-outline[_ngcontent-%COMP%] {\n  background-color: transparent;\n  color: #e74c3c;\n  border: 1px solid #e74c3c;\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn.btn-danger-outline[_ngcontent-%COMP%]:hover:not(:disabled) {\n  background-color: #e74c3c;\n  color: white;\n}\n.modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn.btn-danger-outline[_ngcontent-%COMP%]:active:not(:disabled) {\n  background-color: rgb(228.2054794521, 55.1575342466, 37.2945205479);\n  border-color: rgb(228.2054794521, 55.1575342466, 37.2945205479);\n}\n.spinning[_ngcontent-%COMP%] {\n  animation: _ngcontent-%COMP%_spin 1s linear infinite;\n}\n@keyframes _ngcontent-%COMP%_spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (max-width: 768px) {\n  .modal-overlay[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .modal-container[_ngcontent-%COMP%] {\n    max-width: 100%;\n    max-height: 95vh;\n  }\n  .modal-header[_ngcontent-%COMP%] {\n    padding: 16px 20px;\n  }\n  .modal-header[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n    font-size: 1.25rem;\n  }\n  .modal-body[_ngcontent-%COMP%] {\n    padding: 20px;\n  }\n  .modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%] {\n    flex-direction: column;\n  }\n  .modal-body[_ngcontent-%COMP%]   .form-actions[_ngcontent-%COMP%]   .btn[_ngcontent-%COMP%] {\n    width: 100%;\n  }\n}\n@media (max-width: 480px) {\n  .modal-overlay[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n  .modal-header[_ngcontent-%COMP%] {\n    padding: 12px 16px;\n  }\n  .modal-header[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n    font-size: 1.125rem;\n  }\n  .modal-body[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n}\n/*# sourceMappingURL=record-sale-modal.component.css.map */'] }));
+var RecordSaleModalComponent = _RecordSaleModalComponent;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(RecordSaleModalComponent, [{
     type: Component,
-    args: [{ selector: "app-milk-sales", standalone: true, imports: [CommonModule, FeatherIconComponent], template: `
-    <div class="milk-sales-container">
-      <div class="page-header">
-        <div class="header-content">
-          <h1>Milk Sales</h1>
-          <p class="page-description">Track and manage milk sales to customers</p>
+    args: [{ selector: "app-record-sale-modal", standalone: true, imports: [CommonModule, FormsModule, FeatherIconComponent], template: `
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h2>Record Milk Sale</h2>
+          <button class="close-btn" (click)="closeModal()">
+            <app-feather-icon name="x" size="20px"></app-feather-icon>
+          </button>
         </div>
-      </div>
-      
-      <div class="coming-soon">
-        <div class="coming-soon-content">
-          <app-feather-icon name="shopping-cart" size="64px" class="coming-soon-icon"></app-feather-icon>
-          <h2>Milk Sales</h2>
-          <p>This feature is coming soon. You'll be able to track and manage milk sales to your customers.</p>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <form #saleForm="ngForm" (ngSubmit)="onSubmit()">
+            <!-- Customer Selection -->
+            <div class="form-group">
+              <label for="customer">Select Customer *</label>
+              <div class="input-container">
+                <app-feather-icon name="user" size="18px" class="input-icon"></app-feather-icon>
+                <select
+                  id="customer"
+                  name="customer"
+                  [(ngModel)]="selectedCustomerAccountCode"
+                  #customerField="ngModel"
+                  required
+                  class="form-select"
+                >
+                  <option value="">-- Select Customer --</option>
+                  <option *ngFor="let customer of customers$ | async" [value]="customer.accountCode">
+                    {{ customer.name }} ({{ customer.accountCode }})
+                  </option>
+                </select>
+              </div>
+              <div class="error-message" *ngIf="customerField.invalid && customerField.touched">
+                Please select a customer
+              </div>
+            </div>
+
+            <!-- Quantity Field -->
+            <div class="form-group">
+              <label for="quantity">Quantity (Liters) *</label>
+              <div class="input-container">
+                <app-feather-icon name="droplet" size="18px" class="input-icon"></app-feather-icon>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  [(ngModel)]="saleData.quantity"
+                  #quantityField="ngModel"
+                  required
+                  min="0.1"
+                  step="0.1"
+                  placeholder="Enter quantity in liters"
+                  class="form-input"
+                />
+              </div>
+              <div class="error-message" *ngIf="quantityField.invalid && quantityField.touched">
+                Please enter a valid quantity
+              </div>
+            </div>
+
+            <!-- Status Field -->
+            <div class="form-group">
+              <label for="status">Status *</label>
+              <div class="input-container">
+                <app-feather-icon name="check-circle" size="18px" class="input-icon"></app-feather-icon>
+                <select
+                  id="status"
+                  name="status"
+                  [(ngModel)]="saleData.status"
+                  #statusField="ngModel"
+                  required
+                  class="form-select"
+                >
+                  <option value="accepted">Accepted</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
+              <div class="error-message" *ngIf="statusField.invalid && statusField.touched">
+                Please select a status
+              </div>
+            </div>
+
+            <!-- Sale Date & Time -->
+            <div class="form-group">
+              <label for="saleAt">Sale Date & Time *</label>
+              <div class="input-container">
+                <input
+                  type="datetime-local"
+                  id="saleAt"
+                  name="saleAt"
+                  [(ngModel)]="saleDateTimeLocal"
+                  #saleAtField="ngModel"
+                  required
+                  class="form-input"
+                />
+              </div>
+              <div class="error-message" *ngIf="saleAtField.invalid && saleAtField.touched">
+                Please select sale date and time
+              </div>
+            </div>
+
+            <!-- Notes Field -->
+            <div class="form-group">
+              <label for="notes">Notes (Optional)</label>
+              <div class="input-container">
+                <app-feather-icon name="file-text" size="18px" class="input-icon"></app-feather-icon>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  [(ngModel)]="saleData.notes"
+                  placeholder="Add any additional notes"
+                  class="form-textarea"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-danger-outline"
+                (click)="closeModal()"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="saleForm.invalid || isSubmitting"
+              >
+                <span *ngIf="!isSubmitting">Record Sale</span>
+                <span *ngIf="isSubmitting">Recording...</span>
+                <app-feather-icon name="loader" size="16px" *ngIf="isSubmitting" class="spinning"></app-feather-icon>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  `, styles: ["/* src/app/features/milk-sales/milk-sales.component.scss */\n.milk-sales-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .milk-sales-container {\n    padding: 8px;\n  }\n}\n.page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header .header-content h1 {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header .header-content .page-description {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.coming-soon {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 400px;\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n}\n.coming-soon .coming-soon-content {\n  text-align: center;\n  padding: 48px 24px;\n}\n.coming-soon .coming-soon-content .coming-soon-icon {\n  color: #004AAD;\n  margin-bottom: 24px;\n}\n.coming-soon .coming-soon-content h2 {\n  font-size: 24px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 16px 0;\n}\n.coming-soon .coming-soon-content p {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n  max-width: 400px;\n}\n/*# sourceMappingURL=milk-sales.component.css.map */\n"] }]
+  `, styles: ['@charset "UTF-8";\n\n/* src/app/shared/components/record-sale-modal/record-sale-modal.component.scss */\n.modal-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.5);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n  padding: 16px;\n}\n.modal-container {\n  background-color: #ffffff;\n  border-radius: 8px;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);\n  width: 100%;\n  max-width: 500px;\n  max-height: 90vh;\n  overflow-y: auto;\n  animation: modalSlideIn 0.3s ease-out;\n}\n@keyframes modalSlideIn {\n  from {\n    opacity: 0;\n    transform: translateY(-20px) scale(0.95);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n.modal-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 20px 24px;\n  border-bottom: 1px solid #e9ecef;\n}\n.modal-header h2 {\n  font-size: 1.5rem;\n  color: #1e293b;\n  margin: 0;\n  font-weight: 600;\n}\n.modal-header .close-btn {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-header .close-btn:hover {\n  background-color: #f8f9fa;\n  color: #1e293b;\n}\n.modal-header .close-btn:active {\n  background-color: rgb(233.125, 236.25, 239.375);\n}\n.modal-body {\n  padding: 24px;\n}\n.modal-body .form-group {\n  margin-bottom: 20px;\n}\n.modal-body .form-group label {\n  display: block;\n  font-size: 1rem;\n  font-weight: 500;\n  color: #1e293b;\n  margin-bottom: 8px;\n}\n.modal-body .form-group .input-container {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n.modal-body .form-group .input-container .input-icon {\n  position: absolute;\n  left: 12px;\n  color: #64748b;\n  z-index: 1;\n  pointer-events: none;\n}\n.modal-body .form-group .input-container .form-input,\n.modal-body .form-group .input-container .form-select,\n.modal-body .form-group .input-container .form-textarea {\n  width: 100%;\n  padding: 12px 12px 12px 40px;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  font-size: 1rem;\n  color: #1e293b;\n  background-color: #ffffff;\n  transition: all 0.2s ease;\n}\n.modal-body .form-group .input-container .form-input:focus,\n.modal-body .form-group .input-container .form-select:focus,\n.modal-body .form-group .input-container .form-textarea:focus {\n  outline: none;\n  border-color: #004AAD;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.modal-body .form-group .input-container .form-input::placeholder,\n.modal-body .form-group .input-container .form-select::placeholder,\n.modal-body .form-group .input-container .form-textarea::placeholder {\n  color: #94a3b8;\n}\n.modal-body .form-group .input-container .form-input:disabled,\n.modal-body .form-group .input-container .form-select:disabled,\n.modal-body .form-group .input-container .form-textarea:disabled {\n  background-color: #f8f9fa;\n  color: #6c757d;\n  cursor: not-allowed;\n}\n.modal-body .form-group .input-container .form-textarea {\n  resize: vertical;\n  min-height: 80px;\n  padding-top: 12px;\n  padding-bottom: 12px;\n}\n.modal-body .form-group .error-message {\n  color: #e74c3c;\n  font-size: 0.875rem;\n  margin-top: 4px;\n  display: flex;\n  align-items: center;\n  gap: 4px;\n}\n.modal-body .form-group .error-message::before {\n  content: "\\26a0";\n  font-size: 12px;\n}\n.modal-body .form-actions {\n  display: flex;\n  justify-content: flex-end;\n  gap: 12px;\n  margin-top: 24px;\n  padding-top: 20px;\n  border-top: 1px solid #e9ecef;\n}\n.modal-body .form-actions .btn {\n  padding: 10px 20px;\n  border-radius: 6px;\n  font-size: 1rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  text-decoration: none;\n  border: none;\n  min-width: 100px;\n  justify-content: center;\n}\n.modal-body .form-actions .btn:disabled {\n  opacity: 0.6;\n  cursor: not-allowed;\n  pointer-events: none;\n}\n.modal-body .form-actions .btn.btn-primary {\n  background-color: #004AAD;\n  color: white;\n  border: 1px solid #004AAD;\n}\n.modal-body .form-actions .btn.btn-primary:hover:not(:disabled) {\n  background-color: rgb(0, 63.0924855491, 147.5);\n  border-color: rgb(0, 63.0924855491, 147.5);\n}\n.modal-body .form-actions .btn.btn-primary:active:not(:disabled) {\n  background-color: rgb(0, 52.1849710983, 122);\n  border-color: rgb(0, 52.1849710983, 122);\n}\n.modal-body .form-actions .btn.btn-danger-outline {\n  background-color: transparent;\n  color: #e74c3c;\n  border: 1px solid #e74c3c;\n}\n.modal-body .form-actions .btn.btn-danger-outline:hover:not(:disabled) {\n  background-color: #e74c3c;\n  color: white;\n}\n.modal-body .form-actions .btn.btn-danger-outline:active:not(:disabled) {\n  background-color: rgb(228.2054794521, 55.1575342466, 37.2945205479);\n  border-color: rgb(228.2054794521, 55.1575342466, 37.2945205479);\n}\n.spinning {\n  animation: spin 1s linear infinite;\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (max-width: 768px) {\n  .modal-overlay {\n    padding: 12px;\n  }\n  .modal-container {\n    max-width: 100%;\n    max-height: 95vh;\n  }\n  .modal-header {\n    padding: 16px 20px;\n  }\n  .modal-header h2 {\n    font-size: 1.25rem;\n  }\n  .modal-body {\n    padding: 20px;\n  }\n  .modal-body .form-actions {\n    flex-direction: column;\n  }\n  .modal-body .form-actions .btn {\n    width: 100%;\n  }\n}\n@media (max-width: 480px) {\n  .modal-overlay {\n    padding: 8px;\n  }\n  .modal-header {\n    padding: 12px 16px;\n  }\n  .modal-header h2 {\n    font-size: 1.125rem;\n  }\n  .modal-body {\n    padding: 16px;\n  }\n}\n/*# sourceMappingURL=record-sale-modal.component.css.map */\n'] }]
+  }], null, { saleRecorded: [{
+    type: Output
+  }], modalClosed: [{
+    type: Output
+  }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(RecordSaleModalComponent, { className: "RecordSaleModalComponent", filePath: "src/app/shared/components/record-sale-modal/record-sale-modal.component.ts", lineNumber: 161 });
+})();
+
+// src/app/features/sales/sales-list/sales-list.component.ts
+function SalesListComponent_ng_template_55_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 28);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const sale_r2 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275property("ngClass", "status-" + sale_r2.status);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", ctx_r2.getStatusLabel(sale_r2.status), " ");
+  }
+}
+__name(SalesListComponent_ng_template_55_Template, "SalesListComponent_ng_template_55_Template");
+function SalesListComponent_ng_template_57_li_8_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r6 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "li")(1, "a", 33);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_li_8_Template_a_click_1_listener() {
+      \u0275\u0275restoreView(_r6);
+      const sale_r5 = \u0275\u0275nextContext().$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.approveSale(sale_r5));
+    }, "SalesListComponent_ng_template_57_li_8_Template_a_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 39);
+    \u0275\u0275text(3, " Approve ");
+    \u0275\u0275elementEnd()();
+  }
+}
+__name(SalesListComponent_ng_template_57_li_8_Template, "SalesListComponent_ng_template_57_li_8_Template");
+function SalesListComponent_ng_template_57_li_9_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r7 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "li")(1, "a", 33);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_li_9_Template_a_click_1_listener() {
+      \u0275\u0275restoreView(_r7);
+      const sale_r5 = \u0275\u0275nextContext().$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.rejectSale(sale_r5));
+    }, "SalesListComponent_ng_template_57_li_9_Template_a_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 40);
+    \u0275\u0275text(3, " Reject ");
+    \u0275\u0275elementEnd()();
+  }
+}
+__name(SalesListComponent_ng_template_57_li_9_Template, "SalesListComponent_ng_template_57_li_9_Template");
+function SalesListComponent_ng_template_57_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r4 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 29)(1, "button", 30);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_Template_button_click_1_listener($event) {
+      const sale_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.toggleDropdown(sale_r5.id, $event));
+    }, "SalesListComponent_ng_template_57_Template_button_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 31);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "ul", 32)(4, "li")(5, "a", 33);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_Template_a_click_5_listener() {
+      const sale_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.viewSale(sale_r5));
+    }, "SalesListComponent_ng_template_57_Template_a_click_5_listener"));
+    \u0275\u0275element(6, "app-feather-icon", 34);
+    \u0275\u0275text(7, " View ");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(8, SalesListComponent_ng_template_57_li_8_Template, 4, 0, "li", 35)(9, SalesListComponent_ng_template_57_li_9_Template, 4, 0, "li", 35);
+    \u0275\u0275elementStart(10, "li")(11, "a", 33);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_Template_a_click_11_listener() {
+      const sale_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.editSale(sale_r5));
+    }, "SalesListComponent_ng_template_57_Template_a_click_11_listener"));
+    \u0275\u0275element(12, "app-feather-icon", 36);
+    \u0275\u0275text(13, " Edit ");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(14, "li")(15, "a", 37);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_Template_a_click_15_listener() {
+      const sale_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.deleteSale(sale_r5));
+    }, "SalesListComponent_ng_template_57_Template_a_click_15_listener"));
+    \u0275\u0275element(16, "app-feather-icon", 38);
+    \u0275\u0275text(17, " Delete ");
+    \u0275\u0275elementEnd()()()();
+  }
+  if (rf & 2) {
+    const sale_r5 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275classProp("show", ctx_r2.openDropdownId === sale_r5.id);
+    \u0275\u0275advance(3);
+    \u0275\u0275classProp("show", ctx_r2.openDropdownId === sale_r5.id);
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngIf", sale_r5.status === "pending");
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", sale_r5.status === "pending");
+  }
+}
+__name(SalesListComponent_ng_template_57_Template, "SalesListComponent_ng_template_57_Template");
+function SalesListComponent_app_record_sale_modal_59_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r8 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "app-record-sale-modal", 41);
+    \u0275\u0275listener("saleRecorded", /* @__PURE__ */ __name(function SalesListComponent_app_record_sale_modal_59_Template_app_record_sale_modal_saleRecorded_0_listener($event) {
+      \u0275\u0275restoreView(_r8);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.onSaleRecorded($event));
+    }, "SalesListComponent_app_record_sale_modal_59_Template_app_record_sale_modal_saleRecorded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function SalesListComponent_app_record_sale_modal_59_Template_app_record_sale_modal_modalClosed_0_listener() {
+      \u0275\u0275restoreView(_r8);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.closeRecordSaleModal());
+    }, "SalesListComponent_app_record_sale_modal_59_Template_app_record_sale_modal_modalClosed_0_listener"));
+    \u0275\u0275elementEnd();
+  }
+}
+__name(SalesListComponent_app_record_sale_modal_59_Template, "SalesListComponent_app_record_sale_modal_59_Template");
+var _SalesListComponent = class _SalesListComponent {
+  destroy$ = new Subject();
+  salesService = inject2(SalesService);
+  sales = [];
+  filteredSales = [];
+  searchTerm = "";
+  loading = false;
+  error = null;
+  stats = {
+    totalQuantity: 0,
+    totalValue: 0,
+    totalSales: 0,
+    statusCounts: {
+      accepted: 0,
+      rejected: 0,
+      pending: 0,
+      cancelled: 0
+    }
+  };
+  columns = [
+    { key: "index", title: "No.", type: "number", sortable: false },
+    { key: "customerName", title: "Customer", type: "text", sortable: true },
+    { key: "quantity", title: "Quantity (L)", type: "number", sortable: true },
+    { key: "pricePerLiter", title: "Price/Liter (RWF)", type: "number", sortable: true },
+    { key: "totalValue", title: "Total Value (RWF)", type: "number", sortable: true },
+    { key: "status", title: "Status", type: "custom", sortable: true, template: this.getStatusTemplate() },
+    { key: "saleDate", title: "Sale Date", type: "date", sortable: true }
+  ];
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
+  openDropdownId = null;
+  showRecordSaleModal = false;
+  ngOnInit() {
+    this.loadSales();
+    document.addEventListener("click", this.onDocumentClick);
+  }
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    document.removeEventListener("click", this.onDocumentClick);
+  }
+  loadSales() {
+    this.loading = true;
+    this.error = null;
+    this.salesService.getSales().pipe(takeUntil(this.destroy$)).subscribe({
+      next: /* @__PURE__ */ __name((sales) => {
+        this.loading = false;
+        this.sales = sales || [];
+        this.sales = this.sales.map((sale, index) => __spreadProps(__spreadValues({}, sale), {
+          index: index + 1
+        }));
+        this.filteredSales = [...this.sales];
+        this.loadStats();
+      }, "next"),
+      error: /* @__PURE__ */ __name((err) => {
+        this.loading = false;
+        this.error = err.message || "Failed to load sales";
+        console.error("Error loading sales:", err);
+        this.loadMockSales();
+      }, "error")
+    });
+  }
+  loadMockSales() {
+    const now = /* @__PURE__ */ new Date();
+    this.sales = [
+      {
+        id: "sale_001",
+        customerId: "CUST001",
+        customerName: "John Doe",
+        customerPhone: "+250 788 123 456",
+        quantity: 20,
+        pricePerLiter: 500,
+        totalValue: 1e4,
+        status: "pending",
+        saleDate: new Date(now.getTime() - 1 * 60 * 60 * 1e3),
+        createdAt: new Date(now.getTime() - 1 * 60 * 60 * 1e3),
+        updatedAt: new Date(now.getTime() - 1 * 60 * 60 * 1e3)
+      },
+      {
+        id: "sale_002",
+        customerId: "CUST002",
+        customerName: "Jane Smith",
+        customerPhone: "+250 788 234 567",
+        quantity: 15.5,
+        pricePerLiter: 520,
+        totalValue: 8060,
+        status: "accepted",
+        saleDate: new Date(now.getTime() - 3 * 60 * 60 * 1e3),
+        createdAt: new Date(now.getTime() - 3 * 60 * 60 * 1e3),
+        updatedAt: new Date(now.getTime() - 3 * 60 * 60 * 1e3)
+      },
+      {
+        id: "sale_003",
+        customerId: "CUST003",
+        customerName: "Bob Johnson",
+        customerPhone: "+250 788 345 678",
+        quantity: 25,
+        pricePerLiter: 480,
+        totalValue: 12e3,
+        status: "rejected",
+        rejectionReason: "Quality Issues",
+        saleDate: new Date(now.getTime() - 5 * 60 * 60 * 1e3),
+        createdAt: new Date(now.getTime() - 5 * 60 * 60 * 1e3),
+        updatedAt: new Date(now.getTime() - 5 * 60 * 60 * 1e3)
+      },
+      {
+        id: "sale_004",
+        customerId: "CUST004",
+        customerName: "Alice Brown",
+        customerPhone: "+250 788 456 789",
+        quantity: 12,
+        pricePerLiter: 510,
+        totalValue: 6120,
+        status: "cancelled",
+        rejectionReason: "Customer cancelled",
+        saleDate: new Date(now.getTime() - 7 * 60 * 60 * 1e3),
+        createdAt: new Date(now.getTime() - 7 * 60 * 60 * 1e3),
+        updatedAt: new Date(now.getTime() - 7 * 60 * 60 * 1e3)
+      }
+    ];
+    this.filteredSales = [...this.sales];
+    this.updatePagination();
+    this.calculateStats();
+  }
+  loadStats() {
+    this.salesService.getSaleStats().pipe(takeUntil(this.destroy$)).subscribe({
+      next: /* @__PURE__ */ __name((data) => {
+        this.stats = data;
+      }, "next"),
+      error: /* @__PURE__ */ __name((err) => {
+        console.error("Error loading stats:", err);
+        this.calculateStats();
+      }, "error")
+    });
+  }
+  calculateStats() {
+    this.stats.totalSales = this.sales.length;
+    this.stats.totalQuantity = this.sales.reduce((sum, s) => sum + s.quantity, 0);
+    this.stats.totalValue = this.sales.reduce((sum, s) => sum + s.totalValue, 0);
+    this.stats.statusCounts = { accepted: 0, rejected: 0, pending: 0, cancelled: 0 };
+    this.sales.forEach((s) => {
+      if (this.stats.statusCounts.hasOwnProperty(s.status)) {
+        this.stats.statusCounts[s.status]++;
+      }
+    });
+  }
+  applyFilter() {
+    const query = this.searchTerm.toLowerCase();
+    const filtered = this.sales.filter((sale) => sale.customerName.toLowerCase().includes(query) || sale.customerPhone.toLowerCase().includes(query) || sale.status.toLowerCase().includes(query) || sale.notes?.toLowerCase().includes(query));
+    this.filteredSales = filtered;
+    this.updatePagination();
+    this.currentPage = 1;
+  }
+  updatePagination() {
+    this.totalPages = Math.ceil(this.filteredSales.length / this.pageSize);
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.filteredSales = this.filteredSales.slice(startIndex, endIndex);
+  }
+  handleSort(event) {
+    const { column: key, direction } = event;
+    this.sales.sort((a, b) => {
+      const aValue = a[key];
+      const bValue = b[key];
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return direction === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      }
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return direction === "asc" ? aValue - bValue : bValue - aValue;
+      }
+      if (aValue instanceof Date && bValue instanceof Date) {
+        return direction === "asc" ? aValue.getTime() - bValue.getTime() : bValue.getTime() - aValue.getTime();
+      }
+      return 0;
+    });
+    this.updatePagination();
+  }
+  handlePageChange(page) {
+    this.currentPage = page;
+    this.updatePagination();
+  }
+  handlePageSizeChange(pageSize) {
+    this.pageSize = pageSize;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+  toggleDropdown(id, event) {
+    event.stopPropagation();
+    this.openDropdownId = this.openDropdownId === id ? null : id;
+  }
+  onDocumentClick = /* @__PURE__ */ __name(() => {
+    this.openDropdownId = null;
+  }, "onDocumentClick");
+  viewSale(sale) {
+    console.log("View sale:", sale);
+  }
+  editSale(sale) {
+    console.log("Edit sale:", sale);
+  }
+  approveSale(sale) {
+    console.log("Approve sale:", sale);
+    const updateRequest = {
+      saleId: sale.id,
+      status: "accepted",
+      notes: "Approved by user"
+    };
+    this.salesService.updateSale(updateRequest).pipe(takeUntil(this.destroy$)).subscribe({
+      next: /* @__PURE__ */ __name(() => this.loadSales(), "next"),
+      error: /* @__PURE__ */ __name((err) => console.error("Error approving sale:", err), "error")
+    });
+  }
+  rejectSale(sale) {
+    console.log("Reject sale:", sale);
+    const rejectionReason = prompt("Enter rejection reason:");
+    if (rejectionReason) {
+      const updateRequest = {
+        saleId: sale.id,
+        status: "rejected",
+        notes: `Rejected: ${rejectionReason}`
+      };
+      this.salesService.updateSale(updateRequest).pipe(takeUntil(this.destroy$)).subscribe({
+        next: /* @__PURE__ */ __name(() => this.loadSales(), "next"),
+        error: /* @__PURE__ */ __name((err) => console.error("Error rejecting sale:", err), "error")
+      });
+    }
+  }
+  cancelSale(sale) {
+    console.log("Cancel sale:", sale);
+    if (confirm("Are you sure you want to cancel this sale?")) {
+      this.salesService.cancelSale(sale.id).pipe(takeUntil(this.destroy$)).subscribe({
+        next: /* @__PURE__ */ __name(() => this.loadSales(), "next"),
+        error: /* @__PURE__ */ __name((err) => console.error("Error cancelling sale:", err), "error")
+      });
+    }
+  }
+  deleteSale(sale) {
+    console.log("Delete sale:", sale);
+    if (confirm("Are you sure you want to delete this sale?")) {
+      console.log("Delete sale API not implemented yet");
+    }
+  }
+  openRecordSaleModal() {
+    this.showRecordSaleModal = true;
+  }
+  closeRecordSaleModal() {
+    this.showRecordSaleModal = false;
+  }
+  onSaleRecorded(sale) {
+    console.log("Sale recorded:", sale);
+    this.closeRecordSaleModal();
+    this.loadSales();
+  }
+  formatCurrency(amount) {
+    return new Intl.NumberFormat("en-RW", {
+      style: "currency",
+      currency: "RWF",
+      minimumFractionDigits: 0
+    }).format(amount);
+  }
+  formatVolume(volume) {
+    return `${volume.toFixed(1)}L`;
+  }
+  getStatusLabel(status) {
+    switch (status) {
+      case "pending":
+        return "Pending";
+      case "accepted":
+        return "Accepted";
+      case "rejected":
+        return "Rejected";
+      case "cancelled":
+        return "Cancelled";
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+  }
+  getStatusTemplate() {
+    return (item) => {
+      const status = item.status;
+      const label = this.getStatusLabel(status);
+      const statusClass = `status-${status}`;
+      return `<span class="status-badge ${statusClass}">${label}</span>`;
+    };
+  }
+};
+__name(_SalesListComponent, "SalesListComponent");
+__publicField(_SalesListComponent, "\u0275fac", /* @__PURE__ */ __name(function SalesListComponent_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _SalesListComponent)();
+}, "SalesListComponent_Factory"));
+__publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _SalesListComponent, selectors: [["app-sales-list"]], decls: 60, vars: 17, consts: [["statusCell", ""], ["rowActions", ""], [1, "sales-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "droplet", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "dollar-sign", "size", "24px"], ["name", "check-circle", "size", "24px"], ["name", "x-circle", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "sale-count"], [1, "card-actions"], ["type", "text", "placeholder", "Search sales...", 1, "form-control", "search-input", 3, "ngModelChange", "input", "ngModel"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems"], [3, "saleRecorded", "modalClosed", 4, "ngIf"], [1, "status-badge", 3, "ngClass"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "saleRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function SalesListComponent_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 2)(1, "div", 3)(2, "div", 4)(3, "h1");
+    \u0275\u0275text(4, "Milk Sales");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "p", 5);
+    \u0275\u0275text(6, "Manage all milk sales records to customers");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(7, "div", 6)(8, "button", 7);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_Template_button_click_8_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.openRecordSaleModal());
+    }, "SalesListComponent_Template_button_click_8_listener"));
+    \u0275\u0275element(9, "app-feather-icon", 8);
+    \u0275\u0275text(10, " Record Sale ");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(11, "div", 9)(12, "div", 10)(13, "div", 11);
+    \u0275\u0275element(14, "app-feather-icon", 12);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "div", 13)(16, "div", 14);
+    \u0275\u0275text(17);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(18, "div", 15);
+    \u0275\u0275text(19, "Total Liters Sold");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(20, "div", 10)(21, "div", 11);
+    \u0275\u0275element(22, "app-feather-icon", 16);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(23, "div", 13)(24, "div", 14);
+    \u0275\u0275text(25);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(26, "div", 15);
+    \u0275\u0275text(27, "Total Revenue");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(28, "div", 10)(29, "div", 11);
+    \u0275\u0275element(30, "app-feather-icon", 17);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(31, "div", 13)(32, "div", 14);
+    \u0275\u0275text(33);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(34, "div", 15);
+    \u0275\u0275text(35, "Accepted Sales");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(36, "div", 10)(37, "div", 11);
+    \u0275\u0275element(38, "app-feather-icon", 18);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(39, "div", 13)(40, "div", 14);
+    \u0275\u0275text(41);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(42, "div", 15);
+    \u0275\u0275text(43, "Rejected Sales");
+    \u0275\u0275elementEnd()()()();
+    \u0275\u0275elementStart(44, "div", 19)(45, "div", 20)(46, "div", 21)(47, "h3");
+    \u0275\u0275text(48, "All Sales");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(49, "span", 22);
+    \u0275\u0275text(50);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(51, "div", 23)(52, "input", 24);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function SalesListComponent_Template_input_ngModelChange_52_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.searchTerm, $event) || (ctx.searchTerm = $event);
+      return \u0275\u0275resetView($event);
+    }, "SalesListComponent_Template_input_ngModelChange_52_listener"));
+    \u0275\u0275listener("input", /* @__PURE__ */ __name(function SalesListComponent_Template_input_input_52_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.applyFilter());
+    }, "SalesListComponent_Template_input_input_52_listener"));
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(53, "div", 25)(54, "app-data-table", 26);
+    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onSort_54_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.handleSort($event));
+    }, "SalesListComponent_Template_app_data_table_onSort_54_listener"))("onPageChange", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onPageChange_54_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.handlePageChange($event));
+    }, "SalesListComponent_Template_app_data_table_onPageChange_54_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onPageSizeChange_54_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.handlePageSizeChange($event));
+    }, "SalesListComponent_Template_app_data_table_onPageSizeChange_54_listener"));
+    \u0275\u0275template(55, SalesListComponent_ng_template_55_Template, 2, 2, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(57, SalesListComponent_ng_template_57_Template, 18, 6, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275template(59, SalesListComponent_app_record_sale_modal_59_Template, 1, 0, "app-record-sale-modal", 27);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    \u0275\u0275advance(17);
+    \u0275\u0275textInterpolate(ctx.formatVolume(ctx.stats.totalQuantity));
+    \u0275\u0275advance(8);
+    \u0275\u0275textInterpolate(ctx.formatCurrency(ctx.stats.totalValue));
+    \u0275\u0275advance(8);
+    \u0275\u0275textInterpolate(ctx.stats.statusCounts["accepted"] || 0);
+    \u0275\u0275advance(8);
+    \u0275\u0275textInterpolate(ctx.stats.statusCounts["rejected"] || 0);
+    \u0275\u0275advance(9);
+    \u0275\u0275textInterpolate1("", ctx.sales.length, " sales");
+    \u0275\u0275advance(2);
+    \u0275\u0275twoWayProperty("ngModel", ctx.searchTerm);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredSales)("striped", true)("hover", true)("showActions", true)("showPagination", true)("currentPage", ctx.currentPage)("pageSize", ctx.pageSize)("totalPages", ctx.totalPages)("totalItems", ctx.sales.length);
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngIf", ctx.showRecordSaleModal);
+  }
+}, "SalesListComponent_Template"), dependencies: [
+  CommonModule,
+  NgClass,
+  NgIf,
+  RouterModule,
+  FormsModule,
+  DefaultValueAccessor,
+  NgControlStatus,
+  NgModel,
+  FeatherIconComponent,
+  DataTableComponent,
+  RecordSaleModalComponent
+], styles: ["\n\n.sales-container[_ngcontent-%COMP%] {\n  padding: 24px;\n  background-color: #f8f9fa;\n  min-height: calc(100vh - 90px);\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 24px;\n  flex-wrap: wrap;\n  gap: 16px;\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 2rem;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  color: #64748b;\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%] {\n  background-color: #004AAD;\n  color: white;\n  border: none;\n  padding: 12px 20px;\n  border-radius: 6px;\n  font-size: 1rem;\n  font-weight: 600;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  transition: background-color 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%]:hover {\n  background-color: rgb(0, 63.0924855491, 147.5);\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%]:active {\n  background-color: rgb(0, 52.1849710983, 122);\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 16px;\n  margin-bottom: 24px;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n  background-color: #ffffff;\n  border-radius: 8px;\n  padding: 20px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  transition: transform 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-3px);\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  background-color: rgba(0, 74, 173, 0.1);\n  color: #004AAD;\n  border-radius: 50%;\n  width: 56px;\n  height: 56px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-shrink: 0;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #004AAD;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-label[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  color: #64748b;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%] {\n  background-color: #ffffff;\n  border-radius: 8px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  overflow: hidden;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 16px 20px;\n  border-bottom: 1px solid #e9ecef;\n  flex-wrap: wrap;\n  gap: 12px;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  color: #1e293b;\n  margin: 0;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   .sale-count[_ngcontent-%COMP%] {\n  font-size: 0.875rem;\n  color: #64748b;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%] {\n  padding: 8px 12px;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  font-size: 1rem;\n  width: 250px;\n  transition: border-color 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%]:focus {\n  border-color: #004AAD;\n  outline: none;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 20px;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%]   .data-table-container[_ngcontent-%COMP%] {\n  overflow-x: auto;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%] {\n  position: relative;\n  display: inline-block;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-toggle[_ngcontent-%COMP%] {\n  background-color: transparent;\n  border: 1px solid #e9ecef;\n  color: #64748b;\n  padding: 8px 12px;\n  border-radius: 6px;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-toggle[_ngcontent-%COMP%]:hover {\n  background-color: #f8f9fa;\n  border-color: rgb(218.2368421053, 223.25, 228.2631578947);\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-toggle[_ngcontent-%COMP%]:active {\n  background-color: rgb(233.125, 236.25, 239.375);\n  border-color: rgb(203.4736842105, 210.5, 217.5263157895);\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%] {\n  position: absolute;\n  top: 100%;\n  right: 0;\n  background-color: #ffffff;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);\n  min-width: 160px;\n  z-index: 1000;\n  opacity: 0;\n  visibility: hidden;\n  transform: translateY(10px);\n  transition: opacity 0.2s ease, transform 0.2s ease;\n  padding: 8px 0;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu.show[_ngcontent-%COMP%] {\n  opacity: 1;\n  visibility: visible;\n  transform: translateY(0);\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  padding: 8px 16px;\n  font-size: 1rem;\n  color: #1e293b;\n  text-decoration: none;\n  transition: background-color 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item[_ngcontent-%COMP%]:hover {\n  background-color: #f8f9fa;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item.text-danger[_ngcontent-%COMP%] {\n  color: #e74c3c;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item.text-success[_ngcontent-%COMP%] {\n  color: #1abc9c;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item.text-warning[_ngcontent-%COMP%] {\n  color: #f1c40f;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n}\n.status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.status-pending[_ngcontent-%COMP%] {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.status-accepted[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.status-rejected[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.status-cancelled[_ngcontent-%COMP%] {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n@media (max-width: 768px) {\n  .sales-container[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n  .sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 16px;\n  }\n  .sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n  }\n  .sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: center;\n  }\n  .sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .sales-container[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: flex-start;\n  }\n  .sales-container[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%] {\n    width: 100%;\n  }\n  .sales-container[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%] {\n    width: 100%;\n  }\n}\n@media (max-width: 480px) {\n  .sales-container[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=sales-list.component.css.map */"] }));
+var SalesListComponent = _SalesListComponent;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SalesListComponent, [{
+    type: Component,
+    args: [{ selector: "app-sales-list", standalone: true, imports: [
+      CommonModule,
+      RouterModule,
+      FormsModule,
+      FeatherIconComponent,
+      DataTableComponent,
+      RecordSaleModalComponent
+    ], template: `
+    <div class="sales-container">
+      <!-- Header -->
+      <div class="page-header">
+        <div class="header-content">
+          <h1>Milk Sales</h1>
+          <p class="page-description">Manage all milk sales records to customers</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-primary" (click)="openRecordSaleModal()">
+            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            Record Sale
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <app-feather-icon name="droplet" size="24px"></app-feather-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ formatVolume(stats.totalQuantity) }}</div>
+            <div class="stat-label">Total Liters Sold</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ formatCurrency(stats.totalValue) }}</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <app-feather-icon name="check-circle" size="24px"></app-feather-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.statusCounts['accepted'] || 0 }}</div>
+            <div class="stat-label">Accepted Sales</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <app-feather-icon name="x-circle" size="24px"></app-feather-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.statusCounts['rejected'] || 0 }}</div>
+            <div class="stat-label">Rejected Sales</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sales Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-section">
+            <h3>All Sales</h3>
+            <span class="sale-count">{{ sales.length }} sales</span>
+          </div>
+          <div class="card-actions">
+            <input
+              type="text"
+              placeholder="Search sales..."
+              class="form-control search-input"
+              [(ngModel)]="searchTerm"
+              (input)="applyFilter()"
+            />
+          </div>
+        </div>
+        <div class="card-body">
+          <app-data-table
+            [columns]="columns"
+            [data]="filteredSales"
+            [striped]="true"
+            [hover]="true"
+            [showActions]="true"
+            [showPagination]="true"
+            [currentPage]="currentPage"
+            [pageSize]="pageSize"
+            [totalPages]="totalPages"
+            [totalItems]="sales.length"
+            (onSort)="handleSort($event)"
+            (onPageChange)="handlePageChange($event)"
+            (onPageSizeChange)="handlePageSizeChange($event)"
+          >
+            <ng-template #statusCell let-sale>
+              <span class="status-badge" [ngClass]="'status-' + sale.status">
+                {{ getStatusLabel(sale.status) }}
+              </span>
+            </ng-template>
+            
+            <ng-template #rowActions let-sale>
+              <div class="dropdown" [class.show]="openDropdownId === sale.id">
+                <button
+                  class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                  type="button"
+                  (click)="toggleDropdown(sale.id, $event)"
+                >
+                  <app-feather-icon name="more-horizontal" size="16px"></app-feather-icon>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" [class.show]="openDropdownId === sale.id">
+                  <li>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewSale(sale)">
+                      <app-feather-icon name="eye" size="14px" class="me-2"></app-feather-icon>
+                      View
+                    </a>
+                  </li>
+                  <li *ngIf="sale.status === 'pending'">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="approveSale(sale)">
+                      <app-feather-icon name="check" size="14px" class="me-2"></app-feather-icon>
+                      Approve
+                    </a>
+                  </li>
+                  <li *ngIf="sale.status === 'pending'">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="rejectSale(sale)">
+                      <app-feather-icon name="x" size="14px" class="me-2"></app-feather-icon>
+                      Reject
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="editSale(sale)">
+                      <app-feather-icon name="edit" size="14px" class="me-2"></app-feather-icon>
+                      Edit
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteSale(sale)">
+                      <app-feather-icon name="trash-2" size="14px" class="me-2"></app-feather-icon>
+                      Delete
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </ng-template>
+          </app-data-table>
+        </div>
+      </div>
+
+      <!-- Record Sale Modal -->
+      <app-record-sale-modal
+        *ngIf="showRecordSaleModal"
+        (saleRecorded)="onSaleRecorded($event)"
+        (modalClosed)="closeRecordSaleModal()"
+      ></app-record-sale-modal>
+    </div>
+  `, styles: ["/* src/app/features/sales/sales-list/sales-list.component.scss */\n.sales-container {\n  padding: 24px;\n  background-color: #f8f9fa;\n  min-height: calc(100vh - 90px);\n}\n.sales-container .page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 24px;\n  flex-wrap: wrap;\n  gap: 16px;\n}\n.sales-container .page-header .header-content h1 {\n  font-size: 2rem;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.sales-container .page-header .header-content .page-description {\n  font-size: 1rem;\n  color: #64748b;\n}\n.sales-container .page-header .header-actions .btn-primary {\n  background-color: #004AAD;\n  color: white;\n  border: none;\n  padding: 12px 20px;\n  border-radius: 6px;\n  font-size: 1rem;\n  font-weight: 600;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  transition: background-color 0.2s ease;\n}\n.sales-container .page-header .header-actions .btn-primary:hover {\n  background-color: rgb(0, 63.0924855491, 147.5);\n}\n.sales-container .page-header .header-actions .btn-primary:active {\n  background-color: rgb(0, 52.1849710983, 122);\n}\n.sales-container .stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 16px;\n  margin-bottom: 24px;\n}\n.sales-container .stats-grid .stat-card {\n  background-color: #ffffff;\n  border-radius: 8px;\n  padding: 20px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  transition: transform 0.2s ease;\n}\n.sales-container .stats-grid .stat-card:hover {\n  transform: translateY(-3px);\n}\n.sales-container .stats-grid .stat-card .stat-icon {\n  background-color: rgba(0, 74, 173, 0.1);\n  color: #004AAD;\n  border-radius: 50%;\n  width: 56px;\n  height: 56px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-shrink: 0;\n}\n.sales-container .stats-grid .stat-card .stat-icon app-feather-icon {\n  color: #004AAD;\n}\n.sales-container .stats-grid .stat-card .stat-content .stat-value {\n  font-size: 1.5rem;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.sales-container .stats-grid .stat-card .stat-content .stat-label {\n  font-size: 1rem;\n  color: #64748b;\n}\n.sales-container .card {\n  background-color: #ffffff;\n  border-radius: 8px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  overflow: hidden;\n}\n.sales-container .card .card-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 16px 20px;\n  border-bottom: 1px solid #e9ecef;\n  flex-wrap: wrap;\n  gap: 12px;\n}\n.sales-container .card .card-header .card-title-section {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n}\n.sales-container .card .card-header .card-title-section h3 {\n  font-size: 1.5rem;\n  color: #1e293b;\n  margin: 0;\n}\n.sales-container .card .card-header .card-title-section .sale-count {\n  font-size: 0.875rem;\n  color: #64748b;\n}\n.sales-container .card .card-header .card-actions .search-input {\n  padding: 8px 12px;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  font-size: 1rem;\n  width: 250px;\n  transition: border-color 0.2s ease;\n}\n.sales-container .card .card-header .card-actions .search-input:focus {\n  border-color: #004AAD;\n  outline: none;\n}\n.sales-container .card .card-body {\n  padding: 20px;\n}\n.sales-container .card .card-body .data-table-container {\n  overflow-x: auto;\n}\n.sales-container .dropdown {\n  position: relative;\n  display: inline-block;\n}\n.sales-container .dropdown .dropdown-toggle {\n  background-color: transparent;\n  border: 1px solid #e9ecef;\n  color: #64748b;\n  padding: 8px 12px;\n  border-radius: 6px;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n.sales-container .dropdown .dropdown-toggle:hover {\n  background-color: #f8f9fa;\n  border-color: rgb(218.2368421053, 223.25, 228.2631578947);\n}\n.sales-container .dropdown .dropdown-toggle:active {\n  background-color: rgb(233.125, 236.25, 239.375);\n  border-color: rgb(203.4736842105, 210.5, 217.5263157895);\n}\n.sales-container .dropdown .dropdown-menu {\n  position: absolute;\n  top: 100%;\n  right: 0;\n  background-color: #ffffff;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);\n  min-width: 160px;\n  z-index: 1000;\n  opacity: 0;\n  visibility: hidden;\n  transform: translateY(10px);\n  transition: opacity 0.2s ease, transform 0.2s ease;\n  padding: 8px 0;\n}\n.sales-container .dropdown .dropdown-menu.show {\n  opacity: 1;\n  visibility: visible;\n  transform: translateY(0);\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item {\n  display: flex;\n  align-items: center;\n  padding: 8px 16px;\n  font-size: 1rem;\n  color: #1e293b;\n  text-decoration: none;\n  transition: background-color 0.2s ease;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item:hover {\n  background-color: #f8f9fa;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item.text-danger {\n  color: #e74c3c;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item.text-success {\n  color: #1abc9c;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item.text-warning {\n  color: #f1c40f;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item app-feather-icon {\n  margin-right: 8px;\n}\n.status-badge {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.status-pending {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.status-accepted {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.status-rejected {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.status-cancelled {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n@media (max-width: 768px) {\n  .sales-container {\n    padding: 16px;\n  }\n  .sales-container .page-header {\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 16px;\n  }\n  .sales-container .page-header .header-actions {\n    width: 100%;\n  }\n  .sales-container .page-header .header-actions .btn-primary {\n    width: 100%;\n    justify-content: center;\n  }\n  .sales-container .stats-grid {\n    grid-template-columns: 1fr;\n  }\n  .sales-container .card-header {\n    flex-direction: column;\n    align-items: flex-start;\n  }\n  .sales-container .card-header .card-actions {\n    width: 100%;\n  }\n  .sales-container .card-header .card-actions .search-input {\n    width: 100%;\n  }\n}\n@media (max-width: 480px) {\n  .sales-container {\n    padding: 12px;\n  }\n  .page-header .header-content h1 {\n    font-size: 24px;\n  }\n  .stats-grid .stat-card {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=sales-list.component.css.map */\n"] }]
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(MilkSalesComponent, { className: "MilkSalesComponent", filePath: "src/app/features/milk-sales/milk-sales.component.ts", lineNumber: 29 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SalesListComponent, { className: "SalesListComponent", filePath: "src/app/features/sales/sales-list/sales-list.component.ts", lineNumber: 175 });
 })();
 
 // src/app/features/entities/entities.component.ts
@@ -69108,8 +70328,8 @@ var routes = [
         component: CollectionsListComponent
       },
       {
-        path: "milk-sales",
-        component: MilkSalesComponent
+        path: "sales",
+        component: SalesListComponent
       },
       {
         path: "entities",
