@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService, Account } from '../../core/services/auth.service';
 import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
 
 @Component({
@@ -118,20 +118,20 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
         </div>
 
         <div class="nav-item user-profile" (click)="toggleUserMenu()">
-          <img [src]="currentAccount.avatar" [alt]="currentAccount.name" class="avatar">
+          <img [src]="currentAccount?.avatar || 'assets/img/user.png'" [alt]="currentAccount?.account_name" class="avatar">
           <div class="user-info">
-            <span class="user-name">{{ currentAccount.name }}</span>
-            <span class="user-role">{{ currentAccount.role }}</span>
+            <span class="user-name">{{ currentAccount?.account_name || 'User' }}</span>
+            <span class="user-role">{{ currentAccount?.role || 'Guest' }}</span>
           </div>
           <app-feather-icon name="chevron-down" size="16px"></app-feather-icon>
 
           <!-- User Dropdown Menu -->
           <div class="user-menu" *ngIf="showUserMenu">
             <div class="menu-header">
-              <img [src]="currentAccount.avatar" [alt]="currentAccount.name" class="avatar">
+              <img [src]="currentAccount?.avatar || 'assets/img/user.png'" [alt]="currentAccount?.account_name" class="avatar">
               <div>
-                <h6>{{ currentAccount.name }}</h6>
-                <span>{{ currentAccount.role }}</span>
+                <h6>{{ currentAccount?.account_name || 'User' }}</h6>
+                <span>{{ currentAccount?.role || 'Guest' }}</span>
               </div>
             </div>
             
@@ -147,14 +147,14 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
                 <button 
                   class="account-option" 
                   *ngFor="let account of availableAccounts"
-                  [class.active]="account.id === currentAccount.id"
+                  [class.active]="account.account_id === currentAccount?.account_id"
                   (click)="selectAccount(account)">
-                  <img [src]="account.avatar" [alt]="account.name" class="avatar">
+                  <img [src]="account.avatar || 'assets/img/user.png'" [alt]="account.account_name" class="avatar">
                   <div class="account-details">
-                    <span class="name">{{ account.name }}</span>
+                    <span class="name">{{ account.account_name }}</span>
                     <span class="role">{{ account.role }}</span>
                   </div>
-                  <app-feather-icon name="check" size="14px" *ngIf="account.id === currentAccount.id"></app-feather-icon>
+                  <app-feather-icon name="check" size="14px" *ngIf="account.account_id === currentAccount?.account_id"></app-feather-icon>
                 </button>
               </div>
             </div>
@@ -197,6 +197,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showLanguageMenu = false;
   showNotificationPanel = false;
   showMessagePanel = false;
+  
+  currentAccount: Account | null = null;
+  availableAccounts: Account[] = [];
   
   currentTime: string = '';
   currentDate: string = '';
@@ -272,33 +275,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   ];
 
-  currentAccount = {
-    id: '1',
-    name: 'John Doe',
-    role: 'Admin',
-    avatar: 'assets/img/user.png'
-  };
-
-  availableAccounts = [
-    {
-      id: '1',
-      name: 'John Doe',
-      role: 'Admin',
-      avatar: 'assets/img/user.png'
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      role: 'Manager',
-      avatar: 'assets/img/user.png'
-    },
-    {
-      id: '3',
-      name: 'Mike Johnson',
-      role: 'User',
-      avatar: 'assets/img/user.png'
-    }
-  ];
 
   currentLanguage = {
     code: 'EN',
@@ -331,6 +307,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const user = this.authService.getCurrentUser();
     this.userName = user?.name || 'User';
     this.userRole = user?.role || 'Guest';
+
+    // Load account data from AuthService
+    this.currentAccount = this.authService.getCurrentAccount();
+    this.availableAccounts = this.authService.getAvailableAccounts();
   }
 
   ngOnInit() {
@@ -403,11 +383,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     console.log('View all messages clicked');
   }
 
-  selectAccount(account: any): void {
+  selectAccount(account: Account): void {
+    this.authService.switchAccount(account);
     this.currentAccount = account;
     this.showUserMenu = false;
-    // TODO: Implement account switching logic
-    console.log('Account switched to:', account.name);
+    console.log('Account switched to:', account.account_name);
   }
 
   addNewAccount(): void {

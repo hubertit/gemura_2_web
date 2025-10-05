@@ -33,6 +33,29 @@ export interface User {
   isAgentCandidate?: boolean;
 }
 
+export interface Account {
+  account_id: number;
+  account_code: string;
+  account_name: string;
+  account_type: string;
+  account_status: string;
+  account_created_at: string;
+  role: string;
+  permissions: { [key: string]: boolean };
+  user_account_status: string;
+  access_granted_at: string;
+  is_default: boolean;
+  avatar?: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  account: Account;
+  accounts: Account[];
+  total_accounts: number;
+  profile_completion: number;
+}
+
 // API Configuration - now using ConfigService
 
 // Account Types matching Flutter app exactly
@@ -68,6 +91,8 @@ export interface RegistrationRequest {
 })
 export class AuthService {
   private currentUser: User | null = null;
+  private currentAccount: Account | null = null;
+  private availableAccounts: Account[] = [];
 
   constructor(
     private http: HttpClient,
@@ -77,6 +102,17 @@ export class AuthService {
     const storedUser = localStorage.getItem(this.configService.userKey);
     if (storedUser) {
       this.currentUser = JSON.parse(storedUser);
+    }
+    
+    // Load account data from localStorage
+    const storedAccount = localStorage.getItem('gemura.currentAccount');
+    if (storedAccount) {
+      this.currentAccount = JSON.parse(storedAccount);
+    }
+    
+    const storedAccounts = localStorage.getItem('gemura.availableAccounts');
+    if (storedAccounts) {
+      this.availableAccounts = JSON.parse(storedAccounts);
     }
   }
 
@@ -118,7 +154,7 @@ export class AuthService {
           const data = response.data;
           console.log('🔧 AuthService: Response data:', data);
           if (data) {
-            const { user, account } = data;
+            const { user, account, accounts, total_accounts, profile_completion } = data;
             
             // Create user object matching the actual API response structure
             const userData: User = {
@@ -148,11 +184,17 @@ export class AuthService {
               isAgentCandidate: user.isAgentCandidate || false
             };
 
-            // Store user info - matching Flutter app storage keys
+            // Store user info and account data - matching Flutter app storage keys
             this.currentUser = userData;
+            this.currentAccount = account;
+            this.availableAccounts = accounts || [];
+            
             localStorage.setItem(this.configService.userKey, JSON.stringify(userData));
             localStorage.setItem(this.configService.tokenKey, userData.token || '');
             localStorage.setItem(this.configService.loginKey, 'true');
+            localStorage.setItem('gemura.currentAccount', JSON.stringify(account));
+            localStorage.setItem('gemura.availableAccounts', JSON.stringify(accounts));
+            localStorage.setItem('gemura.profileCompletion', profile_completion.toString());
             
             return userData;
           }
@@ -201,9 +243,14 @@ export class AuthService {
 
   private clearLocalData(): void {
     this.currentUser = null;
+    this.currentAccount = null;
+    this.availableAccounts = [];
     localStorage.removeItem(this.configService.userKey);
     localStorage.removeItem(this.configService.tokenKey);
     localStorage.removeItem(this.configService.loginKey);
+    localStorage.removeItem('gemura.currentAccount');
+    localStorage.removeItem('gemura.availableAccounts');
+    localStorage.removeItem('gemura.profileCompletion');
   }
 
   isLoggedIn(): boolean {
@@ -454,5 +501,47 @@ export class AuthService {
       map(response => response.success && response.data?.valid === true),
       catchError(() => of(false))
     );
+  }
+
+  // Multi-account switching methods
+  getCurrentAccount(): Account | null {
+    return this.currentAccount;
+  }
+
+  getAvailableAccounts(): Account[] {
+    return this.availableAccounts;
+  }
+
+  switchAccount(account: Account): void {
+    this.currentAccount = account;
+    localStorage.setItem('gemura.currentAccount', JSON.stringify(account));
+
+    if (this.currentUser) {
+      this.currentUser.role = account.role;
+      this.currentUser.accountType = account.account_type;
+      this.currentUser.accountCode = account.account_code;
+      this.currentUser.accountName = account.account_name;
+      this.currentUser.permissions = account.permissions;
+
+      localStorage.setItem(this.configService.userKey, JSON.stringify(this.currentUser));
+    }
+    console.log('🔧 AuthService: Account switched to:', account.account_name);
+  }
+
+  getProfileCompletion(): number {
+    const completion = localStorage.getItem('gemura.profileCompletion');
+    return completion ? parseInt(completion, 10) : 0;
+  }
+
+  hasMultipleAccounts(): boolean {
+    return this.availableAccounts.length > 1;
+  }
+
+  getDefaultAccount(): Account | null {
+    return this.availableAccounts.find(account => account.is_default) || null;
+  }
+
+  getAccountById(accountId: number): Account | null {
+    return this.availableAccounts.find(account => account.account_id === accountId) || null;
   }
 }
