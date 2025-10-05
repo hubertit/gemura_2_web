@@ -88,6 +88,7 @@ import { Collection } from '../collection.model';
             [pageSize]="pageSize"
             [totalPages]="totalPages"
             [totalItems]="collections.length"
+            [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">

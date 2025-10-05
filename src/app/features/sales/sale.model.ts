@@ -9,7 +9,7 @@ export interface Sale {
   status: 'pending' | 'accepted' | 'rejected' | 'cancelled';
   rejectionReason?: string;
   notes?: string;
-  saleDate: Date;
+  saleAt: Date;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -105,6 +105,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
             [pageSize]="pageSize"
             [totalPages]="totalPages"
             [totalItems]="sales.length"
+            [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)"
@@ -201,7 +202,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
     { key: 'pricePerLiter', title: 'Price/Liter (RWF)', type: 'number' as const, sortable: true },
     { key: 'totalValue', title: 'Total Value (RWF)', type: 'number' as const, sortable: true },
     { key: 'status', title: 'Status', type: 'custom' as const, sortable: true, template: this.getStatusTemplate() },
-    { key: 'saleDate', title: 'Sale Date', type: 'date' as const, sortable: true }
+    { key: 'saleAt', title: 'Sale Date', type: 'date' as const, sortable: true }
   ];
 
   currentPage: number = 1;
@@ -259,7 +260,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
         pricePerLiter: 500,
         totalValue: 10000,
         status: 'pending',
-        saleDate: new Date(now.getTime() - 1 * 60 * 60 * 1000),
+        saleAt: new Date(now.getTime() - 1 * 60 * 60 * 1000),
         createdAt: new Date(now.getTime() - 1 * 60 * 60 * 1000),
         updatedAt: new Date(now.getTime() - 1 * 60 * 60 * 1000)
       },
@@ -272,7 +273,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
         pricePerLiter: 520,
         totalValue: 8060,
         status: 'accepted',
-        saleDate: new Date(now.getTime() - 3 * 60 * 60 * 1000),
+        saleAt: new Date(now.getTime() - 3 * 60 * 60 * 1000),
         createdAt: new Date(now.getTime() - 3 * 60 * 60 * 1000),
         updatedAt: new Date(now.getTime() - 3 * 60 * 60 * 1000)
       },
@@ -286,7 +287,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
         totalValue: 12000,
         status: 'rejected',
         rejectionReason: 'Quality Issues',
-        saleDate: new Date(now.getTime() - 5 * 60 * 60 * 1000),
+        saleAt: new Date(now.getTime() - 5 * 60 * 60 * 1000),
         createdAt: new Date(now.getTime() - 5 * 60 * 60 * 1000),
         updatedAt: new Date(now.getTime() - 5 * 60 * 60 * 1000)
       },
@@ -300,7 +301,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
         totalValue: 6120,
         status: 'cancelled',
         rejectionReason: 'Customer cancelled',
-        saleDate: new Date(now.getTime() - 7 * 60 * 60 * 1000),
+        saleAt: new Date(now.getTime() - 7 * 60 * 60 * 1000),
         createdAt: new Date(now.getTime() - 7 * 60 * 60 * 1000),
         updatedAt: new Date(now.getTime() - 7 * 60 * 60 * 1000)
       }

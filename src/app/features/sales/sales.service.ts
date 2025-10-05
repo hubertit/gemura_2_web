@@ -152,7 +152,7 @@ export class SalesService {
       status: json['status']?.toString() as 'pending' | 'accepted' | 'rejected' | 'cancelled' ?? 'pending',
       rejectionReason: json['rejection_reason']?.toString(),
       notes: json['notes']?.toString(),
-      saleDate: new Date(json['sale_at'] ?? Date.now()),
+      saleAt: new Date(json['sale_at'] ?? Date.now()),
       createdAt: new Date(json['created_at'] ?? Date.now()),
       updatedAt: new Date(json['updated_at'] ?? Date.now()),
     };

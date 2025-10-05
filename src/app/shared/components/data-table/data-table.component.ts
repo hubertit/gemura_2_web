@@ -36,8 +36,14 @@ export interface TableColumn {
         </div>
       </div>
 
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Loading data...</p>
+      </div>
+
       <!-- Main Table -->
-      <div class="table-responsive">
+      <div class="table-responsive" *ngIf="!loading">
         <table class="table" [class.table-hover]="hover" [class.table-striped]="striped">
           <thead>
             <tr>
@@ -147,6 +153,7 @@ export class DataTableComponent implements AfterContentInit, OnChanges {
   @Input() totalPages = 1;
   @Input() totalItems = 0;
   @Input() pageSizes = [5, 10, 25, 50, 100];
+  @Input() loading = false;
 
   @ContentChild('rowActions') rowActions!: TemplateRef<any>;
 

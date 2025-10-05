@@ -60785,7 +60785,7 @@ var _c3 = /* @__PURE__ */ __name((a0) => ({ $implicit: a0 }), "_c3");
 function DataTableComponent_div_1_div_3_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 13)(1, "input", 14);
+    \u0275\u0275elementStart(0, "div", 9)(1, "input", 10);
     \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function DataTableComponent_div_1_div_3_Template_input_ngModelChange_1_listener($event) {
       \u0275\u0275restoreView(_r1);
       const ctx_r1 = \u0275\u0275nextContext(2);
@@ -60808,11 +60808,11 @@ function DataTableComponent_div_1_div_3_Template(rf, ctx) {
 __name(DataTableComponent_div_1_div_3_Template, "DataTableComponent_div_1_div_3_Template");
 function DataTableComponent_div_1_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 9)(1, "div", 10)(2, "div", 11);
-    \u0275\u0275template(3, DataTableComponent_div_1_div_3_Template, 2, 1, "div", 12);
+    \u0275\u0275elementStart(0, "div", 5)(1, "div", 6)(2, "div", 7);
+    \u0275\u0275template(3, DataTableComponent_div_1_div_3_Template, 2, 1, "div", 8);
     \u0275\u0275projection(4);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "div", 11);
+    \u0275\u0275elementStart(5, "div", 7);
     \u0275\u0275projection(6, 1);
     \u0275\u0275elementEnd()()();
   }
@@ -60823,28 +60823,38 @@ function DataTableComponent_div_1_Template(rf, ctx) {
   }
 }
 __name(DataTableComponent_div_1_Template, "DataTableComponent_div_1_Template");
-function DataTableComponent_th_6_i_2_Template(rf, ctx) {
+function DataTableComponent_div_2_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "i", 17);
+    \u0275\u0275elementStart(0, "div", 11);
+    \u0275\u0275element(1, "div", 12);
+    \u0275\u0275elementStart(2, "p", 13);
+    \u0275\u0275text(3, "Loading data...");
+    \u0275\u0275elementEnd()();
+  }
+}
+__name(DataTableComponent_div_2_Template, "DataTableComponent_div_2_Template");
+function DataTableComponent_div_3_th_4_i_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "i", 22);
   }
   if (rf & 2) {
     const col_r4 = \u0275\u0275nextContext().$implicit;
-    const ctx_r1 = \u0275\u0275nextContext();
+    const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275classProp("asc", ctx_r1.sortColumn === col_r4.key && ctx_r1.sortDirection === "asc")("desc", ctx_r1.sortColumn === col_r4.key && ctx_r1.sortDirection === "desc");
   }
 }
-__name(DataTableComponent_th_6_i_2_Template, "DataTableComponent_th_6_i_2_Template");
-function DataTableComponent_th_6_Template(rf, ctx) {
+__name(DataTableComponent_div_3_th_4_i_2_Template, "DataTableComponent_div_3_th_4_i_2_Template");
+function DataTableComponent_div_3_th_4_Template(rf, ctx) {
   if (rf & 1) {
     const _r3 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "th", 15);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_th_6_Template_th_click_0_listener() {
+    \u0275\u0275elementStart(0, "th", 20);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_div_3_th_4_Template_th_click_0_listener() {
       const col_r4 = \u0275\u0275restoreView(_r3).$implicit;
-      const ctx_r1 = \u0275\u0275nextContext();
+      const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(col_r4.sortable && ctx_r1.sort(col_r4.key));
-    }, "DataTableComponent_th_6_Template_th_click_0_listener"));
+    }, "DataTableComponent_div_3_th_4_Template_th_click_0_listener"));
     \u0275\u0275text(1);
-    \u0275\u0275template(2, DataTableComponent_th_6_i_2_Template, 1, 4, "i", 16);
+    \u0275\u0275template(2, DataTableComponent_div_3_th_4_i_2_Template, 1, 4, "i", 21);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -60856,16 +60866,16 @@ function DataTableComponent_th_6_Template(rf, ctx) {
     \u0275\u0275property("ngIf", col_r4.sortable);
   }
 }
-__name(DataTableComponent_th_6_Template, "DataTableComponent_th_6_Template");
-function DataTableComponent_th_7_Template(rf, ctx) {
+__name(DataTableComponent_div_3_th_4_Template, "DataTableComponent_div_3_th_4_Template");
+function DataTableComponent_div_3_th_5_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 18);
+    \u0275\u0275elementStart(0, "th", 23);
     \u0275\u0275text(1, "Actions");
     \u0275\u0275elementEnd();
   }
 }
-__name(DataTableComponent_th_7_Template, "DataTableComponent_th_7_Template");
-function DataTableComponent_tr_9_td_1_ng_container_2_Template(rf, ctx) {
+__name(DataTableComponent_div_3_th_5_Template, "DataTableComponent_div_3_th_5_Template");
+function DataTableComponent_div_3_tr_7_td_1_ng_container_2_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
     \u0275\u0275text(1);
@@ -60879,11 +60889,11 @@ function DataTableComponent_tr_9_td_1_ng_container_2_Template(rf, ctx) {
     \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind2(2, 1, item_r6[col_r7.key], "medium"), " ");
   }
 }
-__name(DataTableComponent_tr_9_td_1_ng_container_2_Template, "DataTableComponent_tr_9_td_1_ng_container_2_Template");
-function DataTableComponent_tr_9_td_1_ng_container_3_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_ng_container_2_Template, "DataTableComponent_div_3_tr_7_td_1_ng_container_2_Template");
+function DataTableComponent_div_3_tr_7_td_1_ng_container_3_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "span", 24);
+    \u0275\u0275elementStart(1, "span", 29);
     \u0275\u0275text(2);
     \u0275\u0275elementEnd();
     \u0275\u0275elementContainerEnd();
@@ -60897,11 +60907,11 @@ function DataTableComponent_tr_9_td_1_ng_container_3_Template(rf, ctx) {
     \u0275\u0275textInterpolate1(" ", item_r6[col_r7.key] ? "Yes" : "No", " ");
   }
 }
-__name(DataTableComponent_tr_9_td_1_ng_container_3_Template, "DataTableComponent_tr_9_td_1_ng_container_3_Template");
-function DataTableComponent_tr_9_td_1_ng_container_4_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_ng_container_3_Template, "DataTableComponent_div_3_tr_7_td_1_ng_container_3_Template");
+function DataTableComponent_div_3_tr_7_td_1_ng_container_4_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "span", 24);
+    \u0275\u0275elementStart(1, "span", 29);
     \u0275\u0275text(2);
     \u0275\u0275elementEnd();
     \u0275\u0275elementContainerEnd();
@@ -60915,11 +60925,11 @@ function DataTableComponent_tr_9_td_1_ng_container_4_Template(rf, ctx) {
     \u0275\u0275textInterpolate1(" ", item_r6[col_r7.key], " ");
   }
 }
-__name(DataTableComponent_tr_9_td_1_ng_container_4_Template, "DataTableComponent_tr_9_td_1_ng_container_4_Template");
-function DataTableComponent_tr_9_td_1_ng_container_5_ng_container_1_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_ng_container_4_Template, "DataTableComponent_div_3_tr_7_td_1_ng_container_4_Template");
+function DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_1_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275element(1, "span", 25);
+    \u0275\u0275element(1, "span", 30);
     \u0275\u0275elementContainerEnd();
   }
   if (rf & 2) {
@@ -60931,17 +60941,17 @@ function DataTableComponent_tr_9_td_1_ng_container_5_ng_container_1_Template(rf,
     \u0275\u0275property("innerHTML", col_r7.template(item_r6, i_r9), \u0275\u0275sanitizeHtml);
   }
 }
-__name(DataTableComponent_tr_9_td_1_ng_container_5_ng_container_1_Template, "DataTableComponent_tr_9_td_1_ng_container_5_ng_container_1_Template");
-function DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_ng_container_1_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_1_Template, "DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_1_Template");
+function DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_2_ng_container_1_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainer(0);
   }
 }
-__name(DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_ng_container_1_Template, "DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_ng_container_1_Template");
-function DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_2_ng_container_1_Template, "DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_2_ng_container_1_Template");
+function DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_2_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275template(1, DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_ng_container_1_Template, 1, 0, "ng-container", 26);
+    \u0275\u0275template(1, DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_2_ng_container_1_Template, 1, 0, "ng-container", 31);
     \u0275\u0275elementContainerEnd();
   }
   if (rf & 2) {
@@ -60951,11 +60961,11 @@ function DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_Template(rf,
     \u0275\u0275property("ngTemplateOutlet", col_r7.template)("ngTemplateOutletContext", \u0275\u0275pureFunction1(2, _c3, item_r6));
   }
 }
-__name(DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_Template, "DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_Template");
-function DataTableComponent_tr_9_td_1_ng_container_5_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_2_Template, "DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_2_Template");
+function DataTableComponent_div_3_tr_7_td_1_ng_container_5_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275template(1, DataTableComponent_tr_9_td_1_ng_container_5_ng_container_1_Template, 2, 1, "ng-container", 7)(2, DataTableComponent_tr_9_td_1_ng_container_5_ng_container_2_Template, 2, 4, "ng-container", 7);
+    \u0275\u0275template(1, DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_1_Template, 2, 1, "ng-container", 19)(2, DataTableComponent_div_3_tr_7_td_1_ng_container_5_ng_container_2_Template, 2, 4, "ng-container", 19);
     \u0275\u0275elementContainerEnd();
   }
   if (rf & 2) {
@@ -60966,8 +60976,8 @@ function DataTableComponent_tr_9_td_1_ng_container_5_Template(rf, ctx) {
     \u0275\u0275property("ngIf", col_r7.template && typeof col_r7.template !== "function");
   }
 }
-__name(DataTableComponent_tr_9_td_1_ng_container_5_Template, "DataTableComponent_tr_9_td_1_ng_container_5_Template");
-function DataTableComponent_tr_9_td_1_ng_container_6_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_ng_container_5_Template, "DataTableComponent_div_3_tr_7_td_1_ng_container_5_Template");
+function DataTableComponent_div_3_tr_7_td_1_ng_container_6_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
     \u0275\u0275text(1);
@@ -60980,12 +60990,12 @@ function DataTableComponent_tr_9_td_1_ng_container_6_Template(rf, ctx) {
     \u0275\u0275textInterpolate1(" ", item_r6[col_r7.key], " ");
   }
 }
-__name(DataTableComponent_tr_9_td_1_ng_container_6_Template, "DataTableComponent_tr_9_td_1_ng_container_6_Template");
-function DataTableComponent_tr_9_td_1_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_ng_container_6_Template, "DataTableComponent_div_3_tr_7_td_1_ng_container_6_Template");
+function DataTableComponent_div_3_tr_7_td_1_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "td");
-    \u0275\u0275elementContainerStart(1, 21);
-    \u0275\u0275template(2, DataTableComponent_tr_9_td_1_ng_container_2_Template, 3, 4, "ng-container", 22)(3, DataTableComponent_tr_9_td_1_ng_container_3_Template, 3, 5, "ng-container", 22)(4, DataTableComponent_tr_9_td_1_ng_container_4_Template, 3, 9, "ng-container", 22)(5, DataTableComponent_tr_9_td_1_ng_container_5_Template, 3, 2, "ng-container", 22)(6, DataTableComponent_tr_9_td_1_ng_container_6_Template, 2, 1, "ng-container", 23);
+    \u0275\u0275elementContainerStart(1, 26);
+    \u0275\u0275template(2, DataTableComponent_div_3_tr_7_td_1_ng_container_2_Template, 3, 4, "ng-container", 27)(3, DataTableComponent_div_3_tr_7_td_1_ng_container_3_Template, 3, 5, "ng-container", 27)(4, DataTableComponent_div_3_tr_7_td_1_ng_container_4_Template, 3, 9, "ng-container", 27)(5, DataTableComponent_div_3_tr_7_td_1_ng_container_5_Template, 3, 2, "ng-container", 27)(6, DataTableComponent_div_3_tr_7_td_1_ng_container_6_Template, 2, 1, "ng-container", 28);
     \u0275\u0275elementContainerEnd();
     \u0275\u0275elementEnd();
   }
@@ -61003,60 +61013,85 @@ function DataTableComponent_tr_9_td_1_Template(rf, ctx) {
     \u0275\u0275property("ngSwitchCase", "custom");
   }
 }
-__name(DataTableComponent_tr_9_td_1_Template, "DataTableComponent_tr_9_td_1_Template");
-function DataTableComponent_tr_9_td_2_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_1_Template, "DataTableComponent_div_3_tr_7_td_1_Template");
+function DataTableComponent_div_3_tr_7_td_2_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 18);
-    \u0275\u0275elementContainer(1, 27);
+    \u0275\u0275elementStart(0, "td", 23);
+    \u0275\u0275elementContainer(1, 32);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     const item_r6 = \u0275\u0275nextContext().$implicit;
-    const ctx_r1 = \u0275\u0275nextContext();
+    const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
     \u0275\u0275property("ngTemplateOutlet", ctx_r1.rowActions)("ngTemplateOutletContext", \u0275\u0275pureFunction1(2, _c3, item_r6));
   }
 }
-__name(DataTableComponent_tr_9_td_2_Template, "DataTableComponent_tr_9_td_2_Template");
-function DataTableComponent_tr_9_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_td_2_Template, "DataTableComponent_div_3_tr_7_td_2_Template");
+function DataTableComponent_div_3_tr_7_Template(rf, ctx) {
   if (rf & 1) {
     const _r5 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "tr", 19);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_tr_9_Template_tr_click_0_listener() {
+    \u0275\u0275elementStart(0, "tr", 24);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_div_3_tr_7_Template_tr_click_0_listener() {
       const item_r6 = \u0275\u0275restoreView(_r5).$implicit;
-      const ctx_r1 = \u0275\u0275nextContext();
+      const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.onRowClick.emit(item_r6));
-    }, "DataTableComponent_tr_9_Template_tr_click_0_listener"));
-    \u0275\u0275template(1, DataTableComponent_tr_9_td_1_Template, 7, 5, "td", 20)(2, DataTableComponent_tr_9_td_2_Template, 2, 4, "td", 5);
+    }, "DataTableComponent_div_3_tr_7_Template_tr_click_0_listener"));
+    \u0275\u0275template(1, DataTableComponent_div_3_tr_7_td_1_Template, 7, 5, "td", 25)(2, DataTableComponent_div_3_tr_7_td_2_Template, 2, 4, "td", 17);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r1 = \u0275\u0275nextContext();
+    const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
     \u0275\u0275property("ngForOf", ctx_r1.columns);
     \u0275\u0275advance();
     \u0275\u0275property("ngIf", ctx_r1.showActions && ctx_r1.rowActions);
   }
 }
-__name(DataTableComponent_tr_9_Template, "DataTableComponent_tr_9_Template");
-function DataTableComponent_tr_10_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_7_Template, "DataTableComponent_div_3_tr_7_Template");
+function DataTableComponent_div_3_tr_8_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "tr")(1, "td", 28);
+    \u0275\u0275elementStart(0, "tr")(1, "td", 33);
     \u0275\u0275text(2);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const ctx_r1 = \u0275\u0275nextContext();
+    const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
     \u0275\u0275attribute("colspan", ctx_r1.columns.length + (ctx_r1.showActions && ctx_r1.rowActions ? 1 : 0));
     \u0275\u0275advance();
     \u0275\u0275textInterpolate1(" ", ctx_r1.noDataMessage, " ");
   }
 }
-__name(DataTableComponent_tr_10_Template, "DataTableComponent_tr_10_Template");
-function DataTableComponent_div_11_option_4_Template(rf, ctx) {
+__name(DataTableComponent_div_3_tr_8_Template, "DataTableComponent_div_3_tr_8_Template");
+function DataTableComponent_div_3_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "option", 36);
+    \u0275\u0275elementStart(0, "div", 14)(1, "table", 15)(2, "thead")(3, "tr");
+    \u0275\u0275template(4, DataTableComponent_div_3_th_4_Template, 3, 4, "th", 16)(5, DataTableComponent_div_3_th_5_Template, 2, 0, "th", 17);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "tbody");
+    \u0275\u0275template(7, DataTableComponent_div_3_tr_7_Template, 3, 2, "tr", 18)(8, DataTableComponent_div_3_tr_8_Template, 3, 2, "tr", 19);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_6_0;
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275classProp("table-hover", ctx_r1.hover)("table-striped", ctx_r1.striped);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r1.columns);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx_r1.showActions && ctx_r1.rowActions);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngForOf", ctx_r1.getPaginatedData());
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !((tmp_6_0 = ctx_r1.getPaginatedData()) == null ? null : tmp_6_0.length));
+  }
+}
+__name(DataTableComponent_div_3_Template, "DataTableComponent_div_3_Template");
+function DataTableComponent_div_4_option_4_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 41);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -61067,16 +61102,16 @@ function DataTableComponent_div_11_option_4_Template(rf, ctx) {
     \u0275\u0275textInterpolate1("", size_r11, " per page");
   }
 }
-__name(DataTableComponent_div_11_option_4_Template, "DataTableComponent_div_11_option_4_Template");
-function DataTableComponent_div_11_nav_7_li_5_Template(rf, ctx) {
+__name(DataTableComponent_div_4_option_4_Template, "DataTableComponent_div_4_option_4_Template");
+function DataTableComponent_div_4_nav_7_li_5_Template(rf, ctx) {
   if (rf & 1) {
     const _r13 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "li", 39)(1, "a", 40);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_div_11_nav_7_li_5_Template_a_click_1_listener() {
+    \u0275\u0275elementStart(0, "li", 44)(1, "a", 45);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_div_4_nav_7_li_5_Template_a_click_1_listener() {
       const page_r14 = \u0275\u0275restoreView(_r13).$implicit;
       const ctx_r1 = \u0275\u0275nextContext(3);
       return \u0275\u0275resetView(ctx_r1.onPageChange.emit(page_r14));
-    }, "DataTableComponent_div_11_nav_7_li_5_Template_a_click_1_listener"));
+    }, "DataTableComponent_div_4_nav_7_li_5_Template_a_click_1_listener"));
     \u0275\u0275text(2);
     \u0275\u0275elementEnd()();
   }
@@ -61088,25 +61123,25 @@ function DataTableComponent_div_11_nav_7_li_5_Template(rf, ctx) {
     \u0275\u0275textInterpolate(page_r14);
   }
 }
-__name(DataTableComponent_div_11_nav_7_li_5_Template, "DataTableComponent_div_11_nav_7_li_5_Template");
-function DataTableComponent_div_11_nav_7_Template(rf, ctx) {
+__name(DataTableComponent_div_4_nav_7_li_5_Template, "DataTableComponent_div_4_nav_7_li_5_Template");
+function DataTableComponent_div_4_nav_7_Template(rf, ctx) {
   if (rf & 1) {
     const _r12 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "nav", 37)(1, "ul", 38)(2, "li", 39)(3, "a", 40);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_div_11_nav_7_Template_a_click_3_listener() {
+    \u0275\u0275elementStart(0, "nav", 42)(1, "ul", 43)(2, "li", 44)(3, "a", 45);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_div_4_nav_7_Template_a_click_3_listener() {
       \u0275\u0275restoreView(_r12);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.onPageChange.emit(ctx_r1.currentPage - 1));
-    }, "DataTableComponent_div_11_nav_7_Template_a_click_3_listener"));
+    }, "DataTableComponent_div_4_nav_7_Template_a_click_3_listener"));
     \u0275\u0275text(4, "Previous");
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(5, DataTableComponent_div_11_nav_7_li_5_Template, 3, 3, "li", 41);
-    \u0275\u0275elementStart(6, "li", 39)(7, "a", 40);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_div_11_nav_7_Template_a_click_7_listener() {
+    \u0275\u0275template(5, DataTableComponent_div_4_nav_7_li_5_Template, 3, 3, "li", 46);
+    \u0275\u0275elementStart(6, "li", 44)(7, "a", 45);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function DataTableComponent_div_4_nav_7_Template_a_click_7_listener() {
       \u0275\u0275restoreView(_r12);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.onPageChange.emit(ctx_r1.currentPage + 1));
-    }, "DataTableComponent_div_11_nav_7_Template_a_click_7_listener"));
+    }, "DataTableComponent_div_4_nav_7_Template_a_click_7_listener"));
     \u0275\u0275text(8, "Next");
     \u0275\u0275elementEnd()()()();
   }
@@ -61120,22 +61155,22 @@ function DataTableComponent_div_11_nav_7_Template(rf, ctx) {
     \u0275\u0275classProp("disabled", ctx_r1.currentPage === ctx_r1.totalPages);
   }
 }
-__name(DataTableComponent_div_11_nav_7_Template, "DataTableComponent_div_11_nav_7_Template");
-function DataTableComponent_div_11_Template(rf, ctx) {
+__name(DataTableComponent_div_4_nav_7_Template, "DataTableComponent_div_4_nav_7_Template");
+function DataTableComponent_div_4_Template(rf, ctx) {
   if (rf & 1) {
     const _r10 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 29)(1, "div", 30)(2, "div", 31)(3, "select", 32);
-    \u0275\u0275listener("ngModelChange", /* @__PURE__ */ __name(function DataTableComponent_div_11_Template_select_ngModelChange_3_listener($event) {
+    \u0275\u0275elementStart(0, "div", 34)(1, "div", 35)(2, "div", 36)(3, "select", 37);
+    \u0275\u0275listener("ngModelChange", /* @__PURE__ */ __name(function DataTableComponent_div_4_Template_select_ngModelChange_3_listener($event) {
       \u0275\u0275restoreView(_r10);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.onPageSizeChange.emit($event));
-    }, "DataTableComponent_div_11_Template_select_ngModelChange_3_listener"));
-    \u0275\u0275template(4, DataTableComponent_div_11_option_4_Template, 2, 2, "option", 33);
+    }, "DataTableComponent_div_4_Template_select_ngModelChange_3_listener"));
+    \u0275\u0275template(4, DataTableComponent_div_4_option_4_Template, 2, 2, "option", 38);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(5, "div", 34);
+    \u0275\u0275elementStart(5, "div", 39);
     \u0275\u0275text(6);
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(7, DataTableComponent_div_11_nav_7_Template, 9, 5, "nav", 35);
+    \u0275\u0275template(7, DataTableComponent_div_4_nav_7_Template, 9, 5, "nav", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -61150,7 +61185,7 @@ function DataTableComponent_div_11_Template(rf, ctx) {
     \u0275\u0275property("ngIf", ctx_r1.totalPages > 1);
   }
 }
-__name(DataTableComponent_div_11_Template, "DataTableComponent_div_11_Template");
+__name(DataTableComponent_div_4_Template, "DataTableComponent_div_4_Template");
 var _DataTableComponent = class _DataTableComponent {
   columns = [];
   data = [];
@@ -61166,6 +61201,7 @@ var _DataTableComponent = class _DataTableComponent {
   totalPages = 1;
   totalItems = 0;
   pageSizes = [5, 10, 25, 50, 100];
+  loading = false;
   rowActions;
   onSort = new EventEmitter();
   onSearch = new EventEmitter();
@@ -61249,34 +61285,20 @@ __publicField(_DataTableComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defi
     let _t;
     \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.rowActions = _t.first);
   }
-}, "DataTableComponent_ContentQueries"), inputs: { columns: "columns", data: "data", showHeader: "showHeader", showSearch: "showSearch", showActions: "showActions", showPagination: "showPagination", hover: "hover", striped: "striped", noDataMessage: "noDataMessage", currentPage: "currentPage", pageSize: "pageSize", totalPages: "totalPages", totalItems: "totalItems", pageSizes: "pageSizes" }, outputs: { onSort: "onSort", onSearch: "onSearch", onPageChange: "onPageChange", onPageSizeChange: "onPageSizeChange", onRowClick: "onRowClick" }, features: [\u0275\u0275NgOnChangesFeature], ngContentSelectors: _c2, decls: 12, vars: 10, consts: [[1, "data-table-wrapper"], ["class", "data-table-header", 4, "ngIf"], [1, "table-responsive"], [1, "table"], [3, "sortable", "click", 4, "ngFor", "ngForOf"], ["class", "actions-column", 4, "ngIf"], ["style", "cursor: pointer;", 3, "click", 4, "ngFor", "ngForOf"], [4, "ngIf"], ["class", "data-table-footer d-flex justify-content-between align-items-center mt-3", 4, "ngIf"], [1, "data-table-header"], [1, "d-flex", "justify-content-between", "align-items-center", "mb-3"], [1, "d-flex", "align-items-center", "gap-2"], ["class", "search-box", 4, "ngIf"], [1, "search-box"], ["type", "text", "placeholder", "Search...", 1, "form-control", 3, "ngModelChange", "ngModel"], [3, "click"], ["class", "sort-icon", 3, "asc", "desc", 4, "ngIf"], [1, "sort-icon"], [1, "actions-column"], [2, "cursor", "pointer", 3, "click"], [4, "ngFor", "ngForOf"], [3, "ngSwitch"], [4, "ngSwitchCase"], [4, "ngSwitchDefault"], [1, "badge"], [3, "innerHTML"], [4, "ngTemplateOutlet", "ngTemplateOutletContext"], [3, "ngTemplateOutlet", "ngTemplateOutletContext"], [1, "text-center", "py-4"], [1, "data-table-footer", "d-flex", "justify-content-between", "align-items-center", "mt-3"], [1, "d-flex", "align-items-center", "gap-3"], [1, "page-size"], [1, "form-select", 3, "ngModelChange", "ngModel"], [3, "value", 4, "ngFor", "ngForOf"], [1, "page-info", "text-muted", "small"], ["aria-label", "Table navigation", 4, "ngIf"], [3, "value"], ["aria-label", "Table navigation"], [1, "pagination", "mb-0"], [1, "page-item"], ["href", "javascript:void(0)", 1, "page-link", 3, "click"], ["class", "page-item", 3, "active", 4, "ngFor", "ngForOf"]], template: /* @__PURE__ */ __name(function DataTableComponent_Template(rf, ctx) {
+}, "DataTableComponent_ContentQueries"), inputs: { columns: "columns", data: "data", showHeader: "showHeader", showSearch: "showSearch", showActions: "showActions", showPagination: "showPagination", hover: "hover", striped: "striped", noDataMessage: "noDataMessage", currentPage: "currentPage", pageSize: "pageSize", totalPages: "totalPages", totalItems: "totalItems", pageSizes: "pageSizes", loading: "loading" }, outputs: { onSort: "onSort", onSearch: "onSearch", onPageChange: "onPageChange", onPageSizeChange: "onPageSizeChange", onRowClick: "onRowClick" }, features: [\u0275\u0275NgOnChangesFeature], ngContentSelectors: _c2, decls: 5, vars: 4, consts: [[1, "data-table-wrapper"], ["class", "data-table-header", 4, "ngIf"], ["class", "loading-container", 4, "ngIf"], ["class", "table-responsive", 4, "ngIf"], ["class", "data-table-footer d-flex justify-content-between align-items-center mt-3", 4, "ngIf"], [1, "data-table-header"], [1, "d-flex", "justify-content-between", "align-items-center", "mb-3"], [1, "d-flex", "align-items-center", "gap-2"], ["class", "search-box", 4, "ngIf"], [1, "search-box"], ["type", "text", "placeholder", "Search...", 1, "form-control", 3, "ngModelChange", "ngModel"], [1, "loading-container"], [1, "loading-spinner"], [1, "loading-text"], [1, "table-responsive"], [1, "table"], [3, "sortable", "click", 4, "ngFor", "ngForOf"], ["class", "actions-column", 4, "ngIf"], ["style", "cursor: pointer;", 3, "click", 4, "ngFor", "ngForOf"], [4, "ngIf"], [3, "click"], ["class", "sort-icon", 3, "asc", "desc", 4, "ngIf"], [1, "sort-icon"], [1, "actions-column"], [2, "cursor", "pointer", 3, "click"], [4, "ngFor", "ngForOf"], [3, "ngSwitch"], [4, "ngSwitchCase"], [4, "ngSwitchDefault"], [1, "badge"], [3, "innerHTML"], [4, "ngTemplateOutlet", "ngTemplateOutletContext"], [3, "ngTemplateOutlet", "ngTemplateOutletContext"], [1, "text-center", "py-4"], [1, "data-table-footer", "d-flex", "justify-content-between", "align-items-center", "mt-3"], [1, "d-flex", "align-items-center", "gap-3"], [1, "page-size"], [1, "form-select", 3, "ngModelChange", "ngModel"], [3, "value", 4, "ngFor", "ngForOf"], [1, "page-info", "text-muted", "small"], ["aria-label", "Table navigation", 4, "ngIf"], [3, "value"], ["aria-label", "Table navigation"], [1, "pagination", "mb-0"], [1, "page-item"], ["href", "javascript:void(0)", 1, "page-link", 3, "click"], ["class", "page-item", 3, "active", 4, "ngFor", "ngForOf"]], template: /* @__PURE__ */ __name(function DataTableComponent_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275projectionDef(_c12);
     \u0275\u0275elementStart(0, "div", 0);
-    \u0275\u0275template(1, DataTableComponent_div_1_Template, 7, 1, "div", 1);
-    \u0275\u0275elementStart(2, "div", 2)(3, "table", 3)(4, "thead")(5, "tr");
-    \u0275\u0275template(6, DataTableComponent_th_6_Template, 3, 4, "th", 4)(7, DataTableComponent_th_7_Template, 2, 0, "th", 5);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(8, "tbody");
-    \u0275\u0275template(9, DataTableComponent_tr_9_Template, 3, 2, "tr", 6)(10, DataTableComponent_tr_10_Template, 3, 2, "tr", 7);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275template(11, DataTableComponent_div_11_Template, 8, 6, "div", 8);
+    \u0275\u0275template(1, DataTableComponent_div_1_Template, 7, 1, "div", 1)(2, DataTableComponent_div_2_Template, 4, 0, "div", 2)(3, DataTableComponent_div_3_Template, 9, 8, "div", 3)(4, DataTableComponent_div_4_Template, 8, 6, "div", 4);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    let tmp_6_0;
     \u0275\u0275advance();
     \u0275\u0275property("ngIf", ctx.showHeader);
-    \u0275\u0275advance(2);
-    \u0275\u0275classProp("table-hover", ctx.hover)("table-striped", ctx.striped);
-    \u0275\u0275advance(3);
-    \u0275\u0275property("ngForOf", ctx.columns);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", ctx.showActions && ctx.rowActions);
-    \u0275\u0275advance(2);
-    \u0275\u0275property("ngForOf", ctx.getPaginatedData());
+    \u0275\u0275property("ngIf", ctx.loading);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", !((tmp_6_0 = ctx.getPaginatedData()) == null ? null : tmp_6_0.length));
+    \u0275\u0275property("ngIf", !ctx.loading);
     \u0275\u0275advance();
     \u0275\u0275property("ngIf", ctx.showPagination);
   }
@@ -61506,6 +61528,39 @@ __publicField(_DataTableComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defi
     width: 100%;
     min-width: auto;
   }
+  .loading-container[_ngcontent-%COMP%] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    min-height: 200px;
+  }
+  .loading-container[_ngcontent-%COMP%]   .loading-spinner[_ngcontent-%COMP%] {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e9ecef;
+    border-top: 4px solid #004AAD;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  .loading-container[_ngcontent-%COMP%]   .loading-text[_ngcontent-%COMP%] {
+    color: #6c757d;
+    font-size: 0.9375rem;
+    margin: 0;
+    font-weight: 500;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
   .data-table-footer[_ngcontent-%COMP%] {
     flex-direction: column;
     gap: 1rem;
@@ -61545,8 +61600,14 @@ var DataTableComponent = _DataTableComponent;
         </div>
       </div>
 
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Loading data...</p>
+      </div>
+
       <!-- Main Table -->
-      <div class="table-responsive">
+      <div class="table-responsive" *ngIf="!loading">
         <table class="table" [class.table-hover]="hover" [class.table-striped]="striped">
           <thead>
             <tr>
@@ -61863,6 +61924,39 @@ var DataTableComponent = _DataTableComponent;
     width: 100%;
     min-width: auto;
   }
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    min-height: 200px;
+  }
+  .loading-container .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e9ecef;
+    border-top: 4px solid #004AAD;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  .loading-container .loading-text {
+    color: #6c757d;
+    font-size: 0.9375rem;
+    margin: 0;
+    font-weight: 500;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
   .data-table-footer {
     flex-direction: column;
     gap: 1rem;
@@ -61905,6 +61999,8 @@ var DataTableComponent = _DataTableComponent;
     type: Input
   }], pageSizes: [{
     type: Input
+  }], loading: [{
+    type: Input
   }], rowActions: [{
     type: ContentChild,
     args: ["rowActions"]
@@ -61921,7 +62017,7 @@ var DataTableComponent = _DataTableComponent;
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DataTableComponent, { className: "DataTableComponent", filePath: "src/app/shared/components/data-table/data-table.component.ts", lineNumber: 135 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DataTableComponent, { className: "DataTableComponent", filePath: "src/app/shared/components/data-table/data-table.component.ts", lineNumber: 141 });
 })();
 
 // src/app/shared/components/view-customer-modal/view-customer-modal.component.ts
@@ -67045,7 +67141,7 @@ __name(_CollectionsListComponent, "CollectionsListComponent");
 __publicField(_CollectionsListComponent, "\u0275fac", /* @__PURE__ */ __name(function CollectionsListComponent_Factory(__ngFactoryType__) {
   return new (__ngFactoryType__ || _CollectionsListComponent)(\u0275\u0275directiveInject(CollectionsService));
 }, "CollectionsListComponent_Factory"));
-__publicField(_CollectionsListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CollectionsListComponent, selectors: [["app-collections-list"]], decls: 58, vars: 16, consts: [["statusCell", ""], ["rowActions", ""], [1, "collections-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "truck", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "check-circle", "size", "24px"], ["name", "clock", "size", "24px"], ["name", "droplet", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "collection-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems"], [3, "collectionRecorded", "modalClosed", 4, "ngIf"], [1, "status-badge", 3, "ngClass"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "collectionRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function CollectionsListComponent_Template(rf, ctx) {
+__publicField(_CollectionsListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CollectionsListComponent, selectors: [["app-collections-list"]], decls: 58, vars: 17, consts: [["statusCell", ""], ["rowActions", ""], [1, "collections-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "truck", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "check-circle", "size", "24px"], ["name", "clock", "size", "24px"], ["name", "droplet", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "collection-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems", "loading"], [3, "collectionRecorded", "modalClosed", 4, "ngIf"], [1, "status-badge", 3, "ngClass"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "collectionRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function CollectionsListComponent_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
     \u0275\u0275elementStart(0, "div", 2)(1, "div", 3)(2, "div", 4)(3, "h1");
@@ -67132,7 +67228,7 @@ __publicField(_CollectionsListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u02
     \u0275\u0275advance(9);
     \u0275\u0275textInterpolate1("", ctx.collections.length, " collections");
     \u0275\u0275advance(2);
-    \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredCollections)("striped", true)("hover", true)("showActions", true)("showPagination", true)("currentPage", ctx.currentPage)("pageSize", ctx.pageSize)("totalPages", ctx.totalPages)("totalItems", ctx.collections.length);
+    \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredCollections)("striped", true)("hover", true)("showActions", true)("showPagination", true)("currentPage", ctx.currentPage)("pageSize", ctx.pageSize)("totalPages", ctx.totalPages)("totalItems", ctx.collections.length)("loading", ctx.loading);
     \u0275\u0275advance(5);
     \u0275\u0275property("ngIf", ctx.showRecordCollectionModal);
   }
@@ -67217,6 +67313,7 @@ var CollectionsListComponent = _CollectionsListComponent;
             [pageSize]="pageSize"
             [totalPages]="totalPages"
             [totalItems]="collections.length"
+            [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">
@@ -67282,7 +67379,7 @@ var CollectionsListComponent = _CollectionsListComponent;
   }], () => [{ type: CollectionsService }], null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CollectionsListComponent, { className: "CollectionsListComponent", filePath: "src/app/features/collections/collections-list/collections-list.component.ts", lineNumber: 155 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CollectionsListComponent, { className: "CollectionsListComponent", filePath: "src/app/features/collections/collections-list/collections-list.component.ts", lineNumber: 156 });
 })();
 
 // src/app/features/sales/sales.service.ts
@@ -67407,7 +67504,7 @@ Message: ${error.message}`;
       status: json["status"]?.toString() ?? "pending",
       rejectionReason: json["rejection_reason"]?.toString(),
       notes: json["notes"]?.toString(),
-      saleDate: new Date(json["sale_at"] ?? Date.now()),
+      saleAt: new Date(json["sale_at"] ?? Date.now()),
       createdAt: new Date(json["created_at"] ?? Date.now()),
       updatedAt: new Date(json["updated_at"] ?? Date.now())
     };
@@ -68010,7 +68107,7 @@ var _SalesListComponent = class _SalesListComponent {
     { key: "pricePerLiter", title: "Price/Liter (RWF)", type: "number", sortable: true },
     { key: "totalValue", title: "Total Value (RWF)", type: "number", sortable: true },
     { key: "status", title: "Status", type: "custom", sortable: true, template: this.getStatusTemplate() },
-    { key: "saleDate", title: "Sale Date", type: "date", sortable: true }
+    { key: "saleAt", title: "Sale Date", type: "date", sortable: true }
   ];
   currentPage = 1;
   pageSize = 10;
@@ -68059,7 +68156,7 @@ var _SalesListComponent = class _SalesListComponent {
         pricePerLiter: 500,
         totalValue: 1e4,
         status: "pending",
-        saleDate: new Date(now.getTime() - 1 * 60 * 60 * 1e3),
+        saleAt: new Date(now.getTime() - 1 * 60 * 60 * 1e3),
         createdAt: new Date(now.getTime() - 1 * 60 * 60 * 1e3),
         updatedAt: new Date(now.getTime() - 1 * 60 * 60 * 1e3)
       },
@@ -68072,7 +68169,7 @@ var _SalesListComponent = class _SalesListComponent {
         pricePerLiter: 520,
         totalValue: 8060,
         status: "accepted",
-        saleDate: new Date(now.getTime() - 3 * 60 * 60 * 1e3),
+        saleAt: new Date(now.getTime() - 3 * 60 * 60 * 1e3),
         createdAt: new Date(now.getTime() - 3 * 60 * 60 * 1e3),
         updatedAt: new Date(now.getTime() - 3 * 60 * 60 * 1e3)
       },
@@ -68086,7 +68183,7 @@ var _SalesListComponent = class _SalesListComponent {
         totalValue: 12e3,
         status: "rejected",
         rejectionReason: "Quality Issues",
-        saleDate: new Date(now.getTime() - 5 * 60 * 60 * 1e3),
+        saleAt: new Date(now.getTime() - 5 * 60 * 60 * 1e3),
         createdAt: new Date(now.getTime() - 5 * 60 * 60 * 1e3),
         updatedAt: new Date(now.getTime() - 5 * 60 * 60 * 1e3)
       },
@@ -68100,7 +68197,7 @@ var _SalesListComponent = class _SalesListComponent {
         totalValue: 6120,
         status: "cancelled",
         rejectionReason: "Customer cancelled",
-        saleDate: new Date(now.getTime() - 7 * 60 * 60 * 1e3),
+        saleAt: new Date(now.getTime() - 7 * 60 * 60 * 1e3),
         createdAt: new Date(now.getTime() - 7 * 60 * 60 * 1e3),
         updatedAt: new Date(now.getTime() - 7 * 60 * 60 * 1e3)
       }
@@ -68274,7 +68371,7 @@ __name(_SalesListComponent, "SalesListComponent");
 __publicField(_SalesListComponent, "\u0275fac", /* @__PURE__ */ __name(function SalesListComponent_Factory(__ngFactoryType__) {
   return new (__ngFactoryType__ || _SalesListComponent)();
 }, "SalesListComponent_Factory"));
-__publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _SalesListComponent, selectors: [["app-sales-list"]], decls: 60, vars: 17, consts: [["statusCell", ""], ["rowActions", ""], [1, "sales-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "droplet", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "dollar-sign", "size", "24px"], ["name", "check-circle", "size", "24px"], ["name", "x-circle", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "sale-count"], [1, "card-actions"], ["type", "text", "placeholder", "Search sales...", 1, "form-control", "search-input", 3, "ngModelChange", "input", "ngModel"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems"], [3, "saleRecorded", "modalClosed", 4, "ngIf"], [1, "status-badge", 3, "ngClass"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "saleRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function SalesListComponent_Template(rf, ctx) {
+__publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _SalesListComponent, selectors: [["app-sales-list"]], decls: 60, vars: 18, consts: [["statusCell", ""], ["rowActions", ""], [1, "sales-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "droplet", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "dollar-sign", "size", "24px"], ["name", "check-circle", "size", "24px"], ["name", "x-circle", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "sale-count"], [1, "card-actions"], ["type", "text", "placeholder", "Search sales...", 1, "form-control", "search-input", 3, "ngModelChange", "input", "ngModel"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems", "loading"], [3, "saleRecorded", "modalClosed", 4, "ngIf"], [1, "status-badge", 3, "ngClass"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "saleRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function SalesListComponent_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
     \u0275\u0275elementStart(0, "div", 2)(1, "div", 3)(2, "div", 4)(3, "h1");
@@ -68374,7 +68471,7 @@ __publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defi
     \u0275\u0275advance(2);
     \u0275\u0275twoWayProperty("ngModel", ctx.searchTerm);
     \u0275\u0275advance(2);
-    \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredSales)("striped", true)("hover", true)("showActions", true)("showPagination", true)("currentPage", ctx.currentPage)("pageSize", ctx.pageSize)("totalPages", ctx.totalPages)("totalItems", ctx.sales.length);
+    \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredSales)("striped", true)("hover", true)("showActions", true)("showPagination", true)("currentPage", ctx.currentPage)("pageSize", ctx.pageSize)("totalPages", ctx.totalPages)("totalItems", ctx.sales.length)("loading", ctx.loading);
     \u0275\u0275advance(5);
     \u0275\u0275property("ngIf", ctx.showRecordSaleModal);
   }
@@ -68487,6 +68584,7 @@ var SalesListComponent = _SalesListComponent;
             [pageSize]="pageSize"
             [totalPages]="totalPages"
             [totalItems]="sales.length"
+            [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)"
@@ -68555,7 +68653,7 @@ var SalesListComponent = _SalesListComponent;
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SalesListComponent, { className: "SalesListComponent", filePath: "src/app/features/sales/sales-list/sales-list.component.ts", lineNumber: 175 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SalesListComponent, { className: "SalesListComponent", filePath: "src/app/features/sales/sales-list/sales-list.component.ts", lineNumber: 176 });
 })();
 
 // src/app/features/entities/entities.component.ts
