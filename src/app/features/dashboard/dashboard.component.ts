@@ -86,7 +86,7 @@ export interface ChartOptions {
       </div>
 
       <!-- Stats Cards -->
-      <div class="stats-grid" *ngIf="overview">
+      <div class="stats-grid" *ngIf="overview" [class.loading-overlay]="isRefreshing">
         <!-- Milk Collections -->
         <div class="stat-card collections" (click)="navigateToCollections()">
           <div class="stat-icon">
@@ -157,7 +157,7 @@ export interface ChartOptions {
       </div>
 
       <!-- Charts Section -->
-      <div class="charts-section" *ngIf="overview">
+      <div class="charts-section" *ngIf="overview" [class.loading-overlay]="isRefreshing">
         <!-- Bar Chart -->
         <div class="chart-container">
           <div class="chart-header">
@@ -206,7 +206,7 @@ export interface ChartOptions {
       </div>
 
       <!-- Recent Activity -->
-      <div class="recent-activity" *ngIf="overview?.recent_transactions?.length">
+      <div class="recent-activity" *ngIf="overview?.recent_transactions?.length" [class.loading-overlay]="isRefreshing">
         <div class="activity-header">
           <h3>Recent Activity</h3>
           <button class="btn-link" (click)="navigateToTransactions()">View All</button>
@@ -244,11 +244,71 @@ export interface ChartOptions {
         </div>
       </div>
 
-      <!-- Loading States -->
-      <div class="loading-section" *ngIf="isLoading && !overview">
-        <div class="loading-card">
-          <div class="loading-spinner"></div>
-          <p>Loading dashboard data...</p>
+      <!-- Skeleton Loading States -->
+      <div *ngIf="isLoading && !overview">
+        <!-- Skeleton Quick Actions -->
+        <div class="skeleton-quick-actions">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-actions-grid">
+            <div class="skeleton-action-btn" *ngFor="let i of [1,2,3,4]">
+              <div class="skeleton-action-icon"></div>
+              <div class="skeleton-action-label"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skeleton Stats Grid -->
+        <div class="skeleton-stats-grid">
+          <div class="skeleton-stat-card" *ngFor="let i of [1,2,3,4]">
+            <div class="skeleton-stat-icon"></div>
+            <div class="skeleton-stat-details">
+              <div class="skeleton-stat-title"></div>
+              <div class="skeleton-main-stat"></div>
+              <div class="skeleton-sub-stats">
+                <div class="skeleton-sub-stat"></div>
+                <div class="skeleton-sub-stat"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skeleton Charts Section -->
+        <div class="skeleton-charts-section">
+          <div class="skeleton-chart-container">
+            <div class="skeleton-chart-header">
+              <div class="skeleton-chart-title"></div>
+              <div class="skeleton-chart-controls">
+                <div class="skeleton-btn-small"></div>
+                <div class="skeleton-btn-small"></div>
+                <div class="skeleton-btn-small"></div>
+              </div>
+            </div>
+            <div class="skeleton-chart-wrapper"></div>
+          </div>
+          <div class="skeleton-chart-container skeleton-donut-chart">
+            <div class="skeleton-chart-header">
+              <div class="skeleton-chart-title"></div>
+            </div>
+            <div class="skeleton-chart-wrapper"></div>
+          </div>
+        </div>
+
+        <!-- Skeleton Recent Activity -->
+        <div class="skeleton-recent-activity">
+          <div class="skeleton-activity-header">
+            <div class="skeleton-activity-title"></div>
+            <div class="skeleton-view-all"></div>
+          </div>
+          <div class="skeleton-activity-list">
+            <div class="skeleton-activity-item" *ngFor="let i of [1,2,3,4,5]">
+              <div class="skeleton-activity-icon"></div>
+              <div class="skeleton-activity-content">
+                <div class="skeleton-activity-title"></div>
+                <div class="skeleton-activity-time"></div>
+              </div>
+              <div class="skeleton-activity-amount"></div>
+            </div>
+          </div>
         </div>
       </div>
 
