@@ -643,16 +643,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
     
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInHours / 24);
     
-    if (diffInHours < 1) {
-      return 'Just now';
-    } else if (diffInHours < 24) {
-      return `${diffInHours} hours ago`;
-    } else if (diffInHours < 48) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString();
+    // Show "time ago" for recent dates (within 5 days)
+    if (diffInDays <= 5) {
+      if (diffInHours < 1) {
+        return 'Just now';
+      } else if (diffInHours < 24) {
+        return `${diffInHours} hours ago`;
+      } else if (diffInDays === 1) {
+        return 'Yesterday';
+      } else if (diffInDays === 2) {
+        return '2 days ago';
+      } else if (diffInDays === 3) {
+        return '3 days ago';
+      } else if (diffInDays === 4) {
+        return '4 days ago';
+      } else if (diffInDays === 5) {
+        return '5 days ago';
+      }
     }
+    
+    // Show actual date and time for older dates (past 5 days)
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
   formatChartPeriod(period: string): string {
