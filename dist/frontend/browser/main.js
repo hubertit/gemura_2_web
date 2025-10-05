@@ -57380,6 +57380,7 @@ var _DashboardComponent = class _DashboardComponent {
   authService;
   dashboardService;
   navigationService;
+  router;
   destroy$ = new Subject();
   // Data properties
   overview = null;
@@ -57399,10 +57400,11 @@ var _DashboardComponent = class _DashboardComponent {
   // Chart options
   chartOptions;
   donutChartOptions;
-  constructor(authService, dashboardService, navigationService) {
+  constructor(authService, dashboardService, navigationService, router) {
     this.authService = authService;
     this.dashboardService = dashboardService;
     this.navigationService = navigationService;
+    this.router = router;
     this.initializeCharts();
     this.initializeDonutChart();
   }
@@ -57645,10 +57647,10 @@ var _DashboardComponent = class _DashboardComponent {
   quickAction(action) {
     switch (action) {
       case "collect":
-        console.log("Navigate to collections");
+        this.router.navigate(["/collections"]);
         break;
       case "sell":
-        console.log("Navigate to sales");
+        this.router.navigate(["/sales"]);
         break;
       case "supplier":
         this.openAddSupplierModal();
@@ -57662,16 +57664,16 @@ var _DashboardComponent = class _DashboardComponent {
    * Navigation methods
    */
   navigateToCollections() {
-    console.log("Navigate to collections");
+    this.router.navigate(["/collections"]);
   }
   navigateToSales() {
-    console.log("Navigate to sales");
+    this.router.navigate(["/sales"]);
   }
   navigateToSuppliers() {
-    console.log("Navigate to suppliers");
+    this.router.navigate(["/suppliers"]);
   }
   navigateToCustomers() {
-    console.log("Navigate to customers");
+    this.router.navigate(["/customers"]);
   }
   navigateToTransactions() {
     console.log("Navigate to transactions");
@@ -57865,7 +57867,7 @@ var _DashboardComponent = class _DashboardComponent {
 };
 __name(_DashboardComponent, "DashboardComponent");
 __publicField(_DashboardComponent, "\u0275fac", /* @__PURE__ */ __name(function DashboardComponent_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _DashboardComponent)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(DashboardService), \u0275\u0275directiveInject(NavigationService));
+  return new (__ngFactoryType__ || _DashboardComponent)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(DashboardService), \u0275\u0275directiveInject(NavigationService), \u0275\u0275directiveInject(Router));
 }, "DashboardComponent_Factory"));
 __publicField(_DashboardComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardComponent, selectors: [["app-dashboard"]], decls: 33, vars: 8, consts: [[1, "dashboard-container"], [1, "quick-actions"], [1, "actions-grid"], [1, "action-btn", 3, "click"], [1, "action-icon"], ["name", "truck", "size", "20px"], [1, "action-label"], ["name", "shopping-cart", "size", "20px"], ["name", "user-plus", "size", "20px"], ["name", "users", "size", "20px"], ["class", "stats-grid", 4, "ngIf"], ["class", "charts-section", 4, "ngIf"], ["class", "recent-activity", 4, "ngIf"], ["class", "status-bar", 4, "ngIf"], ["class", "loading-section", 4, "ngIf"], ["class", "error-section", 4, "ngIf"], [3, "customerAdded", "modalClosed", 4, "ngIf"], [3, "supplierAdded", "modalClosed", 4, "ngIf"], [1, "stats-grid"], [1, "stat-card", "collections", 3, "click"], [1, "stat-icon"], ["name", "truck", "size", "28px"], [1, "stat-details"], [1, "stat-title"], [1, "stat-numbers"], [1, "main-stat"], [1, "sub-stats"], [1, "success"], [1, "volume"], [1, "stat-card", "sales", 3, "click"], ["name", "shopping-cart", "size", "28px"], [1, "stat-card", "suppliers", 3, "click"], ["name", "user-plus", "size", "28px"], [1, "stat-card", "customers", 3, "click"], ["name", "users", "size", "28px"], [1, "charts-section"], [1, "chart-container"], [1, "chart-header"], [1, "chart-controls"], [1, "btn-small", 3, "click"], [1, "btn-small", "active", 3, "click"], [1, "chart-wrapper"], [3, "series", "chart", "xaxis", "yaxis", "dataLabels", "stroke", "fill", "colors", "tooltip", "grid", "legend"], [1, "chart-container", "donut-chart"], [3, "series", "chart", "labels", "colors", "dataLabels", "legend", "tooltip", "plotOptions"], [1, "recent-activity"], [1, "activity-header"], [1, "btn-link", 3, "click"], [1, "activity-list"], ["class", "activity-item", 3, "click", 4, "ngFor", "ngForOf"], [1, "activity-item", 3, "click"], [1, "activity-icon"], ["size", "16px", 3, "name"], [1, "activity-content"], [1, "activity-title"], [1, "activity-time"], [1, "activity-amount"], [1, "status-bar"], [1, "status-info"], [1, "status-indicator"], [1, "status-text"], [4, "ngIf"], [1, "loading-section"], [1, "loading-card"], [1, "loading-spinner"], [1, "error-section"], [1, "error-card"], ["name", "alert-circle", "size", "32px"], [1, "error-actions"], [1, "btn-primary", 3, "click"], [1, "btn-secondary", 3, "click"], [3, "customerAdded", "modalClosed"], [3, "supplierAdded", "modalClosed"]], template: /* @__PURE__ */ __name(function DashboardComponent_Template(rf, ctx) {
   if (rf & 1) {
@@ -58169,7 +58171,7 @@ var DashboardComponent = _DashboardComponent;
       </app-add-supplier-modal>
     </div>
   `, styles: ["/* src/app/features/dashboard/dashboard.component.scss */\n.dashboard-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .dashboard-container {\n    padding: 8px;\n  }\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card.collections .stat-icon {\n  background: transparent;\n  color: #004AAD;\n}\n.stat-card.sales .stat-icon {\n  background: transparent;\n  color: #004AAD;\n}\n.stat-card.suppliers .stat-icon {\n  background: transparent;\n  color: #004AAD;\n}\n.stat-card.customers .stat-icon {\n  background: transparent;\n  color: #004AAD;\n}\n.stat-icon {\n  width: 52px;\n  height: 52px;\n  border-radius: 12px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.stat-details {\n  flex: 1;\n}\n.stat-title {\n  font-size: 14px;\n  font-weight: 500;\n  color: #64748b;\n  margin-bottom: 8px;\n}\n.stat-numbers .main-stat {\n  font-size: 28px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-numbers .sub-stats {\n  display: flex;\n  gap: 16px;\n  font-size: 12px;\n}\n.stat-numbers .sub-stats .success {\n  color: #059669;\n  font-weight: 500;\n}\n.stat-numbers .sub-stats .volume {\n  color: #64748b;\n}\n.quick-actions {\n  margin-bottom: 24px;\n}\n.quick-actions h3 {\n  font-size: 18px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 16px 0;\n}\n.actions-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));\n  gap: 12px;\n}\n@media (max-width: 768px) {\n  .actions-grid {\n    grid-template-columns: repeat(3, 1fr);\n    gap: 8px;\n  }\n}\n@media (max-width: 480px) {\n  .actions-grid {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n.action-btn {\n  background: white;\n  border: 1px solid #e2e8f0;\n  border-radius: 8px;\n  padding: 16px 12px;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 8px;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  text-decoration: none;\n  color: inherit;\n}\n.action-btn:hover {\n  border-color: #004AAD;\n  transform: translateY(-2px);\n  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.15);\n}\n.action-btn:active {\n  transform: translateY(0);\n}\n.action-icon {\n  width: 40px;\n  height: 40px;\n  border-radius: 8px;\n  background: rgba(0, 74, 173, 0.1);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  transition: all 0.2s ease;\n}\n.action-btn:hover .action-icon {\n  background: #004AAD;\n  color: white;\n}\n.action-label {\n  font-size: 12px;\n  font-weight: 500;\n  color: #64748b;\n  text-align: center;\n  line-height: 1.2;\n}\n.action-btn:hover .action-label {\n  color: #004AAD;\n}\n.charts-section {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  gap: 24px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .charts-section {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.donut-chart .chart-wrapper {\n  height: 300px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.chart-container {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n}\n.chart-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 20px;\n}\n.chart-header h3 {\n  font-size: 18px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.chart-controls {\n  display: flex;\n  gap: 8px;\n}\n.btn-small {\n  padding: 6px 12px;\n  border: 1px solid #e2e8f0;\n  background: white;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  color: #64748b;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n.btn-small:hover {\n  border-color: #004AAD;\n  color: #004AAD;\n}\n.btn-small.active {\n  background: #004AAD;\n  border-color: #004AAD;\n  color: white;\n}\n.chart-wrapper {\n  height: 290px;\n  width: 100%;\n}\n.recent-activity {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n}\n.activity-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 16px;\n}\n.activity-header h3 {\n  font-size: 18px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.btn-link {\n  background: none;\n  border: none;\n  color: #004AAD;\n  font-size: 14px;\n  font-weight: 500;\n  cursor: pointer;\n  text-decoration: none;\n}\n.btn-link:hover {\n  text-decoration: underline;\n}\n.activity-list {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.activity-item {\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  padding: 16px;\n  border-radius: 8px;\n  transition: background-color 0.2s ease;\n}\n.activity-item:hover {\n  background: #f8fafc;\n}\n.activity-icon {\n  width: 40px;\n  height: 40px;\n  border-radius: 8px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.activity-icon.collections {\n  background: rgba(0, 74, 173, 0.1);\n  color: #004AAD;\n}\n.activity-icon.sales {\n  background: rgba(0, 74, 173, 0.1);\n  color: #004AAD;\n}\n.activity-icon.suppliers {\n  background: rgba(0, 74, 173, 0.1);\n  color: #004AAD;\n}\n.activity-icon.customers {\n  background: rgba(0, 74, 173, 0.1);\n  color: #004AAD;\n}\n.activity-content {\n  flex: 1;\n}\n.activity-content .activity-title {\n  font-size: 14px;\n  font-weight: 500;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.activity-content .activity-time {\n  font-size: 12px;\n  color: #64748b;\n}\n.activity-amount {\n  font-size: 14px;\n  font-weight: 600;\n  color: #004AAD;\n  text-align: right;\n}\n@media (max-width: 768px) {\n  .dashboard-container {\n    padding: 8px;\n  }\n  .stat-card {\n    padding: 12px;\n  }\n  .stat-numbers .main-stat {\n    font-size: 20px;\n  }\n  .chart-container {\n    padding: 12px;\n  }\n  .recent-activity {\n    padding: 12px;\n  }\n  .activity-item {\n    padding: 8px;\n  }\n}\n@media (max-width: 480px) {\n  .dashboard-container {\n    padding: 12px;\n  }\n  .stat-card {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stat-numbers .main-stat {\n    font-size: 20px;\n  }\n  .chart-container {\n    padding: 16px;\n  }\n  .recent-activity {\n    padding: 16px;\n  }\n}\n/*# sourceMappingURL=dashboard.component.css.map */\n"] }]
-  }], () => [{ type: AuthService }, { type: DashboardService }, { type: NavigationService }], null);
+  }], () => [{ type: AuthService }, { type: DashboardService }, { type: NavigationService }, { type: Router }], null);
 })();
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DashboardComponent, { className: "DashboardComponent", filePath: "src/app/features/dashboard/dashboard.component.ts", lineNumber: 284 });

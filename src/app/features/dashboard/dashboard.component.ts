@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService, DashboardOverview, Wallet } from '../../core/services/dashboard.service';
 import { NavigationService } from '../../core/services/navigation.service';
@@ -309,7 +309,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private dashboardService: DashboardService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private router: Router
   ) {
     this.initializeCharts();
     this.initializeDonutChart();
@@ -581,11 +582,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     switch(action) {
       case 'collect':
         // Navigate to collections screen
-        console.log('Navigate to collections');
+        this.router.navigate(['/collections']);
         break;
       case 'sell':
         // Navigate to sales screen
-        console.log('Navigate to sales');
+        this.router.navigate(['/sales']);
         break;
       case 'supplier':
         // Open add supplier modal
@@ -603,23 +604,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
 
   navigateToCollections() {
-    console.log('Navigate to collections');
-    // TODO: Navigate to collections screen
+    this.router.navigate(['/collections']);
   }
 
   navigateToSales() {
-    console.log('Navigate to sales');
-    // TODO: Navigate to sales screen
+    this.router.navigate(['/sales']);
   }
 
   navigateToSuppliers() {
-    console.log('Navigate to suppliers');
-    // TODO: Navigate to suppliers screen
+    this.router.navigate(['/suppliers']);
   }
 
   navigateToCustomers() {
-    console.log('Navigate to customers');
-    // TODO: Navigate to customers screen
+    this.router.navigate(['/customers']);
   }
 
   navigateToTransactions() {
