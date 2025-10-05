@@ -21,7 +21,8 @@ import {
   ApexPlotOptions,
   ChartComponent
 } from 'ng-apexcharts';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, interval, timer } from 'rxjs';
+import { switchMap, catchError, retry, retryWhen, delay } from 'rxjs/operators';
 
 export interface ChartOptions {
   plotOptions?: ApexPlotOptions;
@@ -211,8 +212,18 @@ export interface ChartOptions {
         </div>
       </div>
 
+      <!-- Dynamic Status Bar -->
+      <div class="status-bar" *ngIf="overview || lastUpdated">
+        <div class="status-info">
+          <span class="status-indicator" [class.refreshing]="isRefreshing"></span>
+          <span class="status-text">
+            <span *ngIf="isRefreshing">Refreshing...</span>
+          </span>
+        </div>
+      </div>
+
       <!-- Loading States -->
-      <div class="loading-section" *ngIf="isLoading">
+      <div class="loading-section" *ngIf="isLoading && !overview">
         <div class="loading-card">
           <div class="loading-spinner"></div>
           <p>Loading dashboard data...</p>
@@ -225,7 +236,10 @@ export interface ChartOptions {
           <app-feather-icon name="alert-circle" size="32px"></app-feather-icon>
           <h3>Failed to Load Dashboard</h3>
           <p>{{ errorMessage }}</p>
-          <button class="btn-primary" (click)="refreshDashboard()">Retry</button>
+          <div class="error-actions">
+            <button class="btn-primary" (click)="forceRefresh()">Retry</button>
+            <button class="btn-secondary" (click)="refreshDashboard()">Refresh</button>
+          </div>
         </div>
       </div>
     </div>
@@ -241,6 +255,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // UI state
   isLoading = true;
   errorMessage: string | null = null;
+  lastUpdated: Date | null = null;
+  isRefreshing = false;
+  
+  // Dynamic data properties
+  autoRefreshInterval = 30000; // 30 seconds like mobile app
+  retryCount = 0;
+  maxRetryAttempts = 3;
   
   // Chart options
   chartOptions!: ChartOptions;
@@ -255,6 +276,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadDashboardData();
+    this.startAutoRefresh();
+    this.listenForAccountChanges();
   }
 
   ngOnDestroy() {
@@ -263,20 +286,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load dashboard data from APIs
+   * Load dashboard data from APIs with retry logic
    */
   loadDashboardData() {
     this.isLoading = true;
     this.errorMessage = null;
 
-    // Load overview data
+    // Load overview data with retry logic
     this.dashboardService.getOverview()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        retryWhen(errors => 
+          errors.pipe(
+            delay(2000), // Wait 2 seconds before retry
+            switchMap((error, index) => {
+              if (index < this.maxRetryAttempts) {
+                console.log(`Retry attempt ${index + 1}/${this.maxRetryAttempts}`);
+                return timer(2000);
+              }
+              throw error;
+            })
+          )
+        ),
+        catchError(error => {
+          console.error('Failed to load overview after retries:', error);
+          this.errorMessage = error;
+          this.isLoading = false;
+          this.retryCount++;
+          return [];
+        })
+      )
       .subscribe({
         next: (overview) => {
           this.overview = overview;
           this.updateChartData();
           this.isLoading = false;
+          this.lastUpdated = new Date();
+          this.retryCount = 0; // Reset retry count on success
         },
         error: (error) => {
           console.error('Failed to load overview:', error);
@@ -546,9 +592,52 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Refresh dashboard data
+   * Start auto-refresh functionality
+   */
+  startAutoRefresh() {
+    // Auto-refresh every 30 seconds like mobile app
+    interval(this.autoRefreshInterval)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (!this.isRefreshing) {
+          this.refreshDashboard();
+        }
+      });
+  }
+
+  /**
+   * Refresh dashboard data with loading state
    */
   refreshDashboard() {
+    this.isRefreshing = true;
     this.loadDashboardData();
+    
+    // Reset refreshing state after a short delay
+    setTimeout(() => {
+      this.isRefreshing = false;
+    }, 1000);
+  }
+
+  /**
+   * Force refresh dashboard data
+   */
+  forceRefresh() {
+    this.retryCount = 0;
+    this.refreshDashboard();
+  }
+
+  /**
+   * Listen for account changes and reload dashboard data
+   */
+  listenForAccountChanges() {
+    // Listen for account changes from AuthService
+    this.authService.currentAccount$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(account => {
+        if (account) {
+          console.log('Account changed, reloading dashboard for:', account.account_name);
+          this.loadDashboardData();
+        }
+      });
   }
 }

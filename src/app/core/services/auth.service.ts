@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError, from } from 'rxjs';
+import { Observable, of, throwError, from, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { ConfigService } from './config.service';
@@ -93,6 +93,10 @@ export class AuthService {
   private currentUser: User | null = null;
   private currentAccount: Account | null = null;
   private availableAccounts: Account[] = [];
+  
+  // BehaviorSubject to track account changes
+  private currentAccountSubject = new BehaviorSubject<Account | null>(null);
+  public currentAccount$ = this.currentAccountSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -114,6 +118,9 @@ export class AuthService {
     if (storedAccounts) {
       this.availableAccounts = JSON.parse(storedAccounts);
     }
+    
+    // Initialize the BehaviorSubject with current account
+    this.currentAccountSubject.next(this.currentAccount);
   }
 
   login(identifier: string, password: string): Observable<User> {
@@ -200,6 +207,9 @@ export class AuthService {
             localStorage.setItem('gemura.currentAccount', JSON.stringify(account));
             localStorage.setItem('gemura.availableAccounts', JSON.stringify(filteredAccounts));
             localStorage.setItem('gemura.profileCompletion', profile_completion.toString());
+            
+            // Emit the account change
+            this.currentAccountSubject.next(account);
             
             return userData;
           }
@@ -595,6 +605,9 @@ export class AuthService {
           // Update localStorage
           localStorage.setItem('gemura.currentAccount', JSON.stringify(newAccount));
           localStorage.setItem('gemura.availableAccounts', JSON.stringify(filteredAccounts));
+          
+          // Emit the account change
+          this.currentAccountSubject.next(newAccount);
           
           console.log('🔧 AuthService: Account switched to:', newAccount.account_name);
           return response.data;
