@@ -5,6 +5,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { DashboardService, DashboardOverview, Wallet } from '../../core/services/dashboard.service';
 import { NavigationService } from '../../core/services/navigation.service';
 import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
+import { AddCustomerModalComponent } from '../../shared/components/add-customer-modal/add-customer-modal.component';
+import { AddSupplierModalComponent } from '../../shared/components/add-supplier-modal/add-supplier-modal.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import {
   ApexNonAxisChartSeries,
@@ -45,7 +47,7 @@ export interface ChartOptions {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FeatherIconComponent, NgApexchartsModule],
+  imports: [CommonModule, RouterModule, FeatherIconComponent, AddCustomerModalComponent, AddSupplierModalComponent, NgApexchartsModule],
   template: `
     <div class="dashboard-container">
 
@@ -262,6 +264,19 @@ export interface ChartOptions {
           </div>
         </div>
       </div>
+
+      <!-- Modals -->
+      <app-add-customer-modal 
+        *ngIf="showAddCustomerModal"
+        (customerAdded)="onCustomerAdded($event)"
+        (modalClosed)="closeAddCustomerModal()">
+      </app-add-customer-modal>
+
+      <app-add-supplier-modal 
+        *ngIf="showAddSupplierModal"
+        (supplierAdded)="onSupplierAdded($event)"
+        (modalClosed)="closeAddSupplierModal()">
+      </app-add-supplier-modal>
     </div>
   `,
   styleUrls: ['./dashboard.component.scss']
@@ -277,6 +292,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   lastUpdated: Date | null = null;
   isRefreshing = false;
+  
+  // Modal state
+  showAddCustomerModal = false;
+  showAddSupplierModal = false;
   
   // Dynamic data properties
   autoRefreshInterval = 30000; // 30 seconds like mobile app
@@ -569,12 +588,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         console.log('Navigate to sales');
         break;
       case 'supplier':
-        // Navigate to suppliers screen
-        console.log('Navigate to suppliers');
+        // Open add supplier modal
+        this.openAddSupplierModal();
         break;
       case 'customer':
-        // Navigate to customers screen
-        console.log('Navigate to customers');
+        // Open add customer modal
+        this.openAddCustomerModal();
         break;
     }
   }
@@ -802,5 +821,38 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.loadDashboardData();
         }
       });
+  }
+
+  /**
+   * Modal management methods
+   */
+  openAddCustomerModal() {
+    this.showAddCustomerModal = true;
+  }
+
+  closeAddCustomerModal() {
+    this.showAddCustomerModal = false;
+  }
+
+  onCustomerAdded(customer: any) {
+    console.log('Customer added from dashboard:', customer);
+    this.closeAddCustomerModal();
+    // Optionally refresh dashboard data
+    this.refreshDashboard();
+  }
+
+  openAddSupplierModal() {
+    this.showAddSupplierModal = true;
+  }
+
+  closeAddSupplierModal() {
+    this.showAddSupplierModal = false;
+  }
+
+  onSupplierAdded(supplier: any) {
+    console.log('Supplier added from dashboard:', supplier);
+    this.closeAddSupplierModal();
+    // Optionally refresh dashboard data
+    this.refreshDashboard();
   }
 }
