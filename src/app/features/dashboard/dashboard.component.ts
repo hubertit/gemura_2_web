@@ -499,6 +499,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   updateChartData() {
     if (!this.overview) return;
 
+    // Debug: Log recent transactions to see date format
+    if (this.overview.recent_transactions && this.overview.recent_transactions.length > 0) {
+      console.log('Recent transactions data:', this.overview.recent_transactions);
+      this.overview.recent_transactions.forEach((transaction, index) => {
+        console.log(`Transaction ${index + 1}:`, {
+          date: transaction.date,
+          type: transaction.type,
+          total_amount: transaction.total_amount
+        });
+      });
+    }
+
     // Use 30D data by default (matching the active tab)
     const categories = Array.from({length: 30}, (_, i) => `Day ${i + 1}`);
     const collectionsData = Array.from({length: 30}, () => Math.floor(Math.random() * 200) + 100);
@@ -616,7 +628,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   formatDate(dateString: string): string {
+    if (!dateString) {
+      return 'Unknown date';
+    }
+    
     const date = new Date(dateString);
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date string:', dateString);
+      return 'Invalid date';
+    }
+    
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
     
