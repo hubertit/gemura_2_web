@@ -7,7 +7,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="base-form">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="base-form">
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h5 class="card-title mb-0">{{ title }}</h5>
