@@ -187,13 +187,18 @@ export class AuthService {
             // Store user info and account data - matching Flutter app storage keys
             this.currentUser = userData;
             this.currentAccount = account;
-            this.availableAccounts = accounts || [];
+            
+            // Filter out system accounts (matching mobile app behavior)
+            const filteredAccounts = (accounts || []).filter((acc: Account) => 
+              !acc.account_name.toLowerCase().includes('system')
+            );
+            this.availableAccounts = filteredAccounts;
             
             localStorage.setItem(this.configService.userKey, JSON.stringify(userData));
             localStorage.setItem(this.configService.tokenKey, userData.token || '');
             localStorage.setItem(this.configService.loginKey, 'true');
             localStorage.setItem('gemura.currentAccount', JSON.stringify(account));
-            localStorage.setItem('gemura.availableAccounts', JSON.stringify(accounts));
+            localStorage.setItem('gemura.availableAccounts', JSON.stringify(filteredAccounts));
             localStorage.setItem('gemura.profileCompletion', profile_completion.toString());
             
             return userData;
@@ -525,16 +530,22 @@ export class AuthService {
       map(response => {
         if (response.code === 200 && response.data) {
           const { accounts } = response.data;
-          this.availableAccounts = accounts || [];
+          
+          // Filter out system accounts (matching mobile app behavior)
+          const filteredAccounts = (accounts || []).filter((account: Account) => 
+            !account.account_name.toLowerCase().includes('system')
+          );
+          
+          this.availableAccounts = filteredAccounts;
           
           // Update current account if it's not set or if the default account changed
-          const defaultAccount = accounts.find((acc: Account) => acc.is_default);
+          const defaultAccount = filteredAccounts.find((acc: Account) => acc.is_default);
           if (defaultAccount && (!this.currentAccount || this.currentAccount.account_id !== defaultAccount.account_id)) {
             this.currentAccount = defaultAccount;
             localStorage.setItem('gemura.currentAccount', JSON.stringify(defaultAccount));
           }
           
-          localStorage.setItem('gemura.availableAccounts', JSON.stringify(accounts));
+          localStorage.setItem('gemura.availableAccounts', JSON.stringify(filteredAccounts));
           return response.data;
         }
         throw new Error(response.message || 'Failed to fetch accounts');
@@ -561,9 +572,14 @@ export class AuthService {
         if (response.code === 200 && response.data) {
           const { account: newAccount, accounts } = response.data;
           
+          // Filter out system accounts (matching mobile app behavior)
+          const filteredAccounts = (accounts || []).filter((acc: Account) => 
+            !acc.account_name.toLowerCase().includes('system')
+          );
+          
           // Update current account and available accounts
           this.currentAccount = newAccount;
-          this.availableAccounts = accounts || [];
+          this.availableAccounts = filteredAccounts;
           
           // Update user data with new account context
           if (this.currentUser) {
@@ -578,7 +594,7 @@ export class AuthService {
           
           // Update localStorage
           localStorage.setItem('gemura.currentAccount', JSON.stringify(newAccount));
-          localStorage.setItem('gemura.availableAccounts', JSON.stringify(accounts));
+          localStorage.setItem('gemura.availableAccounts', JSON.stringify(filteredAccounts));
           
           console.log('🔧 AuthService: Account switched to:', newAccount.account_name);
           return response.data;
