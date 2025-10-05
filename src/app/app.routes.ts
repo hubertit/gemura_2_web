@@ -11,6 +11,8 @@ import { IkofiComponent } from './features/ikofi/ikofi.component';
 import { CustomersListComponent } from './features/customers/customers-list/customers-list.component';
 import { AddCustomerComponent } from './features/customers/add-customer/add-customer.component';
 import { SoldMilkComponent } from './features/customers/sold-milk/sold-milk.component';
+import { SuppliersListComponent } from './features/suppliers/suppliers-list/suppliers-list.component';
+import { AddSupplierComponent } from './features/suppliers/add-supplier/add-supplier.component';
 import { EntitiesComponent } from './features/entities/entities.component';
 import { UsersComponent } from './features/users/users.component';
 import { RolesComponent } from './features/roles/roles.component';
@@ -72,6 +74,14 @@ export const routes: Routes = [
       {
         path: 'customers/sold-milk',
         component: SoldMilkComponent
+      },
+      {
+        path: 'suppliers/list',
+        component: SuppliersListComponent
+      },
+      {
+        path: 'suppliers/add',
+        component: AddSupplierComponent
       },
       {
         path: 'entities',
