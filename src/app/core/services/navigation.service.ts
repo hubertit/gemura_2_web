@@ -38,16 +38,12 @@ export class NavigationService {
     {
       title: 'Collections',
       icon: 'package',
-      children: [
-        {
-          title: 'Pending Collections',
-          path: 'collections/pending'
-        },
-        {
-          title: 'Record Collection',
-          path: 'collections/record'
-        }
-      ]
+      path: 'collections'
+    },
+    {
+      title: 'Milk Sales',
+      icon: 'shopping-cart',
+      path: 'milk-sales'
     },
       {
         title: 'Ikofi',
@@ -58,42 +54,6 @@ export class NavigationService {
       title: 'Chats',
       icon: 'message-circle',
       path: 'chats'
-    },
-    {
-      title: 'Reports & Analytics',
-      icon: 'bar-chart-2',
-      children: [
-        {
-          title: 'Agent Reports',
-          path: 'reports/agent'
-        },
-        {
-          title: 'Sales Reports',
-          path: 'reports/sales'
-        },
-        {
-          title: 'Financial Reports',
-          path: 'reports/financial'
-        }
-      ]
-    },
-    {
-      title: 'Account Management',
-      icon: 'user-cog',
-      children: [
-        {
-          title: 'Profile',
-          path: 'account/profile'
-        },
-        {
-          title: 'Account Access',
-          path: 'account/access'
-        },
-        {
-          title: 'Invite People',
-          path: 'account/invite'
-        }
-      ]
     },
     {
       title: 'Settings',
