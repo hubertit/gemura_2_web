@@ -566,7 +566,41 @@
   &.skeleton-donut-chart {
     .skeleton-chart-wrapper {
       height: 300px;
+      width: 300px;
       border-radius: 50%;
+      margin: 0 auto;
+      position: relative;
+      background: conic-gradient(
+        #e2e8f0 0deg 120deg,
+        #f0f0f0 120deg 240deg,
+        #e2e8f0 240deg 360deg
+      );
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        background: white;
+        border-radius: 50%;
+        z-index: 2;
+      }
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        height: 100px;
+        background: #f8fafc;
+        border-radius: 50%;
+        z-index: 3;
+      }
     }
   }
 }
