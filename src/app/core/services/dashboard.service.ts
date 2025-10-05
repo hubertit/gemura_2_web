@@ -47,7 +47,8 @@ export interface DashboardOverview {
     total_amount: number;
     type: string;
     status: string;
-    date: string;
+    transaction_at: string;
+    created_at: string;
     supplier_account?: {
       name: string;
       code: string;

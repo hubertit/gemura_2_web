@@ -223,7 +223,7 @@ export interface ChartOptions {
               <div class="activity-title">
                 {{ transaction.type }} from {{ getTransactionAccount(transaction) }}
               </div>
-              <div class="activity-time">{{ formatDate(transaction.date) }}</div>
+              <div class="activity-time">{{ formatDate(transaction.transaction_at || transaction.created_at) }}</div>
             </div>
             <div class="activity-amount" [class]="transaction.type.toLowerCase()">
               {{ formatCurrency(transaction.total_amount) }}
@@ -504,7 +504,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       console.log('Recent transactions data:', this.overview.recent_transactions);
       this.overview.recent_transactions.forEach((transaction, index) => {
         console.log(`Transaction ${index + 1}:`, {
-          date: transaction.date,
+          transaction_at: transaction.transaction_at,
+          created_at: transaction.created_at,
           type: transaction.type,
           total_amount: transaction.total_amount
         });
