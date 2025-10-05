@@ -161,8 +161,8 @@ export interface ChartOptions {
           <div class="chart-header">
             <h3>Milk Collection & Sales Trends</h3>
             <div class="chart-controls">
-              <button class="btn-small active" (click)="updateChart('7D', $event)">7D</button>
-              <button class="btn-small" (click)="updateChart('30D', $event)">30D</button>
+              <button class="btn-small" (click)="updateChart('7D', $event)">7D</button>
+              <button class="btn-small active" (click)="updateChart('30D', $event)">30D</button>
               <button class="btn-small" (click)="updateChart('90D', $event)">90D</button>
             </div>
           </div>
@@ -431,17 +431,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Initialize chart options
    */
   initializeCharts() {
+    // Initialize with 30D data by default
+    const categories = Array.from({length: 30}, (_, i) => `Day ${i + 1}`);
+    const collectionsData = Array.from({length: 30}, () => Math.floor(Math.random() * 200) + 100);
+    const salesData = Array.from({length: 30}, () => Math.floor(Math.random() * 150) + 80);
+
     this.chartOptions = {
       series: [
         {
           name: 'Collections',
           type: 'column',
-          data: []
+          data: collectionsData
         },
         {
           name: 'Sales',
           type: 'column',
-          data: []
+          data: salesData
         }
       ],
       chart: {
@@ -452,7 +457,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       },
       xaxis: {
-        categories: []
+        categories: categories
       },
       yaxis: {
         title: {
@@ -679,9 +684,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         newSalesData = Array.from({length: 12}, () => Math.floor(Math.random() * 800) + 400);
         break;
       default:
-        categories = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        newCollectionsData = [120, 180, 95, 210, 160, 195, 230];
-        newSalesData = [100, 150, 80, 180, 140, 170, 200];
+        // Default to 30D data
+        categories = Array.from({length: 30}, (_, i) => `Day ${i + 1}`);
+        newCollectionsData = Array.from({length: 30}, () => Math.floor(Math.random() * 200) + 100);
+        newSalesData = Array.from({length: 30}, () => Math.floor(Math.random() * 150) + 80);
     }
     
     this.chartOptions = {
