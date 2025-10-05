@@ -83,15 +83,6 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
             <h3>All Sales</h3>
             <span class="sale-count">{{ sales.length }} sales</span>
           </div>
-          <div class="card-actions">
-            <input
-              type="text"
-              placeholder="Search sales..."
-              class="form-control search-input"
-              [(ngModel)]="searchTerm"
-              (input)="applyFilter()"
-            />
-          </div>
         </div>
         <div class="card-body">
           <app-data-table

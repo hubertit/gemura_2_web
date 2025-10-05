@@ -67964,9 +67964,9 @@ var RecordSaleModalComponent = _RecordSaleModalComponent;
 })();
 
 // src/app/features/sales/sales-list/sales-list.component.ts
-function SalesListComponent_ng_template_55_Template(rf, ctx) {
+function SalesListComponent_ng_template_53_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "span", 28);
+    \u0275\u0275elementStart(0, "span", 26);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -67978,76 +67978,76 @@ function SalesListComponent_ng_template_55_Template(rf, ctx) {
     \u0275\u0275textInterpolate1(" ", ctx_r2.getStatusLabel(sale_r2.status), " ");
   }
 }
-__name(SalesListComponent_ng_template_55_Template, "SalesListComponent_ng_template_55_Template");
-function SalesListComponent_ng_template_57_li_8_Template(rf, ctx) {
+__name(SalesListComponent_ng_template_53_Template, "SalesListComponent_ng_template_53_Template");
+function SalesListComponent_ng_template_55_li_8_Template(rf, ctx) {
   if (rf & 1) {
     const _r6 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "li")(1, "a", 33);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_li_8_Template_a_click_1_listener() {
+    \u0275\u0275elementStart(0, "li")(1, "a", 31);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_55_li_8_Template_a_click_1_listener() {
       \u0275\u0275restoreView(_r6);
       const sale_r5 = \u0275\u0275nextContext().$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.approveSale(sale_r5));
-    }, "SalesListComponent_ng_template_57_li_8_Template_a_click_1_listener"));
-    \u0275\u0275element(2, "app-feather-icon", 39);
+    }, "SalesListComponent_ng_template_55_li_8_Template_a_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 37);
     \u0275\u0275text(3, " Approve ");
     \u0275\u0275elementEnd()();
   }
 }
-__name(SalesListComponent_ng_template_57_li_8_Template, "SalesListComponent_ng_template_57_li_8_Template");
-function SalesListComponent_ng_template_57_li_9_Template(rf, ctx) {
+__name(SalesListComponent_ng_template_55_li_8_Template, "SalesListComponent_ng_template_55_li_8_Template");
+function SalesListComponent_ng_template_55_li_9_Template(rf, ctx) {
   if (rf & 1) {
     const _r7 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "li")(1, "a", 33);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_li_9_Template_a_click_1_listener() {
+    \u0275\u0275elementStart(0, "li")(1, "a", 31);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_55_li_9_Template_a_click_1_listener() {
       \u0275\u0275restoreView(_r7);
       const sale_r5 = \u0275\u0275nextContext().$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.rejectSale(sale_r5));
-    }, "SalesListComponent_ng_template_57_li_9_Template_a_click_1_listener"));
-    \u0275\u0275element(2, "app-feather-icon", 40);
+    }, "SalesListComponent_ng_template_55_li_9_Template_a_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 38);
     \u0275\u0275text(3, " Reject ");
     \u0275\u0275elementEnd()();
   }
 }
-__name(SalesListComponent_ng_template_57_li_9_Template, "SalesListComponent_ng_template_57_li_9_Template");
-function SalesListComponent_ng_template_57_Template(rf, ctx) {
+__name(SalesListComponent_ng_template_55_li_9_Template, "SalesListComponent_ng_template_55_li_9_Template");
+function SalesListComponent_ng_template_55_Template(rf, ctx) {
   if (rf & 1) {
     const _r4 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 29)(1, "button", 30);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_Template_button_click_1_listener($event) {
+    \u0275\u0275elementStart(0, "div", 27)(1, "button", 28);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_55_Template_button_click_1_listener($event) {
       const sale_r5 = \u0275\u0275restoreView(_r4).$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.toggleDropdown(sale_r5.id, $event));
-    }, "SalesListComponent_ng_template_57_Template_button_click_1_listener"));
-    \u0275\u0275element(2, "app-feather-icon", 31);
+    }, "SalesListComponent_ng_template_55_Template_button_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 29);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(3, "ul", 32)(4, "li")(5, "a", 33);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_Template_a_click_5_listener() {
+    \u0275\u0275elementStart(3, "ul", 30)(4, "li")(5, "a", 31);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_55_Template_a_click_5_listener() {
       const sale_r5 = \u0275\u0275restoreView(_r4).$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.viewSale(sale_r5));
-    }, "SalesListComponent_ng_template_57_Template_a_click_5_listener"));
-    \u0275\u0275element(6, "app-feather-icon", 34);
+    }, "SalesListComponent_ng_template_55_Template_a_click_5_listener"));
+    \u0275\u0275element(6, "app-feather-icon", 32);
     \u0275\u0275text(7, " View ");
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(8, SalesListComponent_ng_template_57_li_8_Template, 4, 0, "li", 35)(9, SalesListComponent_ng_template_57_li_9_Template, 4, 0, "li", 35);
-    \u0275\u0275elementStart(10, "li")(11, "a", 33);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_Template_a_click_11_listener() {
+    \u0275\u0275template(8, SalesListComponent_ng_template_55_li_8_Template, 4, 0, "li", 33)(9, SalesListComponent_ng_template_55_li_9_Template, 4, 0, "li", 33);
+    \u0275\u0275elementStart(10, "li")(11, "a", 31);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_55_Template_a_click_11_listener() {
       const sale_r5 = \u0275\u0275restoreView(_r4).$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.editSale(sale_r5));
-    }, "SalesListComponent_ng_template_57_Template_a_click_11_listener"));
-    \u0275\u0275element(12, "app-feather-icon", 36);
+    }, "SalesListComponent_ng_template_55_Template_a_click_11_listener"));
+    \u0275\u0275element(12, "app-feather-icon", 34);
     \u0275\u0275text(13, " Edit ");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(14, "li")(15, "a", 37);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_57_Template_a_click_15_listener() {
+    \u0275\u0275elementStart(14, "li")(15, "a", 35);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function SalesListComponent_ng_template_55_Template_a_click_15_listener() {
       const sale_r5 = \u0275\u0275restoreView(_r4).$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.deleteSale(sale_r5));
-    }, "SalesListComponent_ng_template_57_Template_a_click_15_listener"));
-    \u0275\u0275element(16, "app-feather-icon", 38);
+    }, "SalesListComponent_ng_template_55_Template_a_click_15_listener"));
+    \u0275\u0275element(16, "app-feather-icon", 36);
     \u0275\u0275text(17, " Delete ");
     \u0275\u0275elementEnd()()()();
   }
@@ -68063,24 +68063,24 @@ function SalesListComponent_ng_template_57_Template(rf, ctx) {
     \u0275\u0275property("ngIf", sale_r5.status === "pending");
   }
 }
-__name(SalesListComponent_ng_template_57_Template, "SalesListComponent_ng_template_57_Template");
-function SalesListComponent_app_record_sale_modal_59_Template(rf, ctx) {
+__name(SalesListComponent_ng_template_55_Template, "SalesListComponent_ng_template_55_Template");
+function SalesListComponent_app_record_sale_modal_57_Template(rf, ctx) {
   if (rf & 1) {
     const _r8 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "app-record-sale-modal", 41);
-    \u0275\u0275listener("saleRecorded", /* @__PURE__ */ __name(function SalesListComponent_app_record_sale_modal_59_Template_app_record_sale_modal_saleRecorded_0_listener($event) {
+    \u0275\u0275elementStart(0, "app-record-sale-modal", 39);
+    \u0275\u0275listener("saleRecorded", /* @__PURE__ */ __name(function SalesListComponent_app_record_sale_modal_57_Template_app_record_sale_modal_saleRecorded_0_listener($event) {
       \u0275\u0275restoreView(_r8);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.onSaleRecorded($event));
-    }, "SalesListComponent_app_record_sale_modal_59_Template_app_record_sale_modal_saleRecorded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function SalesListComponent_app_record_sale_modal_59_Template_app_record_sale_modal_modalClosed_0_listener() {
+    }, "SalesListComponent_app_record_sale_modal_57_Template_app_record_sale_modal_saleRecorded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function SalesListComponent_app_record_sale_modal_57_Template_app_record_sale_modal_modalClosed_0_listener() {
       \u0275\u0275restoreView(_r8);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.closeRecordSaleModal());
-    }, "SalesListComponent_app_record_sale_modal_59_Template_app_record_sale_modal_modalClosed_0_listener"));
+    }, "SalesListComponent_app_record_sale_modal_57_Template_app_record_sale_modal_modalClosed_0_listener"));
     \u0275\u0275elementEnd();
   }
 }
-__name(SalesListComponent_app_record_sale_modal_59_Template, "SalesListComponent_app_record_sale_modal_59_Template");
+__name(SalesListComponent_app_record_sale_modal_57_Template, "SalesListComponent_app_record_sale_modal_57_Template");
 var _SalesListComponent = class _SalesListComponent {
   destroy$ = new Subject();
   salesService = inject2(SalesService);
@@ -68371,7 +68371,7 @@ __name(_SalesListComponent, "SalesListComponent");
 __publicField(_SalesListComponent, "\u0275fac", /* @__PURE__ */ __name(function SalesListComponent_Factory(__ngFactoryType__) {
   return new (__ngFactoryType__ || _SalesListComponent)();
 }, "SalesListComponent_Factory"));
-__publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _SalesListComponent, selectors: [["app-sales-list"]], decls: 60, vars: 18, consts: [["statusCell", ""], ["rowActions", ""], [1, "sales-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "droplet", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "dollar-sign", "size", "24px"], ["name", "check-circle", "size", "24px"], ["name", "x-circle", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "sale-count"], [1, "card-actions"], ["type", "text", "placeholder", "Search sales...", 1, "form-control", "search-input", 3, "ngModelChange", "input", "ngModel"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems", "loading"], [3, "saleRecorded", "modalClosed", 4, "ngIf"], [1, "status-badge", 3, "ngClass"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "saleRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function SalesListComponent_Template(rf, ctx) {
+__publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _SalesListComponent, selectors: [["app-sales-list"]], decls: 58, vars: 17, consts: [["statusCell", ""], ["rowActions", ""], [1, "sales-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "droplet", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "dollar-sign", "size", "24px"], ["name", "check-circle", "size", "24px"], ["name", "x-circle", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "sale-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems", "loading"], [3, "saleRecorded", "modalClosed", 4, "ngIf"], [1, "status-badge", 3, "ngClass"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "saleRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function SalesListComponent_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
     \u0275\u0275elementStart(0, "div", 2)(1, "div", 3)(2, "div", 4)(3, "h1");
@@ -68429,32 +68429,21 @@ __publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defi
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(49, "span", 22);
     \u0275\u0275text(50);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(51, "div", 23)(52, "input", 24);
-    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function SalesListComponent_Template_input_ngModelChange_52_listener($event) {
-      \u0275\u0275restoreView(_r1);
-      \u0275\u0275twoWayBindingSet(ctx.searchTerm, $event) || (ctx.searchTerm = $event);
-      return \u0275\u0275resetView($event);
-    }, "SalesListComponent_Template_input_ngModelChange_52_listener"));
-    \u0275\u0275listener("input", /* @__PURE__ */ __name(function SalesListComponent_Template_input_input_52_listener() {
-      \u0275\u0275restoreView(_r1);
-      return \u0275\u0275resetView(ctx.applyFilter());
-    }, "SalesListComponent_Template_input_input_52_listener"));
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(53, "div", 25)(54, "app-data-table", 26);
-    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onSort_54_listener($event) {
+    \u0275\u0275elementStart(51, "div", 23)(52, "app-data-table", 24);
+    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onSort_52_listener($event) {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.handleSort($event));
-    }, "SalesListComponent_Template_app_data_table_onSort_54_listener"))("onPageChange", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onPageChange_54_listener($event) {
+    }, "SalesListComponent_Template_app_data_table_onSort_52_listener"))("onPageChange", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onPageChange_52_listener($event) {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.handlePageChange($event));
-    }, "SalesListComponent_Template_app_data_table_onPageChange_54_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onPageSizeChange_54_listener($event) {
+    }, "SalesListComponent_Template_app_data_table_onPageChange_52_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function SalesListComponent_Template_app_data_table_onPageSizeChange_52_listener($event) {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.handlePageSizeChange($event));
-    }, "SalesListComponent_Template_app_data_table_onPageSizeChange_54_listener"));
-    \u0275\u0275template(55, SalesListComponent_ng_template_55_Template, 2, 2, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(57, SalesListComponent_ng_template_57_Template, 18, 6, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
+    }, "SalesListComponent_Template_app_data_table_onPageSizeChange_52_listener"));
+    \u0275\u0275template(53, SalesListComponent_ng_template_53_Template, 2, 2, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(55, SalesListComponent_ng_template_55_Template, 18, 6, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275template(59, SalesListComponent_app_record_sale_modal_59_Template, 1, 0, "app-record-sale-modal", 27);
+    \u0275\u0275template(57, SalesListComponent_app_record_sale_modal_57_Template, 1, 0, "app-record-sale-modal", 25);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -68469,8 +68458,6 @@ __publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defi
     \u0275\u0275advance(9);
     \u0275\u0275textInterpolate1("", ctx.sales.length, " sales");
     \u0275\u0275advance(2);
-    \u0275\u0275twoWayProperty("ngModel", ctx.searchTerm);
-    \u0275\u0275advance(2);
     \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredSales)("striped", true)("hover", true)("showActions", true)("showPagination", true)("currentPage", ctx.currentPage)("pageSize", ctx.pageSize)("totalPages", ctx.totalPages)("totalItems", ctx.sales.length)("loading", ctx.loading);
     \u0275\u0275advance(5);
     \u0275\u0275property("ngIf", ctx.showRecordSaleModal);
@@ -68481,13 +68468,10 @@ __publicField(_SalesListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defi
   NgIf,
   RouterModule,
   FormsModule,
-  DefaultValueAccessor,
-  NgControlStatus,
-  NgModel,
   FeatherIconComponent,
   DataTableComponent,
   RecordSaleModalComponent
-], styles: ["\n\n.sales-container[_ngcontent-%COMP%] {\n  padding: 24px;\n  background-color: #f8f9fa;\n  min-height: calc(100vh - 90px);\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 24px;\n  flex-wrap: wrap;\n  gap: 16px;\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 2rem;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  color: #64748b;\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%] {\n  background-color: #004AAD;\n  color: white;\n  border: none;\n  padding: 12px 20px;\n  border-radius: 6px;\n  font-size: 1rem;\n  font-weight: 600;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  transition: background-color 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%]:hover {\n  background-color: rgb(0, 63.0924855491, 147.5);\n}\n.sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%]:active {\n  background-color: rgb(0, 52.1849710983, 122);\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 16px;\n  margin-bottom: 24px;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n  background-color: #ffffff;\n  border-radius: 8px;\n  padding: 20px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  transition: transform 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-3px);\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  background-color: rgba(0, 74, 173, 0.1);\n  color: #004AAD;\n  border-radius: 50%;\n  width: 56px;\n  height: 56px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-shrink: 0;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #004AAD;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-label[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  color: #64748b;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%] {\n  background-color: #ffffff;\n  border-radius: 8px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  overflow: hidden;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 16px 20px;\n  border-bottom: 1px solid #e9ecef;\n  flex-wrap: wrap;\n  gap: 12px;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  color: #1e293b;\n  margin: 0;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   .sale-count[_ngcontent-%COMP%] {\n  font-size: 0.875rem;\n  color: #64748b;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%] {\n  padding: 8px 12px;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  font-size: 1rem;\n  width: 250px;\n  transition: border-color 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%]:focus {\n  border-color: #004AAD;\n  outline: none;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 20px;\n}\n.sales-container[_ngcontent-%COMP%]   .card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%]   .data-table-container[_ngcontent-%COMP%] {\n  overflow-x: auto;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%] {\n  position: relative;\n  display: inline-block;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-toggle[_ngcontent-%COMP%] {\n  background-color: transparent;\n  border: 1px solid #e9ecef;\n  color: #64748b;\n  padding: 8px 12px;\n  border-radius: 6px;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-toggle[_ngcontent-%COMP%]:hover {\n  background-color: #f8f9fa;\n  border-color: rgb(218.2368421053, 223.25, 228.2631578947);\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-toggle[_ngcontent-%COMP%]:active {\n  background-color: rgb(233.125, 236.25, 239.375);\n  border-color: rgb(203.4736842105, 210.5, 217.5263157895);\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%] {\n  position: absolute;\n  top: 100%;\n  right: 0;\n  background-color: #ffffff;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);\n  min-width: 160px;\n  z-index: 1000;\n  opacity: 0;\n  visibility: hidden;\n  transform: translateY(10px);\n  transition: opacity 0.2s ease, transform 0.2s ease;\n  padding: 8px 0;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu.show[_ngcontent-%COMP%] {\n  opacity: 1;\n  visibility: visible;\n  transform: translateY(0);\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  padding: 8px 16px;\n  font-size: 1rem;\n  color: #1e293b;\n  text-decoration: none;\n  transition: background-color 0.2s ease;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item[_ngcontent-%COMP%]:hover {\n  background-color: #f8f9fa;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item.text-danger[_ngcontent-%COMP%] {\n  color: #e74c3c;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item.text-success[_ngcontent-%COMP%] {\n  color: #1abc9c;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item.text-warning[_ngcontent-%COMP%] {\n  color: #f1c40f;\n}\n.sales-container[_ngcontent-%COMP%]   .dropdown[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]   .dropdown-item[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n}\n.status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.status-pending[_ngcontent-%COMP%] {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.status-accepted[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.status-rejected[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.status-cancelled[_ngcontent-%COMP%] {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n@media (max-width: 768px) {\n  .sales-container[_ngcontent-%COMP%] {\n    padding: 16px;\n  }\n  .sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 16px;\n  }\n  .sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n  }\n  .sales-container[_ngcontent-%COMP%]   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: center;\n  }\n  .sales-container[_ngcontent-%COMP%]   .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .sales-container[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: flex-start;\n  }\n  .sales-container[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%] {\n    width: 100%;\n  }\n  .sales-container[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-actions[_ngcontent-%COMP%]   .search-input[_ngcontent-%COMP%] {\n    width: 100%;\n  }\n}\n@media (max-width: 480px) {\n  .sales-container[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=sales-list.component.css.map */"] }));
+], styles: ["\n\n.sales-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .sales-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n  gap: 20px;\n  margin-bottom: 32px;\n}\n.stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  padding: 24px;\n  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n}\n.stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]:hover {\n  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);\n  transform: translateY(-1px);\n}\n.stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 4px 0;\n  line-height: 1.2;\n}\n.stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-label[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #64748b;\n  margin: 0;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   .sale-count[_ngcontent-%COMP%] {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 0;\n}\n.card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%]   .data-table-container[_ngcontent-%COMP%] {\n  overflow-x: auto;\n}\n.status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.status-pending[_ngcontent-%COMP%] {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.status-accepted[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.status-rejected[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.status-cancelled[_ngcontent-%COMP%] {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: stretch;\n    gap: 16px;\n  }\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: stretch;\n  }\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n    gap: 12px;\n  }\n  .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=sales-list.component.css.map */"] }));
 var SalesListComponent = _SalesListComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SalesListComponent, [{
@@ -68561,15 +68545,6 @@ var SalesListComponent = _SalesListComponent;
           <div class="card-title-section">
             <h3>All Sales</h3>
             <span class="sale-count">{{ sales.length }} sales</span>
-          </div>
-          <div class="card-actions">
-            <input
-              type="text"
-              placeholder="Search sales..."
-              class="form-control search-input"
-              [(ngModel)]="searchTerm"
-              (input)="applyFilter()"
-            />
           </div>
         </div>
         <div class="card-body">
@@ -68649,11 +68624,11 @@ var SalesListComponent = _SalesListComponent;
         (modalClosed)="closeRecordSaleModal()"
       ></app-record-sale-modal>
     </div>
-  `, styles: ["/* src/app/features/sales/sales-list/sales-list.component.scss */\n.sales-container {\n  padding: 24px;\n  background-color: #f8f9fa;\n  min-height: calc(100vh - 90px);\n}\n.sales-container .page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 24px;\n  flex-wrap: wrap;\n  gap: 16px;\n}\n.sales-container .page-header .header-content h1 {\n  font-size: 2rem;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.sales-container .page-header .header-content .page-description {\n  font-size: 1rem;\n  color: #64748b;\n}\n.sales-container .page-header .header-actions .btn-primary {\n  background-color: #004AAD;\n  color: white;\n  border: none;\n  padding: 12px 20px;\n  border-radius: 6px;\n  font-size: 1rem;\n  font-weight: 600;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  transition: background-color 0.2s ease;\n}\n.sales-container .page-header .header-actions .btn-primary:hover {\n  background-color: rgb(0, 63.0924855491, 147.5);\n}\n.sales-container .page-header .header-actions .btn-primary:active {\n  background-color: rgb(0, 52.1849710983, 122);\n}\n.sales-container .stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 16px;\n  margin-bottom: 24px;\n}\n.sales-container .stats-grid .stat-card {\n  background-color: #ffffff;\n  border-radius: 8px;\n  padding: 20px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  transition: transform 0.2s ease;\n}\n.sales-container .stats-grid .stat-card:hover {\n  transform: translateY(-3px);\n}\n.sales-container .stats-grid .stat-card .stat-icon {\n  background-color: rgba(0, 74, 173, 0.1);\n  color: #004AAD;\n  border-radius: 50%;\n  width: 56px;\n  height: 56px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-shrink: 0;\n}\n.sales-container .stats-grid .stat-card .stat-icon app-feather-icon {\n  color: #004AAD;\n}\n.sales-container .stats-grid .stat-card .stat-content .stat-value {\n  font-size: 1.5rem;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.sales-container .stats-grid .stat-card .stat-content .stat-label {\n  font-size: 1rem;\n  color: #64748b;\n}\n.sales-container .card {\n  background-color: #ffffff;\n  border-radius: 8px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n  overflow: hidden;\n}\n.sales-container .card .card-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 16px 20px;\n  border-bottom: 1px solid #e9ecef;\n  flex-wrap: wrap;\n  gap: 12px;\n}\n.sales-container .card .card-header .card-title-section {\n  display: flex;\n  align-items: baseline;\n  gap: 8px;\n}\n.sales-container .card .card-header .card-title-section h3 {\n  font-size: 1.5rem;\n  color: #1e293b;\n  margin: 0;\n}\n.sales-container .card .card-header .card-title-section .sale-count {\n  font-size: 0.875rem;\n  color: #64748b;\n}\n.sales-container .card .card-header .card-actions .search-input {\n  padding: 8px 12px;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  font-size: 1rem;\n  width: 250px;\n  transition: border-color 0.2s ease;\n}\n.sales-container .card .card-header .card-actions .search-input:focus {\n  border-color: #004AAD;\n  outline: none;\n}\n.sales-container .card .card-body {\n  padding: 20px;\n}\n.sales-container .card .card-body .data-table-container {\n  overflow-x: auto;\n}\n.sales-container .dropdown {\n  position: relative;\n  display: inline-block;\n}\n.sales-container .dropdown .dropdown-toggle {\n  background-color: transparent;\n  border: 1px solid #e9ecef;\n  color: #64748b;\n  padding: 8px 12px;\n  border-radius: 6px;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n.sales-container .dropdown .dropdown-toggle:hover {\n  background-color: #f8f9fa;\n  border-color: rgb(218.2368421053, 223.25, 228.2631578947);\n}\n.sales-container .dropdown .dropdown-toggle:active {\n  background-color: rgb(233.125, 236.25, 239.375);\n  border-color: rgb(203.4736842105, 210.5, 217.5263157895);\n}\n.sales-container .dropdown .dropdown-menu {\n  position: absolute;\n  top: 100%;\n  right: 0;\n  background-color: #ffffff;\n  border: 1px solid #e9ecef;\n  border-radius: 6px;\n  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);\n  min-width: 160px;\n  z-index: 1000;\n  opacity: 0;\n  visibility: hidden;\n  transform: translateY(10px);\n  transition: opacity 0.2s ease, transform 0.2s ease;\n  padding: 8px 0;\n}\n.sales-container .dropdown .dropdown-menu.show {\n  opacity: 1;\n  visibility: visible;\n  transform: translateY(0);\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item {\n  display: flex;\n  align-items: center;\n  padding: 8px 16px;\n  font-size: 1rem;\n  color: #1e293b;\n  text-decoration: none;\n  transition: background-color 0.2s ease;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item:hover {\n  background-color: #f8f9fa;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item.text-danger {\n  color: #e74c3c;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item.text-success {\n  color: #1abc9c;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item.text-warning {\n  color: #f1c40f;\n}\n.sales-container .dropdown .dropdown-menu li .dropdown-item app-feather-icon {\n  margin-right: 8px;\n}\n.status-badge {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.status-pending {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.status-accepted {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.status-rejected {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.status-cancelled {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n@media (max-width: 768px) {\n  .sales-container {\n    padding: 16px;\n  }\n  .sales-container .page-header {\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 16px;\n  }\n  .sales-container .page-header .header-actions {\n    width: 100%;\n  }\n  .sales-container .page-header .header-actions .btn-primary {\n    width: 100%;\n    justify-content: center;\n  }\n  .sales-container .stats-grid {\n    grid-template-columns: 1fr;\n  }\n  .sales-container .card-header {\n    flex-direction: column;\n    align-items: flex-start;\n  }\n  .sales-container .card-header .card-actions {\n    width: 100%;\n  }\n  .sales-container .card-header .card-actions .search-input {\n    width: 100%;\n  }\n}\n@media (max-width: 480px) {\n  .sales-container {\n    padding: 12px;\n  }\n  .page-header .header-content h1 {\n    font-size: 24px;\n  }\n  .stats-grid .stat-card {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=sales-list.component.css.map */\n"] }]
+  `, styles: ["/* src/app/features/sales/sales-list/sales-list.component.scss */\n.sales-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .sales-container {\n    padding: 8px;\n  }\n}\n.page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header .header-content h1 {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header .header-content .page-description {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header .header-actions {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n  gap: 20px;\n  margin-bottom: 32px;\n}\n.stats-grid .stat-card {\n  background: white;\n  border-radius: 12px;\n  padding: 24px;\n  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n}\n.stats-grid .stat-card:hover {\n  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);\n  transform: translateY(-1px);\n}\n.stats-grid .stat-card .stat-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.stats-grid .stat-card .stat-icon app-feather-icon {\n  width: 24px;\n  height: 24px;\n}\n.stats-grid .stat-card .stat-content {\n  flex: 1;\n}\n.stats-grid .stat-card .stat-content .stat-value {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 4px 0;\n  line-height: 1.2;\n}\n.stats-grid .stat-card .stat-content .stat-label {\n  font-size: 14px;\n  color: #64748b;\n  margin: 0;\n  font-weight: 500;\n}\n.card {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card .card-header {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card .card-header .card-title-section {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.card .card-header .card-title-section h3 {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card .card-header .card-title-section .sale-count {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n}\n.card .card-body {\n  padding: 0;\n}\n.card .card-body .data-table-container {\n  overflow-x: auto;\n}\n.status-badge {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.status-pending {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.status-accepted {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.status-rejected {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.status-cancelled {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n@media (max-width: 768px) {\n  .page-header {\n    flex-direction: column;\n    align-items: stretch;\n    gap: 16px;\n  }\n  .page-header .header-actions {\n    width: 100%;\n    justify-content: stretch;\n  }\n  .stats-grid {\n    grid-template-columns: 1fr;\n    gap: 12px;\n  }\n  .stat-card .stat-icon {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=sales-list.component.css.map */\n"] }]
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SalesListComponent, { className: "SalesListComponent", filePath: "src/app/features/sales/sales-list/sales-list.component.ts", lineNumber: 176 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SalesListComponent, { className: "SalesListComponent", filePath: "src/app/features/sales/sales-list/sales-list.component.ts", lineNumber: 167 });
 })();
 
 // src/app/features/entities/entities.component.ts
