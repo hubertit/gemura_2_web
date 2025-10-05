@@ -23,283 +23,301 @@ import { CreateSupplierRequest } from '../../../features/suppliers/supplier.mode
         <!-- Modal Body -->
         <div class="modal-body">
           <form #supplierForm="ngForm" (ngSubmit)="onSubmit()">
-            <!-- Name Field -->
-            <div class="form-group">
-              <label for="name">Supplier Name *</label>
-              <div class="input-container">
-                <app-feather-icon name="user" size="18px" class="input-icon"></app-feather-icon>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  [(ngModel)]="supplierData.name"
-                  #nameField="ngModel"
-                  required
-                  placeholder="Enter supplier name"
-                  class="form-input"
-                />
-              </div>
-              <div class="error-message" *ngIf="nameField.invalid && nameField.touched">
-                Please enter supplier name
-              </div>
-            </div>
-
-            <!-- Phone Field -->
-            <div class="form-group">
-              <label for="phone">Phone Number *</label>
-              <div class="unified-phone-input">
-                <div class="phone-input-wrapper">
-                  <div class="country-code-section">
-                    <select [(ngModel)]="supplierData.countryCode" name="countryCode" class="country-code-select">
-                      <option *ngFor="let country of countryCodes" [value]="country.code">
-                        {{ country.flag }} {{ country.code }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="phone-number-section">
-                    <app-feather-icon name="phone" size="18px" class="input-icon"></app-feather-icon>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      [(ngModel)]="supplierData.phone"
-                      #phoneField="ngModel"
-                      required
-                      placeholder="788606765"
-                      class="phone-input"
-                    />
-                  </div>
+            <!-- Row 1: Name and Phone -->
+            <div class="form-row">
+              <!-- Name Field -->
+              <div class="form-group">
+                <label for="name">Supplier Name *</label>
+                <div class="input-container">
+                  <app-feather-icon name="user" size="18px" class="input-icon"></app-feather-icon>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    [(ngModel)]="supplierData.name"
+                    #nameField="ngModel"
+                    required
+                    placeholder="Enter supplier name"
+                    class="form-input"
+                  />
+                </div>
+                <div class="error-message" *ngIf="nameField.invalid && nameField.touched">
+                  Please enter supplier name
                 </div>
               </div>
-              <div class="error-message" *ngIf="phoneField.invalid && phoneField.touched">
-                Please enter phone number
+
+              <!-- Phone Field -->
+              <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <div class="unified-phone-input">
+                  <div class="phone-input-wrapper">
+                    <div class="country-code-section">
+                      <select [(ngModel)]="supplierData.countryCode" name="countryCode" class="country-code-select">
+                        <option *ngFor="let country of countryCodes" [value]="country.code">
+                          {{ country.flag }} {{ country.code }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="phone-number-section">
+                      <app-feather-icon name="phone" size="18px" class="input-icon"></app-feather-icon>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        [(ngModel)]="supplierData.phone"
+                        #phoneField="ngModel"
+                        required
+                        placeholder="788606765"
+                        class="phone-input"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="error-message" *ngIf="phoneField.invalid && phoneField.touched">
+                  Please enter phone number
+                </div>
               </div>
             </div>
 
-            <!-- Email Field -->
-            <div class="form-group">
-              <label for="email">Email Address</label>
-              <div class="input-container">
-                <app-feather-icon name="mail" size="18px" class="input-icon"></app-feather-icon>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  [(ngModel)]="supplierData.email"
-                  placeholder="supplier@example.com"
-                  class="form-input"
-                />
+            <!-- Row 2: Email and Location -->
+            <div class="form-row">
+              <!-- Email Field -->
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-container">
+                  <app-feather-icon name="mail" size="18px" class="input-icon"></app-feather-icon>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    [(ngModel)]="supplierData.email"
+                    placeholder="supplier@example.com"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+
+              <!-- Location Field -->
+              <div class="form-group">
+                <label for="location">Location *</label>
+                <div class="input-container">
+                  <app-feather-icon name="map-pin" size="18px" class="input-icon"></app-feather-icon>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    [(ngModel)]="supplierData.location"
+                    #locationField="ngModel"
+                    required
+                    placeholder="Enter location"
+                    class="form-input"
+                  />
+                </div>
+                <div class="error-message" *ngIf="locationField.invalid && locationField.touched">
+                  Please enter location
+                </div>
               </div>
             </div>
 
-            <!-- Location Field -->
-            <div class="form-group">
-              <label for="location">Location *</label>
-              <div class="input-container">
-                <app-feather-icon name="map-pin" size="18px" class="input-icon"></app-feather-icon>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  [(ngModel)]="supplierData.location"
-                  #locationField="ngModel"
-                  required
-                  placeholder="Enter location"
-                  class="form-input"
-                />
+            <!-- Row 3: Business Type and Farm Type -->
+            <div class="form-row">
+              <!-- Business Type Field -->
+              <div class="form-group">
+                <label for="businessType">Business Type *</label>
+                <div class="input-container">
+                  <app-feather-icon name="briefcase" size="18px" class="input-icon"></app-feather-icon>
+                  <select
+                    id="businessType"
+                    name="businessType"
+                    [(ngModel)]="supplierData.businessType"
+                    #businessTypeField="ngModel"
+                    required
+                    class="form-select"
+                  >
+                    <option value="">Select business type</option>
+                    <option value="individual">Individual</option>
+                    <option value="cooperative">Cooperative</option>
+                    <option value="farm">Farm</option>
+                  </select>
+                </div>
+                <div class="error-message" *ngIf="businessTypeField.invalid && businessTypeField.touched">
+                  Please select business type
+                </div>
               </div>
-              <div class="error-message" *ngIf="locationField.invalid && locationField.touched">
-                Please enter location
+
+              <!-- Farm Type Field -->
+              <div class="form-group">
+                <label for="farmType">Farm Type *</label>
+                <div class="input-container">
+                  <app-feather-icon name="home" size="18px" class="input-icon"></app-feather-icon>
+                  <select
+                    id="farmType"
+                    name="farmType"
+                    [(ngModel)]="supplierData.farmType"
+                    #farmTypeField="ngModel"
+                    required
+                    class="form-select"
+                  >
+                    <option value="">Select farm type</option>
+                    <option value="dairy">Dairy Farm</option>
+                    <option value="mixed">Mixed Farm</option>
+                    <option value="specialized">Specialized Dairy</option>
+                  </select>
+                </div>
+                <div class="error-message" *ngIf="farmTypeField.invalid && farmTypeField.touched">
+                  Please select farm type
+                </div>
               </div>
             </div>
 
-            <!-- Business Type Field -->
-            <div class="form-group">
-              <label for="businessType">Business Type *</label>
-              <div class="input-container">
-                <app-feather-icon name="briefcase" size="18px" class="input-icon"></app-feather-icon>
-                <select
-                  id="businessType"
-                  name="businessType"
-                  [(ngModel)]="supplierData.businessType"
-                  #businessTypeField="ngModel"
-                  required
-                  class="form-select"
-                >
-                  <option value="">Select business type</option>
-                  <option value="individual">Individual</option>
-                  <option value="cooperative">Cooperative</option>
-                  <option value="farm">Farm</option>
-                </select>
+            <!-- Row 4: Cattle Count and Daily Production -->
+            <div class="form-row">
+              <!-- Cattle Count Field -->
+              <div class="form-group">
+                <label for="cattleCount">Number of Cattle *</label>
+                <div class="input-container">
+                  <app-feather-icon name="users" size="18px" class="input-icon"></app-feather-icon>
+                  <input
+                    type="number"
+                    id="cattleCount"
+                    name="cattleCount"
+                    [(ngModel)]="supplierData.cattleCount"
+                    #cattleCountField="ngModel"
+                    required
+                    min="1"
+                    placeholder="Enter number of cattle"
+                    class="form-input"
+                  />
+                </div>
+                <div class="error-message" *ngIf="cattleCountField.invalid && cattleCountField.touched">
+                  Please enter number of cattle
+                </div>
               </div>
-              <div class="error-message" *ngIf="businessTypeField.invalid && businessTypeField.touched">
-                Please select business type
+
+              <!-- Daily Production Field -->
+              <div class="form-group">
+                <label for="dailyProduction">Daily Production (L) *</label>
+                <div class="input-container">
+                  <app-feather-icon name="droplet" size="18px" class="input-icon"></app-feather-icon>
+                  <input
+                    type="number"
+                    id="dailyProduction"
+                    name="dailyProduction"
+                    [(ngModel)]="supplierData.dailyProduction"
+                    #dailyProductionField="ngModel"
+                    required
+                    min="0"
+                    step="0.1"
+                    placeholder="Enter daily production"
+                    class="form-input"
+                  />
+                </div>
+                <div class="error-message" *ngIf="dailyProductionField.invalid && dailyProductionField.touched">
+                  Please enter daily production
+                </div>
               </div>
             </div>
 
-            <!-- Farm Type Field -->
-            <div class="form-group">
-              <label for="farmType">Farm Type *</label>
-              <div class="input-container">
-                <app-feather-icon name="home" size="18px" class="input-icon"></app-feather-icon>
-                <select
-                  id="farmType"
-                  name="farmType"
-                  [(ngModel)]="supplierData.farmType"
-                  #farmTypeField="ngModel"
-                  required
-                  class="form-select"
-                >
-                  <option value="">Select farm type</option>
-                  <option value="dairy">Dairy Farm</option>
-                  <option value="mixed">Mixed Farm</option>
-                  <option value="specialized">Specialized Dairy</option>
-                </select>
+            <!-- Row 5: Price per Liter and Quality Grade -->
+            <div class="form-row">
+              <!-- Price per Liter Field -->
+              <div class="form-group">
+                <label for="sellingPricePerLiter">Price per Liter (RWF) *</label>
+                <div class="input-container">
+                  <app-feather-icon name="dollar-sign" size="18px" class="input-icon"></app-feather-icon>
+                  <input
+                    type="number"
+                    id="sellingPricePerLiter"
+                    name="sellingPricePerLiter"
+                    [(ngModel)]="supplierData.sellingPricePerLiter"
+                    #sellingPriceField="ngModel"
+                    required
+                    min="0"
+                    step="0.01"
+                    placeholder="Enter price per liter"
+                    class="form-input"
+                  />
+                </div>
+                <div class="error-message" *ngIf="sellingPriceField.invalid && sellingPriceField.touched">
+                  Please enter price per liter
+                </div>
               </div>
-              <div class="error-message" *ngIf="farmTypeField.invalid && farmTypeField.touched">
-                Please select farm type
+
+              <!-- Quality Grade Field -->
+              <div class="form-group">
+                <label for="qualityGrades">Quality Grade *</label>
+                <div class="input-container">
+                  <app-feather-icon name="award" size="18px" class="input-icon"></app-feather-icon>
+                  <select
+                    id="qualityGrades"
+                    name="qualityGrades"
+                    [(ngModel)]="supplierData.qualityGrades"
+                    #qualityGradesField="ngModel"
+                    required
+                    class="form-select"
+                  >
+                    <option value="">Select quality grade</option>
+                    <option value="A">Grade A (Premium)</option>
+                    <option value="B">Grade B (Standard)</option>
+                    <option value="C">Grade C (Basic)</option>
+                  </select>
+                </div>
+                <div class="error-message" *ngIf="qualityGradesField.invalid && qualityGradesField.touched">
+                  Please select quality grade
+                </div>
               </div>
             </div>
 
-            <!-- Cattle Count Field -->
-            <div class="form-group">
-              <label for="cattleCount">Number of Cattle *</label>
-              <div class="input-container">
-                <app-feather-icon name="users" size="18px" class="input-icon"></app-feather-icon>
-                <input
-                  type="number"
-                  id="cattleCount"
-                  name="cattleCount"
-                  [(ngModel)]="supplierData.cattleCount"
-                  #cattleCountField="ngModel"
-                  required
-                  min="1"
-                  placeholder="Enter number of cattle"
-                  class="form-input"
-                />
+            <!-- Row 6: Collection Schedule and Payment Method -->
+            <div class="form-row">
+              <!-- Collection Schedule Field -->
+              <div class="form-group">
+                <label for="collectionSchedule">Collection Schedule *</label>
+                <div class="input-container">
+                  <app-feather-icon name="calendar" size="18px" class="input-icon"></app-feather-icon>
+                  <select
+                    id="collectionSchedule"
+                    name="collectionSchedule"
+                    [(ngModel)]="supplierData.collectionSchedule"
+                    #collectionScheduleField="ngModel"
+                    required
+                    class="form-select"
+                  >
+                    <option value="">Select collection schedule</option>
+                    <option value="daily">Daily</option>
+                    <option value="twice-daily">Twice Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="custom">Custom Schedule</option>
+                  </select>
+                </div>
+                <div class="error-message" *ngIf="collectionScheduleField.invalid && collectionScheduleField.touched">
+                  Please select collection schedule
+                </div>
               </div>
-              <div class="error-message" *ngIf="cattleCountField.invalid && cattleCountField.touched">
-                Please enter number of cattle
-              </div>
-            </div>
 
-            <!-- Daily Production Field -->
-            <div class="form-group">
-              <label for="dailyProduction">Daily Production (L) *</label>
-              <div class="input-container">
-                <app-feather-icon name="droplet" size="18px" class="input-icon"></app-feather-icon>
-                <input
-                  type="number"
-                  id="dailyProduction"
-                  name="dailyProduction"
-                  [(ngModel)]="supplierData.dailyProduction"
-                  #dailyProductionField="ngModel"
-                  required
-                  min="0"
-                  step="0.1"
-                  placeholder="Enter daily production"
-                  class="form-input"
-                />
-              </div>
-              <div class="error-message" *ngIf="dailyProductionField.invalid && dailyProductionField.touched">
-                Please enter daily production
-              </div>
-            </div>
-
-            <!-- Price per Liter Field -->
-            <div class="form-group">
-              <label for="sellingPricePerLiter">Price per Liter (RWF) *</label>
-              <div class="input-container">
-                <app-feather-icon name="dollar-sign" size="18px" class="input-icon"></app-feather-icon>
-                <input
-                  type="number"
-                  id="sellingPricePerLiter"
-                  name="sellingPricePerLiter"
-                  [(ngModel)]="supplierData.sellingPricePerLiter"
-                  #sellingPriceField="ngModel"
-                  required
-                  min="0"
-                  step="0.01"
-                  placeholder="Enter price per liter"
-                  class="form-input"
-                />
-              </div>
-              <div class="error-message" *ngIf="sellingPriceField.invalid && sellingPriceField.touched">
-                Please enter price per liter
-              </div>
-            </div>
-
-            <!-- Quality Grade Field -->
-            <div class="form-group">
-              <label for="qualityGrades">Quality Grade *</label>
-              <div class="input-container">
-                <app-feather-icon name="award" size="18px" class="input-icon"></app-feather-icon>
-                <select
-                  id="qualityGrades"
-                  name="qualityGrades"
-                  [(ngModel)]="supplierData.qualityGrades"
-                  #qualityGradesField="ngModel"
-                  required
-                  class="form-select"
-                >
-                  <option value="">Select quality grade</option>
-                  <option value="A">Grade A (Premium)</option>
-                  <option value="B">Grade B (Standard)</option>
-                  <option value="C">Grade C (Basic)</option>
-                </select>
-              </div>
-              <div class="error-message" *ngIf="qualityGradesField.invalid && qualityGradesField.touched">
-                Please select quality grade
-              </div>
-            </div>
-
-            <!-- Collection Schedule Field -->
-            <div class="form-group">
-              <label for="collectionSchedule">Collection Schedule *</label>
-              <div class="input-container">
-                <app-feather-icon name="calendar" size="18px" class="input-icon"></app-feather-icon>
-                <select
-                  id="collectionSchedule"
-                  name="collectionSchedule"
-                  [(ngModel)]="supplierData.collectionSchedule"
-                  #collectionScheduleField="ngModel"
-                  required
-                  class="form-select"
-                >
-                  <option value="">Select collection schedule</option>
-                  <option value="daily">Daily</option>
-                  <option value="twice-daily">Twice Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="custom">Custom Schedule</option>
-                </select>
-              </div>
-              <div class="error-message" *ngIf="collectionScheduleField.invalid && collectionScheduleField.touched">
-                Please select collection schedule
-              </div>
-            </div>
-
-            <!-- Payment Method Field -->
-            <div class="form-group">
-              <label for="paymentMethod">Payment Method *</label>
-              <div class="input-container">
-                <app-feather-icon name="credit-card" size="18px" class="input-icon"></app-feather-icon>
-                <select
-                  id="paymentMethod"
-                  name="paymentMethod"
-                  [(ngModel)]="supplierData.paymentMethod"
-                  #paymentMethodField="ngModel"
-                  required
-                  class="form-select"
-                >
-                  <option value="">Select payment method</option>
-                  <option value="cash">Cash</option>
-                  <option value="mobile-money">Mobile Money</option>
-                  <option value="bank-transfer">Bank Transfer</option>
-                  <option value="check">Check</option>
-                </select>
-              </div>
-              <div class="error-message" *ngIf="paymentMethodField.invalid && paymentMethodField.touched">
-                Please select payment method
+              <!-- Payment Method Field -->
+              <div class="form-group">
+                <label for="paymentMethod">Payment Method *</label>
+                <div class="input-container">
+                  <app-feather-icon name="credit-card" size="18px" class="input-icon"></app-feather-icon>
+                  <select
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    [(ngModel)]="supplierData.paymentMethod"
+                    #paymentMethodField="ngModel"
+                    required
+                    class="form-select"
+                  >
+                    <option value="">Select payment method</option>
+                    <option value="cash">Cash</option>
+                    <option value="mobile-money">Mobile Money</option>
+                    <option value="bank-transfer">Bank Transfer</option>
+                    <option value="check">Check</option>
+                  </select>
+                </div>
+                <div class="error-message" *ngIf="paymentMethodField.invalid && paymentMethodField.touched">
+                  Please select payment method
+                </div>
               </div>
             </div>
 
