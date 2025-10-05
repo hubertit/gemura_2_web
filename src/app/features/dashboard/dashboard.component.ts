@@ -156,6 +156,7 @@ export interface ChartOptions {
 
       <!-- Charts Section -->
       <div class="charts-section" *ngIf="overview">
+        <!-- Bar Chart -->
         <div class="chart-container">
           <div class="chart-header">
             <h3>Milk Collection & Sales Trends</h3>
@@ -178,6 +179,25 @@ export interface ChartOptions {
               [tooltip]="chartOptions.tooltip"
               [grid]="chartOptions.grid"
               [legend]="chartOptions.legend || {}">
+            </apx-chart>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="chart-container donut-chart">
+          <div class="chart-header">
+            <h3>Collection vs Sales Distribution</h3>
+          </div>
+          <div class="chart-wrapper">
+            <apx-chart
+              [series]="donutChartOptions.series"
+              [chart]="donutChartOptions.chart"
+              [labels]="donutChartOptions.labels"
+              [colors]="donutChartOptions.colors"
+              [dataLabels]="donutChartOptions.dataLabels"
+              [legend]="donutChartOptions.legend"
+              [tooltip]="donutChartOptions.tooltip"
+              [plotOptions]="donutChartOptions.plotOptions">
             </apx-chart>
           </div>
         </div>
@@ -265,6 +285,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   
   // Chart options
   chartOptions!: ChartOptions;
+  donutChartOptions!: any;
 
   constructor(
     private authService: AuthService,
@@ -272,6 +293,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private navigationService: NavigationService
   ) {
     this.initializeCharts();
+    this.initializeDonutChart();
   }
 
   ngOnInit() {
@@ -330,6 +352,79 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.isLoading = false;
         }
       });
+  }
+
+  /**
+   * Initialize donut chart options
+   */
+  initializeDonutChart() {
+    this.donutChartOptions = {
+      series: [0, 0], // Will be updated with real data
+      chart: {
+        type: 'donut',
+        height: 300,
+        toolbar: {
+          show: false
+        }
+      },
+      labels: ['Collections', 'Sales'],
+      colors: ['#004AAD', '#6B7280'],
+      dataLabels: {
+        enabled: true,
+        formatter: function (val: string) {
+          return parseFloat(val).toFixed(2) + "%"
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        horizontalAlign: 'center'
+      },
+      tooltip: {
+        y: {
+          formatter: function (val: number) {
+            return val.toFixed(2) + " L"
+          }
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '60%',
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#1e293b'
+              },
+              value: {
+                show: true,
+                fontSize: '16px',
+                fontWeight: 700,
+                color: '#004AAD',
+                formatter: function (val: string) {
+                  return parseFloat(val).toFixed(2) + " L"
+                }
+              },
+              total: {
+                show: true,
+                showAlways: true,
+                label: 'Total',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#64748b',
+                formatter: function (w: any) {
+                  const total = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
+                  return total.toFixed(2) + " L"
+                }
+              }
+            }
+          }
+        }
+      }
+    };
   }
 
   /**
@@ -420,6 +515,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
       xaxis: {
         categories: categories
       }
+    };
+
+    // Update donut chart data
+    this.updateDonutChartData();
+  }
+
+  /**
+   * Update donut chart data based on overview data
+   */
+  updateDonutChartData() {
+    if (!this.overview) return;
+
+    const totalCollections = parseFloat(this.overview.summary.collection.liters.toFixed(2));
+    const totalSales = parseFloat(this.overview.summary.sales.liters.toFixed(2));
+
+    this.donutChartOptions = {
+      ...this.donutChartOptions,
+      series: [totalCollections, totalSales]
     };
   }
 

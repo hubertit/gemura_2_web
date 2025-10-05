@@ -196,13 +196,22 @@
 // Charts Section
 .charts-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: 2fr 1fr;
   gap: 24px;
   margin-bottom: 24px;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+}
+
+.donut-chart {
+  .chart-wrapper {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
