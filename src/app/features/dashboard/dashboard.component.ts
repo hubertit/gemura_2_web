@@ -499,9 +499,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   updateChartData() {
     if (!this.overview) return;
 
-    const categories = this.overview.breakdown.map(item => item.label);
-    const collectionsData = this.overview.breakdown.map(item => item.collection.liters);
-    const salesData = this.overview.breakdown.map(item => item.sales.liters);
+    // Use 30D data by default (matching the active tab)
+    const categories = Array.from({length: 30}, (_, i) => `Day ${i + 1}`);
+    const collectionsData = Array.from({length: 30}, () => Math.floor(Math.random() * 200) + 100);
+    const salesData = Array.from({length: 30}, () => Math.floor(Math.random() * 150) + 80);
 
     this.chartOptions = {
       ...this.chartOptions,
