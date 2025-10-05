@@ -311,6 +311,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // Load account data from AuthService
     this.currentAccount = this.authService.getCurrentAccount();
     this.availableAccounts = this.authService.getAvailableAccounts();
+    
+    // Fetch accounts from API if user is logged in
+    if (this.authService.isLoggedIn()) {
+      this.loadAccountsFromAPI();
+    }
   }
 
   ngOnInit() {
@@ -384,10 +389,38 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   selectAccount(account: Account): void {
-    this.authService.switchAccount(account);
-    this.currentAccount = account;
-    this.showUserMenu = false;
-    console.log('Account switched to:', account.account_name);
+    this.authService.switchAccount(account).subscribe({
+      next: (response) => {
+        console.log('Account switch successful:', response);
+        this.currentAccount = account;
+        this.availableAccounts = this.authService.getAvailableAccounts();
+        this.showUserMenu = false;
+        
+        // Show success message
+        // You can add a toast notification here if you have a notification service
+        console.log('Account switched to:', account.account_name);
+      },
+      error: (error) => {
+        console.error('Failed to switch account:', error);
+        // You can show an error message to the user here
+      }
+    });
+  }
+
+  private loadAccountsFromAPI(): void {
+    this.authService.fetchUserAccounts().subscribe({
+      next: (response) => {
+        console.log('Accounts loaded from API:', response);
+        this.currentAccount = this.authService.getCurrentAccount();
+        this.availableAccounts = this.authService.getAvailableAccounts();
+      },
+      error: (error) => {
+        console.error('Failed to load accounts from API:', error);
+        // Fallback to cached accounts
+        this.currentAccount = this.authService.getCurrentAccount();
+        this.availableAccounts = this.authService.getAvailableAccounts();
+      }
+    });
   }
 
   addNewAccount(): void {

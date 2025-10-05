@@ -512,20 +512,84 @@ export class AuthService {
     return this.availableAccounts;
   }
 
-  switchAccount(account: Account): void {
-    this.currentAccount = account;
-    localStorage.setItem('gemura.currentAccount', JSON.stringify(account));
-
-    if (this.currentUser) {
-      this.currentUser.role = account.role;
-      this.currentUser.accountType = account.account_type;
-      this.currentUser.accountCode = account.account_code;
-      this.currentUser.accountName = account.account_name;
-      this.currentUser.permissions = account.permissions;
-
-      localStorage.setItem(this.configService.userKey, JSON.stringify(this.currentUser));
+  // Fetch all available accounts from API (matching mobile app behavior)
+  fetchUserAccounts(): Observable<any> {
+    const token = this.getToken();
+    if (!token) {
+      return throwError(() => 'No authentication token found');
     }
-    console.log('🔧 AuthService: Account switched to:', account.account_name);
+
+    return this.http.post<any>(this.configService.getFullUrl('/accounts/get'), {
+      token: token
+    }).pipe(
+      map(response => {
+        if (response.code === 200 && response.data) {
+          const { accounts } = response.data;
+          this.availableAccounts = accounts || [];
+          
+          // Update current account if it's not set or if the default account changed
+          const defaultAccount = accounts.find((acc: Account) => acc.is_default);
+          if (defaultAccount && (!this.currentAccount || this.currentAccount.account_id !== defaultAccount.account_id)) {
+            this.currentAccount = defaultAccount;
+            localStorage.setItem('gemura.currentAccount', JSON.stringify(defaultAccount));
+          }
+          
+          localStorage.setItem('gemura.availableAccounts', JSON.stringify(accounts));
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch accounts');
+      }),
+      catchError(error => {
+        console.error('Failed to fetch user accounts:', error);
+        return throwError(() => this.handleHttpError(error));
+      })
+    );
+  }
+
+  // Switch account using API (matching mobile app behavior)
+  switchAccount(account: Account): Observable<any> {
+    const token = this.getToken();
+    if (!token) {
+      return throwError(() => 'No authentication token found');
+    }
+
+    return this.http.post<any>(this.configService.getFullUrl('/accounts/switch'), {
+      token: token,
+      account_id: account.account_id
+    }).pipe(
+      map(response => {
+        if (response.code === 200 && response.data) {
+          const { account: newAccount, accounts } = response.data;
+          
+          // Update current account and available accounts
+          this.currentAccount = newAccount;
+          this.availableAccounts = accounts || [];
+          
+          // Update user data with new account context
+          if (this.currentUser) {
+            this.currentUser.role = newAccount.role;
+            this.currentUser.accountType = newAccount.account_type;
+            this.currentUser.accountCode = newAccount.account_code;
+            this.currentUser.accountName = newAccount.account_name;
+            this.currentUser.permissions = newAccount.permissions;
+            
+            localStorage.setItem(this.configService.userKey, JSON.stringify(this.currentUser));
+          }
+          
+          // Update localStorage
+          localStorage.setItem('gemura.currentAccount', JSON.stringify(newAccount));
+          localStorage.setItem('gemura.availableAccounts', JSON.stringify(accounts));
+          
+          console.log('🔧 AuthService: Account switched to:', newAccount.account_name);
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to switch account');
+      }),
+      catchError(error => {
+        console.error('Failed to switch account:', error);
+        return throwError(() => this.handleHttpError(error));
+      })
+    );
   }
 
   getProfileCompletion(): number {
