@@ -92,6 +92,12 @@ import { Collection } from '../collection.model';
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">
             
+            <ng-template #statusCell let-collection>
+              <span class="status-badge" [ngClass]="'status-' + collection.status">
+                {{ getStatusLabel(collection.status) }}
+              </span>
+            </ng-template>
+            
             <ng-template #rowActions let-collection>
               <div class="dropdown" [class.show]="openDropdownId === collection.id">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" 
@@ -184,7 +190,7 @@ export class CollectionsListComponent implements OnInit {
       { key: 'quantity', title: 'Quantity (L)', type: 'number', sortable: true },
       { key: 'pricePerLiter', title: 'Price/Liter (RWF)', type: 'number', sortable: true },
       { key: 'totalValue', title: 'Total Value (RWF)', type: 'number', sortable: true },
-      { key: 'status', title: 'Status', type: 'status', sortable: true },
+      { key: 'status', title: 'Status', type: 'custom', sortable: true, template: this.getStatusTemplate() },
       { key: 'collectionDate', title: 'Collection Date', type: 'date', sortable: true }
     ];
   }
@@ -359,5 +365,29 @@ export class CollectionsListComponent implements OnInit {
 
   formatVolume(volume: number): string {
     return `${volume.toFixed(1)}L`;
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'pending':
+        return 'Pending';
+      case 'accepted':
+        return 'Accepted';
+      case 'rejected':
+        return 'Rejected';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+  }
+
+  getStatusTemplate() {
+    return (item: any) => {
+      const status = item.status;
+      const label = this.getStatusLabel(status);
+      const statusClass = `status-${status}`;
+      return `<span class="status-badge ${statusClass}">${label}</span>`;
+    };
   }
 }

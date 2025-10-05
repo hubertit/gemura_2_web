@@ -66715,108 +66715,123 @@ var RecordCollectionModalComponent = _RecordCollectionModalComponent;
 })();
 
 // src/app/features/collections/collections-list/collections-list.component.ts
-function CollectionsListComponent_ng_template_53_li_8_Template(rf, ctx) {
+function CollectionsListComponent_ng_template_53_Template(rf, ctx) {
   if (rf & 1) {
-    const _r5 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "li")(1, "a", 29);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_li_8_Template_a_click_1_listener() {
-      \u0275\u0275restoreView(_r5);
-      const collection_r3 = \u0275\u0275nextContext().$implicit;
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.approveCollection(collection_r3));
-    }, "CollectionsListComponent_ng_template_53_li_8_Template_a_click_1_listener"));
-    \u0275\u0275element(2, "app-feather-icon", 35);
+    \u0275\u0275elementStart(0, "span", 26);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const collection_r2 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275property("ngClass", "status-" + collection_r2.status);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", ctx_r2.getStatusLabel(collection_r2.status), " ");
+  }
+}
+__name(CollectionsListComponent_ng_template_53_Template, "CollectionsListComponent_ng_template_53_Template");
+function CollectionsListComponent_ng_template_55_li_8_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r6 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "li")(1, "a", 31);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_55_li_8_Template_a_click_1_listener() {
+      \u0275\u0275restoreView(_r6);
+      const collection_r5 = \u0275\u0275nextContext().$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.approveCollection(collection_r5));
+    }, "CollectionsListComponent_ng_template_55_li_8_Template_a_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 37);
     \u0275\u0275text(3, " Approve ");
     \u0275\u0275elementEnd()();
   }
 }
-__name(CollectionsListComponent_ng_template_53_li_8_Template, "CollectionsListComponent_ng_template_53_li_8_Template");
-function CollectionsListComponent_ng_template_53_li_9_Template(rf, ctx) {
+__name(CollectionsListComponent_ng_template_55_li_8_Template, "CollectionsListComponent_ng_template_55_li_8_Template");
+function CollectionsListComponent_ng_template_55_li_9_Template(rf, ctx) {
   if (rf & 1) {
-    const _r6 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "li")(1, "a", 29);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_li_9_Template_a_click_1_listener() {
-      \u0275\u0275restoreView(_r6);
-      const collection_r3 = \u0275\u0275nextContext().$implicit;
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.rejectCollection(collection_r3));
-    }, "CollectionsListComponent_ng_template_53_li_9_Template_a_click_1_listener"));
-    \u0275\u0275element(2, "app-feather-icon", 36);
+    const _r7 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "li")(1, "a", 31);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_55_li_9_Template_a_click_1_listener() {
+      \u0275\u0275restoreView(_r7);
+      const collection_r5 = \u0275\u0275nextContext().$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.rejectCollection(collection_r5));
+    }, "CollectionsListComponent_ng_template_55_li_9_Template_a_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 38);
     \u0275\u0275text(3, " Reject ");
     \u0275\u0275elementEnd()();
   }
 }
-__name(CollectionsListComponent_ng_template_53_li_9_Template, "CollectionsListComponent_ng_template_53_li_9_Template");
-function CollectionsListComponent_ng_template_53_Template(rf, ctx) {
+__name(CollectionsListComponent_ng_template_55_li_9_Template, "CollectionsListComponent_ng_template_55_li_9_Template");
+function CollectionsListComponent_ng_template_55_Template(rf, ctx) {
   if (rf & 1) {
-    const _r2 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 25)(1, "button", 26);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_Template_button_click_1_listener($event) {
-      const collection_r3 = \u0275\u0275restoreView(_r2).$implicit;
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.toggleDropdown(collection_r3.id, $event));
-    }, "CollectionsListComponent_ng_template_53_Template_button_click_1_listener"));
-    \u0275\u0275element(2, "app-feather-icon", 27);
+    const _r4 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 27)(1, "button", 28);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_55_Template_button_click_1_listener($event) {
+      const collection_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.toggleDropdown(collection_r5.id, $event));
+    }, "CollectionsListComponent_ng_template_55_Template_button_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 29);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(3, "ul", 28)(4, "li")(5, "a", 29);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_Template_a_click_5_listener() {
-      const collection_r3 = \u0275\u0275restoreView(_r2).$implicit;
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.viewCollection(collection_r3));
-    }, "CollectionsListComponent_ng_template_53_Template_a_click_5_listener"));
-    \u0275\u0275element(6, "app-feather-icon", 30);
+    \u0275\u0275elementStart(3, "ul", 30)(4, "li")(5, "a", 31);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_55_Template_a_click_5_listener() {
+      const collection_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.viewCollection(collection_r5));
+    }, "CollectionsListComponent_ng_template_55_Template_a_click_5_listener"));
+    \u0275\u0275element(6, "app-feather-icon", 32);
     \u0275\u0275text(7, " View ");
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(8, CollectionsListComponent_ng_template_53_li_8_Template, 4, 0, "li", 31)(9, CollectionsListComponent_ng_template_53_li_9_Template, 4, 0, "li", 31);
-    \u0275\u0275elementStart(10, "li")(11, "a", 29);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_Template_a_click_11_listener() {
-      const collection_r3 = \u0275\u0275restoreView(_r2).$implicit;
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.editCollection(collection_r3));
-    }, "CollectionsListComponent_ng_template_53_Template_a_click_11_listener"));
-    \u0275\u0275element(12, "app-feather-icon", 32);
+    \u0275\u0275template(8, CollectionsListComponent_ng_template_55_li_8_Template, 4, 0, "li", 33)(9, CollectionsListComponent_ng_template_55_li_9_Template, 4, 0, "li", 33);
+    \u0275\u0275elementStart(10, "li")(11, "a", 31);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_55_Template_a_click_11_listener() {
+      const collection_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.editCollection(collection_r5));
+    }, "CollectionsListComponent_ng_template_55_Template_a_click_11_listener"));
+    \u0275\u0275element(12, "app-feather-icon", 34);
     \u0275\u0275text(13, " Edit ");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(14, "li")(15, "a", 33);
-    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_Template_a_click_15_listener() {
-      const collection_r3 = \u0275\u0275restoreView(_r2).$implicit;
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.deleteCollection(collection_r3));
-    }, "CollectionsListComponent_ng_template_53_Template_a_click_15_listener"));
-    \u0275\u0275element(16, "app-feather-icon", 34);
+    \u0275\u0275elementStart(14, "li")(15, "a", 35);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_55_Template_a_click_15_listener() {
+      const collection_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.deleteCollection(collection_r5));
+    }, "CollectionsListComponent_ng_template_55_Template_a_click_15_listener"));
+    \u0275\u0275element(16, "app-feather-icon", 36);
     \u0275\u0275text(17, " Delete ");
     \u0275\u0275elementEnd()()()();
   }
   if (rf & 2) {
-    const collection_r3 = ctx.$implicit;
-    const ctx_r3 = \u0275\u0275nextContext();
-    \u0275\u0275classProp("show", ctx_r3.openDropdownId === collection_r3.id);
+    const collection_r5 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275classProp("show", ctx_r2.openDropdownId === collection_r5.id);
     \u0275\u0275advance(3);
-    \u0275\u0275classProp("show", ctx_r3.openDropdownId === collection_r3.id);
+    \u0275\u0275classProp("show", ctx_r2.openDropdownId === collection_r5.id);
     \u0275\u0275advance(5);
-    \u0275\u0275property("ngIf", collection_r3.status === "pending");
+    \u0275\u0275property("ngIf", collection_r5.status === "pending");
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", collection_r3.status === "pending");
+    \u0275\u0275property("ngIf", collection_r5.status === "pending");
   }
 }
-__name(CollectionsListComponent_ng_template_53_Template, "CollectionsListComponent_ng_template_53_Template");
-function CollectionsListComponent_app_record_collection_modal_55_Template(rf, ctx) {
+__name(CollectionsListComponent_ng_template_55_Template, "CollectionsListComponent_ng_template_55_Template");
+function CollectionsListComponent_app_record_collection_modal_57_Template(rf, ctx) {
   if (rf & 1) {
-    const _r7 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "app-record-collection-modal", 37);
-    \u0275\u0275listener("collectionRecorded", /* @__PURE__ */ __name(function CollectionsListComponent_app_record_collection_modal_55_Template_app_record_collection_modal_collectionRecorded_0_listener($event) {
-      \u0275\u0275restoreView(_r7);
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.onCollectionRecorded($event));
-    }, "CollectionsListComponent_app_record_collection_modal_55_Template_app_record_collection_modal_collectionRecorded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CollectionsListComponent_app_record_collection_modal_55_Template_app_record_collection_modal_modalClosed_0_listener() {
-      \u0275\u0275restoreView(_r7);
-      const ctx_r3 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r3.closeRecordCollectionModal());
-    }, "CollectionsListComponent_app_record_collection_modal_55_Template_app_record_collection_modal_modalClosed_0_listener"));
+    const _r8 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "app-record-collection-modal", 39);
+    \u0275\u0275listener("collectionRecorded", /* @__PURE__ */ __name(function CollectionsListComponent_app_record_collection_modal_57_Template_app_record_collection_modal_collectionRecorded_0_listener($event) {
+      \u0275\u0275restoreView(_r8);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.onCollectionRecorded($event));
+    }, "CollectionsListComponent_app_record_collection_modal_57_Template_app_record_collection_modal_collectionRecorded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CollectionsListComponent_app_record_collection_modal_57_Template_app_record_collection_modal_modalClosed_0_listener() {
+      \u0275\u0275restoreView(_r8);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.closeRecordCollectionModal());
+    }, "CollectionsListComponent_app_record_collection_modal_57_Template_app_record_collection_modal_modalClosed_0_listener"));
     \u0275\u0275elementEnd();
   }
 }
-__name(CollectionsListComponent_app_record_collection_modal_55_Template, "CollectionsListComponent_app_record_collection_modal_55_Template");
+__name(CollectionsListComponent_app_record_collection_modal_57_Template, "CollectionsListComponent_app_record_collection_modal_57_Template");
 var _CollectionsListComponent = class _CollectionsListComponent {
   collectionsService;
   collections = [];
@@ -66850,7 +66865,7 @@ var _CollectionsListComponent = class _CollectionsListComponent {
       { key: "quantity", title: "Quantity (L)", type: "number", sortable: true },
       { key: "pricePerLiter", title: "Price/Liter (RWF)", type: "number", sortable: true },
       { key: "totalValue", title: "Total Value (RWF)", type: "number", sortable: true },
-      { key: "status", title: "Status", type: "status", sortable: true },
+      { key: "status", title: "Status", type: "custom", sortable: true, template: this.getStatusTemplate() },
       { key: "collectionDate", title: "Collection Date", type: "date", sortable: true }
     ];
   }
@@ -67001,71 +67016,93 @@ var _CollectionsListComponent = class _CollectionsListComponent {
   formatVolume(volume) {
     return `${volume.toFixed(1)}L`;
   }
+  getStatusLabel(status) {
+    switch (status) {
+      case "pending":
+        return "Pending";
+      case "accepted":
+        return "Accepted";
+      case "rejected":
+        return "Rejected";
+      case "cancelled":
+        return "Cancelled";
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+  }
+  getStatusTemplate() {
+    return (item) => {
+      const status = item.status;
+      const label = this.getStatusLabel(status);
+      const statusClass = `status-${status}`;
+      return `<span class="status-badge ${statusClass}">${label}</span>`;
+    };
+  }
 };
 __name(_CollectionsListComponent, "CollectionsListComponent");
 __publicField(_CollectionsListComponent, "\u0275fac", /* @__PURE__ */ __name(function CollectionsListComponent_Factory(__ngFactoryType__) {
   return new (__ngFactoryType__ || _CollectionsListComponent)(\u0275\u0275directiveInject(CollectionsService));
 }, "CollectionsListComponent_Factory"));
-__publicField(_CollectionsListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CollectionsListComponent, selectors: [["app-collections-list"]], decls: 56, vars: 16, consts: [["rowActions", ""], [1, "collections-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "truck", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "check-circle", "size", "24px"], ["name", "clock", "size", "24px"], ["name", "droplet", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "collection-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems"], [3, "collectionRecorded", "modalClosed", 4, "ngIf"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "collectionRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function CollectionsListComponent_Template(rf, ctx) {
+__publicField(_CollectionsListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CollectionsListComponent, selectors: [["app-collections-list"]], decls: 58, vars: 16, consts: [["statusCell", ""], ["rowActions", ""], [1, "collections-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "truck", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "check-circle", "size", "24px"], ["name", "clock", "size", "24px"], ["name", "droplet", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "collection-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems"], [3, "collectionRecorded", "modalClosed", 4, "ngIf"], [1, "status-badge", 3, "ngClass"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "collectionRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function CollectionsListComponent_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 1)(1, "div", 2)(2, "div", 3)(3, "h1");
+    \u0275\u0275elementStart(0, "div", 2)(1, "div", 3)(2, "div", 4)(3, "h1");
     \u0275\u0275text(4, "Milk Collections");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "p", 4);
+    \u0275\u0275elementStart(5, "p", 5);
     \u0275\u0275text(6, "Track and manage milk collection from suppliers");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(7, "div", 5)(8, "button", 6);
+    \u0275\u0275elementStart(7, "div", 6)(8, "button", 7);
     \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_Template_button_click_8_listener() {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.openRecordCollectionModal());
     }, "CollectionsListComponent_Template_button_click_8_listener"));
-    \u0275\u0275element(9, "app-feather-icon", 7);
+    \u0275\u0275element(9, "app-feather-icon", 8);
     \u0275\u0275text(10, " Record Collection ");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(11, "div", 8)(12, "div", 9)(13, "div", 10);
-    \u0275\u0275element(14, "app-feather-icon", 11);
+    \u0275\u0275elementStart(11, "div", 9)(12, "div", 10)(13, "div", 11);
+    \u0275\u0275element(14, "app-feather-icon", 12);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(15, "div", 12)(16, "div", 13);
+    \u0275\u0275elementStart(15, "div", 13)(16, "div", 14);
     \u0275\u0275text(17);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(18, "div", 14);
+    \u0275\u0275elementStart(18, "div", 15);
     \u0275\u0275text(19, "Total Collections");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(20, "div", 9)(21, "div", 10);
-    \u0275\u0275element(22, "app-feather-icon", 15);
+    \u0275\u0275elementStart(20, "div", 10)(21, "div", 11);
+    \u0275\u0275element(22, "app-feather-icon", 16);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(23, "div", 12)(24, "div", 13);
+    \u0275\u0275elementStart(23, "div", 13)(24, "div", 14);
     \u0275\u0275text(25);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(26, "div", 14);
+    \u0275\u0275elementStart(26, "div", 15);
     \u0275\u0275text(27, "Accepted");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(28, "div", 9)(29, "div", 10);
-    \u0275\u0275element(30, "app-feather-icon", 16);
+    \u0275\u0275elementStart(28, "div", 10)(29, "div", 11);
+    \u0275\u0275element(30, "app-feather-icon", 17);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(31, "div", 12)(32, "div", 13);
+    \u0275\u0275elementStart(31, "div", 13)(32, "div", 14);
     \u0275\u0275text(33);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(34, "div", 14);
+    \u0275\u0275elementStart(34, "div", 15);
     \u0275\u0275text(35, "Pending");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(36, "div", 9)(37, "div", 10);
-    \u0275\u0275element(38, "app-feather-icon", 17);
+    \u0275\u0275elementStart(36, "div", 10)(37, "div", 11);
+    \u0275\u0275element(38, "app-feather-icon", 18);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(39, "div", 12)(40, "div", 13);
+    \u0275\u0275elementStart(39, "div", 13)(40, "div", 14);
     \u0275\u0275text(41);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(42, "div", 14);
+    \u0275\u0275elementStart(42, "div", 15);
     \u0275\u0275text(43, "Total Volume");
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(44, "div", 18)(45, "div", 19)(46, "div", 20)(47, "h3");
+    \u0275\u0275elementStart(44, "div", 19)(45, "div", 20)(46, "div", 21)(47, "h3");
     \u0275\u0275text(48, "All Collections");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(49, "span", 21);
+    \u0275\u0275elementStart(49, "span", 22);
     \u0275\u0275text(50);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(51, "div", 22)(52, "app-data-table", 23);
+    \u0275\u0275elementStart(51, "div", 23)(52, "app-data-table", 24);
     \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function CollectionsListComponent_Template_app_data_table_onSort_52_listener($event) {
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.handleSort($event));
@@ -67076,9 +67113,9 @@ __publicField(_CollectionsListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u02
       \u0275\u0275restoreView(_r1);
       return \u0275\u0275resetView(ctx.handlePageSizeChange($event));
     }, "CollectionsListComponent_Template_app_data_table_onPageSizeChange_52_listener"));
-    \u0275\u0275template(53, CollectionsListComponent_ng_template_53_Template, 18, 6, "ng-template", null, 0, \u0275\u0275templateRefExtractor);
+    \u0275\u0275template(53, CollectionsListComponent_ng_template_53_Template, 2, 2, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(55, CollectionsListComponent_ng_template_55_Template, 18, 6, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275template(55, CollectionsListComponent_app_record_collection_modal_55_Template, 1, 0, "app-record-collection-modal", 24);
+    \u0275\u0275template(57, CollectionsListComponent_app_record_collection_modal_57_Template, 1, 0, "app-record-collection-modal", 25);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -67094,10 +67131,10 @@ __publicField(_CollectionsListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u02
     \u0275\u0275textInterpolate1("", ctx.collections.length, " collections");
     \u0275\u0275advance(2);
     \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredCollections)("striped", true)("hover", true)("showActions", true)("showPagination", true)("currentPage", ctx.currentPage)("pageSize", ctx.pageSize)("totalPages", ctx.totalPages)("totalItems", ctx.collections.length);
-    \u0275\u0275advance(3);
+    \u0275\u0275advance(5);
     \u0275\u0275property("ngIf", ctx.showRecordCollectionModal);
   }
-}, "CollectionsListComponent_Template"), dependencies: [CommonModule, NgIf, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, RecordCollectionModalComponent], styles: ["\n\n.collections-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .collections-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-label[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   .collection-count[_ngcontent-%COMP%] {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 0;\n}\n.collection-info[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-avatar[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-details[_ngcontent-%COMP%]   .collection-name[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-details[_ngcontent-%COMP%]   .collection-id[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.pending[_ngcontent-%COMP%] {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.accepted[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.rejected[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.cancelled[_ngcontent-%COMP%] {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.amount[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%]:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon.danger[_ngcontent-%COMP%]:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary[_ngcontent-%COMP%]:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: white;\n}\n.btn-secondary[_ngcontent-%COMP%] {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%], \n   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-secondary[_ngcontent-%COMP%] {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 20px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .collections-container[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=collections-list.component.css.map */"] }));
+}, "CollectionsListComponent_Template"), dependencies: [CommonModule, NgClass, NgIf, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, RecordCollectionModalComponent], styles: ["\n\n.collections-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .collections-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-label[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   .collection-count[_ngcontent-%COMP%] {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 0;\n}\n.collection-info[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-avatar[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-details[_ngcontent-%COMP%]   .collection-name[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-details[_ngcontent-%COMP%]   .collection-id[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.status-pending[_ngcontent-%COMP%] {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.status-accepted[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.status-rejected[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.status-cancelled[_ngcontent-%COMP%] {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.amount[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%]:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon.danger[_ngcontent-%COMP%]:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary[_ngcontent-%COMP%]:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: white;\n}\n.btn-secondary[_ngcontent-%COMP%] {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%], \n   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-secondary[_ngcontent-%COMP%] {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 20px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .collections-container[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=collections-list.component.css.map */"] }));
 var CollectionsListComponent = _CollectionsListComponent;
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CollectionsListComponent, [{
@@ -67182,6 +67219,12 @@ var CollectionsListComponent = _CollectionsListComponent;
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">
             
+            <ng-template #statusCell let-collection>
+              <span class="status-badge" [ngClass]="'status-' + collection.status">
+                {{ getStatusLabel(collection.status) }}
+              </span>
+            </ng-template>
+            
             <ng-template #rowActions let-collection>
               <div class="dropdown" [class.show]="openDropdownId === collection.id">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" 
@@ -67233,11 +67276,11 @@ var CollectionsListComponent = _CollectionsListComponent;
         (modalClosed)="closeRecordCollectionModal()">
       </app-record-collection-modal>
     </div>
-  `, styles: ["/* src/app/features/collections/collections-list/collections-list.component.scss */\n.collections-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .collections-container {\n    padding: 8px;\n  }\n}\n.page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header .header-content h1 {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header .header-content .page-description {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header .header-actions {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card .stat-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card .stat-content {\n  flex: 1;\n}\n.stat-card .stat-content .stat-value {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card .stat-content .stat-label {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card .card-header {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card .card-header .card-title-section {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card .card-header .card-title-section h3 {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card .card-header .card-title-section .collection-count {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card .card-body {\n  padding: 0;\n}\n.collection-info {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.collection-info .collection-avatar {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.collection-info .collection-details .collection-name {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.collection-info .collection-details .collection-id {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.status-badge {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.pending {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.accepted {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.rejected {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.cancelled {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.amount {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons .btn-icon {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons .btn-icon:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons .btn-icon.danger:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary app-feather-icon {\n  color: white;\n}\n.btn-secondary {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary app-feather-icon {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions .btn-primary,\n  .page-header .header-actions .btn-secondary {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid .stat-card {\n    padding: 20px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid .stat-card .stat-content .stat-value {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .collections-container {\n    padding: 12px;\n  }\n  .page-header .header-content h1 {\n    font-size: 24px;\n  }\n  .stats-grid .stat-card {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=collections-list.component.css.map */\n"] }]
+  `, styles: ["/* src/app/features/collections/collections-list/collections-list.component.scss */\n.collections-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .collections-container {\n    padding: 8px;\n  }\n}\n.page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header .header-content h1 {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header .header-content .page-description {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header .header-actions {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card .stat-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card .stat-content {\n  flex: 1;\n}\n.stat-card .stat-content .stat-value {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card .stat-content .stat-label {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card .card-header {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card .card-header .card-title-section {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card .card-header .card-title-section h3 {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card .card-header .card-title-section .collection-count {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card .card-body {\n  padding: 0;\n}\n.collection-info {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.collection-info .collection-avatar {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.collection-info .collection-details .collection-name {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.collection-info .collection-details .collection-id {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.status-badge {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.status-pending {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.status-accepted {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.status-rejected {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.status-cancelled {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.amount {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons .btn-icon {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons .btn-icon:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons .btn-icon.danger:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary app-feather-icon {\n  color: white;\n}\n.btn-secondary {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary app-feather-icon {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions .btn-primary,\n  .page-header .header-actions .btn-secondary {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid .stat-card {\n    padding: 20px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid .stat-card .stat-content .stat-value {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .collections-container {\n    padding: 12px;\n  }\n  .page-header .header-content h1 {\n    font-size: 24px;\n  }\n  .stats-grid .stat-card {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=collections-list.component.css.map */\n"] }]
   }], () => [{ type: CollectionsService }], null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CollectionsListComponent, { className: "CollectionsListComponent", filePath: "src/app/features/collections/collections-list/collections-list.component.ts", lineNumber: 149 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CollectionsListComponent, { className: "CollectionsListComponent", filePath: "src/app/features/collections/collections-list/collections-list.component.ts", lineNumber: 155 });
 })();
 
 // src/app/features/milk-sales/milk-sales.component.ts

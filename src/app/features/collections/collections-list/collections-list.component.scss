@@ -189,22 +189,22 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 
-  &.pending {
+  &.status-pending {
     background: #fef3c7;
     color: #92400e;
   }
 
-  &.accepted {
+  &.status-accepted {
     background: #dcfce7;
     color: #166534;
   }
 
-  &.rejected {
+  &.status-rejected {
     background: #fee2e2;
     color: #dc2626;
   }
 
-  &.cancelled {
+  &.status-cancelled {
     background: #f3f4f6;
     color: #6b7280;
   }
