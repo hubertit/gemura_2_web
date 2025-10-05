@@ -82,6 +82,12 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
             [data]="filteredCustomers"
             [striped]="true"
             [hover]="true"
+            [showActions]="false"
+            [showPagination]="true"
+            [currentPage]="currentPage"
+            [pageSize]="pageSize"
+            [totalPages]="totalPages"
+            [totalItems]="customers.length"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">
@@ -106,6 +112,11 @@ export class CustomersListComponent implements OnInit {
   showAddCustomerModal = false;
 
   columns: any[] = [];
+  
+  // Pagination properties
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
 
   constructor(private customerService: CustomerService) {}
 
@@ -116,6 +127,21 @@ export class CustomersListComponent implements OnInit {
     
     // Reload customers from API if token is available
     this.customerService.reloadCustomers();
+    
+    // Load customers from API after a short delay to ensure service is ready
+    setTimeout(() => {
+      this.customerService.getCustomersFromAPI().subscribe({
+        next: (response) => {
+          console.log('✅ API Load Successful:', response);
+          this.loadCustomers();
+          this.loadStats();
+        },
+        error: (error) => {
+          console.error('❌ API Load Failed:', error);
+          console.log('Using mock data instead');
+        }
+      });
+    }, 100);
   }
 
   initializeColumns() {
@@ -126,7 +152,7 @@ export class CustomersListComponent implements OnInit {
       { key: 'address', title: 'Address', type: 'text', sortable: true },
       { key: 'pricePerLiter', title: 'Price/Liter (RWF)', type: 'number', sortable: true },
       { key: 'averageSupplyQuantity', title: 'Avg Supply (L)', type: 'number', sortable: true },
-      { key: 'status', title: 'Status', type: 'text', sortable: true },
+      { key: 'status', title: 'Status', type: 'status', sortable: true },
       { key: 'registrationDate', title: 'Registered', type: 'date', sortable: true }
     ];
   }
@@ -146,7 +172,7 @@ export class CustomersListComponent implements OnInit {
     this.stats = {
       totalCustomers: customers.length,
       activeCustomers: customers.filter(c => c.status === 'Active').length,
-      totalRevenue: customers.reduce((sum, c) => sum + c.totalAmount, 0),
+      totalRevenue: customers.reduce((sum, c) => sum + (c.totalAmount || 0), 0),
       averagePrice: customers.length > 0 ? customers.reduce((sum, c) => sum + (c.pricePerLiter || 0), 0) / customers.length : 0
     };
   }
@@ -165,15 +191,13 @@ export class CustomersListComponent implements OnInit {
     console.log('Sort:', event);
   }
 
-
   handlePageChange(page: number) {
-    // TODO: Implement pagination
-    console.log('Page:', page);
+    this.currentPage = page;
   }
 
   handlePageSizeChange(size: number) {
-    // TODO: Implement page size change
-    console.log('Page size:', size);
+    this.pageSize = size;
+    this.currentPage = 1;
   }
 
 
@@ -241,5 +265,6 @@ export class CustomersListComponent implements OnInit {
       }
     });
   }
+
 
 }

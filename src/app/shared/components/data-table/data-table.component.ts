@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, TemplateRef, ContentChild, AfterContentInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -26,7 +26,7 @@ export interface TableColumn {
                 class="form-control"
                 placeholder="Search..."
                 [(ngModel)]="searchTerm"
-                (ngModelChange)="onSearch.emit($event)">
+                (ngModelChange)="onSearchChange()">
             </div>
             <ng-content select="[table-actions-left]"></ng-content>
           </div>
@@ -50,23 +50,37 @@ export interface TableColumn {
                    [class.desc]="sortColumn === col.key && sortDirection === 'desc'">
                 </i>
               </th>
-              <th *ngIf="showActions" class="actions-column">Actions</th>
+              <th *ngIf="showActions && rowActions" class="actions-column">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of data">
+            <tr *ngFor="let item of getPaginatedData(); let i = index" (click)="onRowClick.emit(item)" style="cursor: pointer;">
               <td *ngFor="let col of columns">
                 <ng-container [ngSwitch]="col.type">
                   <ng-container *ngSwitchCase="'date'">
                     {{ item[col.key] | date:'medium' }}
                   </ng-container>
                   <ng-container *ngSwitchCase="'boolean'">
-                    <span class="badge" [class.badge-success]="item[col.key]" [class.badge-danger]="!item[col.key]">
+                    <span class="badge" [class.bg-success]="item[col.key]" [class.bg-danger]="!item[col.key]">
                       {{ item[col.key] ? 'Yes' : 'No' }}
                     </span>
                   </ng-container>
+                  <ng-container *ngSwitchCase="'status'">
+                    <span class="badge" 
+                          [class.bg-success]="item[col.key] === 'ACTIVE' || item[col.key] === 'active' || item[col.key] === 'SUCCESS' || item[col.key] === 'success' || item[col.key] === 'Active'"
+                          [class.bg-secondary]="item[col.key] === 'INACTIVE' || item[col.key] === 'inactive' || item[col.key] === 'Inactive'"
+                          [class.bg-warning]="item[col.key] === 'PENDING' || item[col.key] === 'pending' || item[col.key] === 'PROCESSING' || item[col.key] === 'processing'"
+                          [class.bg-danger]="item[col.key] === 'ERROR' || item[col.key] === 'error' || item[col.key] === 'FAILED' || item[col.key] === 'failed' || item[col.key] === 'FAILURE' || item[col.key] === 'failure' || item[col.key] === 'Suspended'">
+                      {{ item[col.key] }}
+                    </span>
+                  </ng-container>
                   <ng-container *ngSwitchCase="'custom'">
-                    <ng-container *ngTemplateOutlet="col.template; context: { $implicit: item }">
+                    <ng-container *ngIf="col.template && typeof col.template === 'function'">
+                      <span [innerHTML]="col.template(item, i)"></span>
+                    </ng-container>
+                    <ng-container *ngIf="col.template && typeof col.template !== 'function'">
+                      <ng-container *ngTemplateOutlet="col.template; context: { $implicit: item }">
+                      </ng-container>
                     </ng-container>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
@@ -74,13 +88,13 @@ export interface TableColumn {
                   </ng-container>
                 </ng-container>
               </td>
-              <td *ngIf="showActions" class="actions-column">
-                <ng-content select="[row-actions]" [ngTemplateOutlet]="rowActions" [ngTemplateOutletContext]="{ $implicit: item }">
-                </ng-content>
+              <td *ngIf="showActions && rowActions" class="actions-column">
+                <ng-container [ngTemplateOutlet]="rowActions" [ngTemplateOutletContext]="{ $implicit: item }">
+                </ng-container>
               </td>
             </tr>
-            <tr *ngIf="!data?.length">
-              <td [attr.colspan]="columns.length + (showActions ? 1 : 0)" class="text-center py-4">
+            <tr *ngIf="!getPaginatedData()?.length">
+              <td [attr.colspan]="columns.length + (showActions && rowActions ? 1 : 0)" class="text-center py-4">
                 {{ noDataMessage }}
               </td>
             </tr>
@@ -90,10 +104,15 @@ export interface TableColumn {
 
       <!-- Pagination -->
       <div class="data-table-footer d-flex justify-content-between align-items-center mt-3" *ngIf="showPagination">
-        <div class="page-size">
-          <select class="form-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange.emit($event)">
-            <option *ngFor="let size of pageSizes" [value]="size">{{ size }} per page</option>
-          </select>
+        <div class="d-flex align-items-center gap-3">
+          <div class="page-size">
+            <select class="form-select" [ngModel]="pageSize" (ngModelChange)="onPageSizeChange.emit($event)">
+              <option *ngFor="let size of pageSizes" [value]="size">{{ size }} per page</option>
+            </select>
+          </div>
+          <div class="page-info text-muted small">
+            Showing {{ ((currentPage - 1) * pageSize) + 1 }} to {{ (currentPage * pageSize) > filteredData.length ? filteredData.length : (currentPage * pageSize) }} of {{ filteredData.length }} entries
+          </div>
         </div>
         <nav aria-label="Table navigation" *ngIf="totalPages > 1">
           <ul class="pagination mb-0">
@@ -113,7 +132,7 @@ export interface TableColumn {
   `,
   styleUrls: ['./data-table.component.scss']
 })
-export class DataTableComponent {
+export class DataTableComponent implements AfterContentInit, OnChanges {
   @Input() columns: TableColumn[] = [];
   @Input() data: any[] = [];
   @Input() showHeader = true;
@@ -126,16 +145,21 @@ export class DataTableComponent {
   @Input() currentPage = 1;
   @Input() pageSize = 10;
   @Input() totalPages = 1;
-  @Input() pageSizes = [5, 10, 25, 50];
+  @Input() totalItems = 0;
+  @Input() pageSizes = [5, 10, 25, 50, 100];
+
+  @ContentChild('rowActions') rowActions!: TemplateRef<any>;
 
   @Output() onSort = new EventEmitter<{column: string, direction: 'asc' | 'desc'}>();
   @Output() onSearch = new EventEmitter<string>();
   @Output() onPageChange = new EventEmitter<number>();
   @Output() onPageSizeChange = new EventEmitter<number>();
+  @Output() onRowClick = new EventEmitter<any>();
 
   searchTerm = '';
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
+  filteredData: any[] = [];
 
   sort(column: string): void {
     if (this.sortColumn === column) {
@@ -145,6 +169,50 @@ export class DataTableComponent {
       this.sortDirection = 'asc';
     }
     this.onSort.emit({ column: this.sortColumn, direction: this.sortDirection });
+  }
+
+  ngAfterContentInit() {
+    // Component initialization complete
+    this.filteredData = [...this.data];
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']) {
+      this.filteredData = [...this.data];
+      this.performSearch();
+    }
+  }
+
+  performSearch() {
+    if (!this.searchTerm.trim()) {
+      this.filteredData = [...this.data];
+    } else {
+      const searchLower = this.searchTerm.toLowerCase();
+      this.filteredData = this.data.filter(item => {
+        return this.columns.some(col => {
+          const value = item[col.key];
+          if (value === null || value === undefined) return false;
+          return value.toString().toLowerCase().includes(searchLower);
+        });
+      });
+    }
+    // Reset to first page when searching
+    this.currentPage = 1;
+    this.totalPages = Math.ceil(this.filteredData.length / this.pageSize);
+    this.onSearch.emit(this.searchTerm);
+  }
+
+  onSearchChange() {
+    this.performSearch();
+  }
+
+  getPaginatedData() {
+    if (!this.showPagination) {
+      return this.filteredData;
+    }
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return this.filteredData.slice(startIndex, endIndex);
   }
 
   getPages(): number[] {

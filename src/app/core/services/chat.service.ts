@@ -259,7 +259,7 @@ export class ChatService {
             }
           ],
           lastMessage: this.generateRandomLastMessage(chatId, customer.name),
-          createdAt: customer.registrationDate,
+          createdAt: customer.registrationDate || new Date(),
           updatedAt: new Date(Date.now() - Math.random() * 1000 * 60 * 60 * 24)
         };
       });
