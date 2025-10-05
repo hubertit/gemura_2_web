@@ -47,182 +47,164 @@ export interface ChartOptions {
   imports: [CommonModule, RouterModule, FeatherIconComponent, NgApexchartsModule],
   template: `
     <div class="dashboard-container">
-      <!-- Wallet Cards Section (matching mobile app) -->
-      <div class="wallets-section" *ngIf="wallets.length > 0">
-        <div class="wallets-carousel">
-          <div class="wallet-card" *ngFor="let wallet of wallets; let i = index" 
-               [class.active]="i === 0"
-               (click)="navigateToWallet(wallet)">
-            <div class="wallet-header">
-              <div class="wallet-name">{{ wallet.name }}</div>
-              <div class="wallet-type">{{ wallet.type }}</div>
-            </div>
-            <div class="wallet-balance">
-              <div class="balance-label">Balance</div>
-              <div class="balance-amount" [class.hidden]="!walletBalanceVisibility[wallet.id]">
-                {{ formatCurrency(wallet.balance) }}
-              </div>
-              <div class="balance-amount hidden" *ngIf="!walletBalanceVisibility[wallet.id]">
-                ••••••
-              </div>
-            </div>
-            <div class="wallet-status" [class]="wallet.status">
-              {{ wallet.status }}
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Quick Actions (matching mobile app) -->
+      <!-- Quick Actions -->
       <div class="quick-actions">
-        <div class="actions-container">
+        <h3>Quick Actions</h3>
+        <div class="actions-grid">
           <button class="action-btn" (click)="quickAction('collect')">
             <div class="action-icon">
               <app-feather-icon name="truck" size="20px"></app-feather-icon>
             </div>
-            <span class="action-label">Collect</span>
+            <span class="action-label">Collect Milk</span>
           </button>
           
           <button class="action-btn" (click)="quickAction('sell')">
             <div class="action-icon">
               <app-feather-icon name="shopping-cart" size="20px"></app-feather-icon>
             </div>
-            <span class="action-label">Sell</span>
+            <span class="action-label">Sell Milk</span>
           </button>
           
           <button class="action-btn" (click)="quickAction('supplier')">
             <div class="action-icon">
               <app-feather-icon name="user-plus" size="20px"></app-feather-icon>
             </div>
-            <span class="action-label">Supplier</span>
+            <span class="action-label">Add Supplier</span>
           </button>
           
           <button class="action-btn" (click)="quickAction('customer')">
             <div class="action-icon">
               <app-feather-icon name="users" size="20px"></app-feather-icon>
             </div>
-            <span class="action-label">Customer</span>
+            <span class="action-label">Add Customer</span>
           </button>
         </div>
       </div>
 
-      <!-- Overview Metrics (matching mobile app) -->
-      <div class="overview-section" *ngIf="overview">
-        <div class="overview-header">
-          <div class="overview-title">
-            <app-feather-icon name="bar-chart-2" size="20px"></app-feather-icon>
-            <span>Overview</span>
+      <!-- Stats Cards -->
+      <div class="stats-grid" *ngIf="overview">
+        <!-- Milk Collections -->
+        <div class="stat-card collections" (click)="navigateToCollections()">
+          <div class="stat-icon">
+            <app-feather-icon name="truck" size="28px"></app-feather-icon>
+          </div>
+          <div class="stat-details">
+            <div class="stat-title">Milk Collections</div>
+            <div class="stat-numbers">
+              <div class="main-stat">{{ formatNumber(overview.summary.collection.liters) }}L</div>
+              <div class="sub-stats">
+                <span class="success">{{ overview.summary.collection.transactions }} Collections</span>
+                <span class="volume">{{ formatCurrency(overview.summary.collection.value) }}</span>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <div class="metrics-grid">
-          <!-- Collections Metric -->
-          <div class="metric-card collections" (click)="navigateToCollections()">
-            <div class="metric-header">
-              <div class="metric-title">Collections</div>
-              <app-feather-icon name="truck" size="16px"></app-feather-icon>
-            </div>
-            <div class="metric-value">{{ formatNumber(overview.summary.collection.liters) }} L</div>
-            <div class="metric-details">
-              {{ formatCurrency(overview.summary.collection.value) }} • {{ overview.summary.collection.transactions }} txns
+
+        <!-- Milk Sales -->
+        <div class="stat-card sales" (click)="navigateToSales()">
+          <div class="stat-icon">
+            <app-feather-icon name="shopping-cart" size="28px"></app-feather-icon>
+          </div>
+          <div class="stat-details">
+            <div class="stat-title">Milk Sales</div>
+            <div class="stat-numbers">
+              <div class="main-stat">{{ formatNumber(overview.summary.sales.liters) }}L</div>
+              <div class="sub-stats">
+                <span class="success">{{ overview.summary.sales.transactions }} Sales</span>
+                <span class="volume">{{ formatCurrency(overview.summary.sales.value) }}</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Sales Metric -->
-          <div class="metric-card sales" (click)="navigateToSales()">
-            <div class="metric-header">
-              <div class="metric-title">Sales</div>
-              <app-feather-icon name="shopping-cart" size="16px"></app-feather-icon>
-            </div>
-            <div class="metric-value">{{ formatNumber(overview.summary.sales.liters) }} L</div>
-            <div class="metric-details">
-              {{ formatCurrency(overview.summary.sales.value) }} • {{ overview.summary.sales.transactions }} txns
+        <!-- Active Suppliers -->
+        <div class="stat-card suppliers" (click)="navigateToSuppliers()">
+          <div class="stat-icon">
+            <app-feather-icon name="user-plus" size="28px"></app-feather-icon>
+          </div>
+          <div class="stat-details">
+            <div class="stat-title">Active Suppliers</div>
+            <div class="stat-numbers">
+              <div class="main-stat">{{ overview.summary.suppliers.active }}</div>
+              <div class="sub-stats">
+                <span class="success">{{ overview.summary.suppliers.inactive }} Inactive</span>
+                <span class="volume">{{ overview.summary.suppliers.active + overview.summary.suppliers.inactive }} Total</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Suppliers Metric -->
-          <div class="metric-card suppliers" (click)="navigateToSuppliers()">
-            <div class="metric-header">
-              <div class="metric-title">Suppliers</div>
-              <app-feather-icon name="user-plus" size="16px"></app-feather-icon>
-            </div>
-            <div class="metric-value">{{ overview.summary.suppliers.active }}</div>
-            <div class="metric-details">
-              <span class="active">{{ overview.summary.suppliers.active }} active</span>
-              <span class="inactive">{{ overview.summary.suppliers.inactive }} inactive</span>
-            </div>
+        <!-- Active Customers -->
+        <div class="stat-card customers" (click)="navigateToCustomers()">
+          <div class="stat-icon">
+            <app-feather-icon name="users" size="28px"></app-feather-icon>
           </div>
-
-          <!-- Customers Metric -->
-          <div class="metric-card customers" (click)="navigateToCustomers()">
-            <div class="metric-header">
-              <div class="metric-title">Customers</div>
-              <app-feather-icon name="users" size="16px"></app-feather-icon>
-            </div>
-            <div class="metric-value">{{ overview.summary.customers.active }}</div>
-            <div class="metric-details">
-              <span class="active">{{ overview.summary.customers.active }} active</span>
-              <span class="inactive">{{ overview.summary.customers.inactive }} inactive</span>
+          <div class="stat-details">
+            <div class="stat-title">Active Customers</div>
+            <div class="stat-numbers">
+              <div class="main-stat">{{ overview.summary.customers.active }}</div>
+              <div class="sub-stats">
+                <span class="success">{{ overview.summary.customers.inactive }} Inactive</span>
+                <span class="volume">{{ overview.summary.customers.active + overview.summary.customers.inactive }} Total</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Chart Section (matching mobile app) -->
-      <div class="chart-section" *ngIf="overview">
-        <div class="chart-header">
-          <h3>Milk Collection & Sales ({{ formatChartPeriod(overview.chart_period || overview.breakdown_type) }})</h3>
-        </div>
+      <!-- Charts Section -->
+      <div class="charts-section" *ngIf="overview">
         <div class="chart-container">
-          <apx-chart
-            [series]="chartOptions.series"
-            [chart]="chartOptions.chart"
-            [xaxis]="chartOptions.xaxis"
-            [yaxis]="chartOptions.yaxis"
-            [dataLabels]="chartOptions.dataLabels"
-            [stroke]="chartOptions.stroke"
-            [fill]="chartOptions.fill"
-            [colors]="chartOptions.colors"
-            [tooltip]="chartOptions.tooltip"
-            [grid]="chartOptions.grid"
-            [legend]="chartOptions.legend || {}">
-          </apx-chart>
-        </div>
-        <div class="chart-legend">
-          <div class="legend-item">
-            <div class="legend-color collections"></div>
-            <span>Collections</span>
+          <div class="chart-header">
+            <h3>Milk Collection & Sales Trends</h3>
+            <div class="chart-controls">
+              <button class="btn-small active" (click)="updateChart('7D', $event)">7D</button>
+              <button class="btn-small" (click)="updateChart('30D', $event)">30D</button>
+              <button class="btn-small" (click)="updateChart('90D', $event)">90D</button>
+            </div>
           </div>
-          <div class="legend-item">
-            <div class="legend-color sales"></div>
-            <span>Sales</span>
+          <div class="chart-wrapper">
+            <apx-chart
+              [series]="chartOptions.series"
+              [chart]="chartOptions.chart"
+              [xaxis]="chartOptions.xaxis"
+              [yaxis]="chartOptions.yaxis"
+              [dataLabels]="chartOptions.dataLabels"
+              [stroke]="chartOptions.stroke"
+              [fill]="chartOptions.fill"
+              [colors]="chartOptions.colors"
+              [tooltip]="chartOptions.tooltip"
+              [grid]="chartOptions.grid"
+              [legend]="chartOptions.legend || {}">
+            </apx-chart>
           </div>
         </div>
       </div>
 
-      <!-- Recent Transactions (matching mobile app) -->
-      <div class="recent-transactions" *ngIf="overview?.recent_transactions?.length">
-        <div class="transactions-header">
-          <h3>Recent Transactions</h3>
+      <!-- Recent Activity -->
+      <div class="recent-activity" *ngIf="overview?.recent_transactions?.length">
+        <div class="activity-header">
+          <h3>Recent Activity</h3>
           <button class="btn-link" (click)="navigateToTransactions()">View All</button>
         </div>
-        <div class="transactions-list">
-          <div class="transaction-item" 
+        <div class="activity-list">
+          <div class="activity-item" 
                *ngFor="let transaction of (overview?.recent_transactions || []).slice(0, 5)"
                (click)="viewTransactionDetails(transaction)">
-            <div class="transaction-icon" [class]="transaction.type.toLowerCase()">
+            <div class="activity-icon" [class]="transaction.type.toLowerCase()">
               <app-feather-icon 
                 [name]="transaction.type.toLowerCase() === 'collection' ? 'truck' : 'shopping-cart'" 
                 size="16px">
               </app-feather-icon>
             </div>
-            <div class="transaction-content">
-              <div class="transaction-title">
+            <div class="activity-content">
+              <div class="activity-title">
                 {{ transaction.type }} from {{ getTransactionAccount(transaction) }}
               </div>
-              <div class="transaction-time">{{ formatDate(transaction.date) }}</div>
+              <div class="activity-time">{{ formatDate(transaction.date) }}</div>
             </div>
-            <div class="transaction-amount" [class]="transaction.type.toLowerCase()">
+            <div class="activity-amount" [class]="transaction.type.toLowerCase()">
               {{ formatCurrency(transaction.total_amount) }}
             </div>
           </div>
@@ -255,8 +237,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   
   // Data properties
   overview: DashboardOverview | null = null;
-  wallets: Wallet[] = [];
-  walletBalanceVisibility: { [key: string]: boolean } = {};
   
   // UI state
   isLoading = true;
@@ -302,23 +282,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           console.error('Failed to load overview:', error);
           this.errorMessage = error;
           this.isLoading = false;
-        }
-      });
-
-    // Load wallets data
-    this.dashboardService.getWallets()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (wallets) => {
-          this.wallets = wallets;
-          // Initialize wallet balance visibility
-          wallets.forEach(wallet => {
-            this.walletBalanceVisibility[wallet.id] = true;
-          });
-        },
-        error: (error) => {
-          console.error('Failed to load wallets:', error);
-          // Don't show error for wallets as it's not critical
         }
       });
   }
@@ -441,10 +404,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /**
    * Navigation methods
    */
-  navigateToWallet(wallet: Wallet) {
-    console.log('Navigate to wallet:', wallet.name);
-    // TODO: Navigate to wallet details/transactions
-  }
 
   navigateToCollections() {
     console.log('Navigate to collections');
@@ -527,6 +486,63 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return transaction.customer_account.name;
     }
     return 'Unknown';
+  }
+
+  /**
+   * Update chart data based on period
+   */
+  updateChart(period: string, event?: Event) {
+    // Update active button
+    document.querySelectorAll('.chart-controls button').forEach(btn => btn.classList.remove('active'));
+    if (event?.target && event.target instanceof HTMLElement) {
+      event.target.classList.add('active');
+    }
+
+    // Update chart data based on period
+    let newCollectionsData: number[];
+    let newSalesData: number[];
+    let categories: string[];
+
+    switch(period) {
+      case '7D':
+        categories = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        newCollectionsData = [120, 180, 95, 210, 160, 195, 230];
+        newSalesData = [100, 150, 80, 180, 140, 170, 200];
+        break;
+      case '30D':
+        categories = Array.from({length: 30}, (_, i) => `Day ${i + 1}`);
+        newCollectionsData = Array.from({length: 30}, () => Math.floor(Math.random() * 200) + 100);
+        newSalesData = Array.from({length: 30}, () => Math.floor(Math.random() * 150) + 80);
+        break;
+      case '90D':
+        categories = Array.from({length: 12}, (_, i) => `Week ${i + 1}`);
+        newCollectionsData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+        newSalesData = Array.from({length: 12}, () => Math.floor(Math.random() * 800) + 400);
+        break;
+      default:
+        categories = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        newCollectionsData = [120, 180, 95, 210, 160, 195, 230];
+        newSalesData = [100, 150, 80, 180, 140, 170, 200];
+    }
+    
+    this.chartOptions = {
+      ...this.chartOptions,
+      series: [
+        {
+          name: 'Collections',
+          type: 'column',
+          data: newCollectionsData
+        },
+        {
+          name: 'Sales',
+          type: 'column',
+          data: newSalesData
+        }
+      ],
+      xaxis: {
+        categories: categories
+      }
+    };
   }
 
   /**
