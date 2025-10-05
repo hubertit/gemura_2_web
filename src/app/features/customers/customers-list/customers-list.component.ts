@@ -5,12 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
 import { AddCustomerModalComponent } from '../../../shared/components/add-customer-modal/add-customer-modal.component';
+import { ViewCustomerModalComponent } from '../../../shared/components/view-customer-modal/view-customer-modal.component';
+import { EditCustomerModalComponent } from '../../../shared/components/edit-customer-modal/edit-customer-modal.component';
+import { DeleteCustomerModalComponent } from '../../../shared/components/delete-customer-modal/delete-customer-modal.component';
 import { CustomerService, Customer } from '../../../core/services/customer.service';
 
 @Component({
   selector: 'app-customers-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, AddCustomerModalComponent],
+  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, AddCustomerModalComponent, ViewCustomerModalComponent, EditCustomerModalComponent, DeleteCustomerModalComponent],
   template: `
     <div class="customers-container">
       <!-- Header -->
@@ -82,7 +85,7 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
             [data]="filteredCustomers"
             [striped]="true"
             [hover]="true"
-            [showActions]="false"
+            [showActions]="true"
             [showPagination]="true"
             [currentPage]="currentPage"
             [pageSize]="pageSize"
@@ -91,6 +94,35 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">
+            
+            <ng-template #rowActions let-customer>
+              <div class="dropdown" [class.show]="openDropdownId === customer.id">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" 
+                        (click)="toggleDropdown(customer.id, $event)">
+                  <app-feather-icon name="more-horizontal" size="16px"></app-feather-icon>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" [class.show]="openDropdownId === customer.id">
+                  <li>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewCustomer(customer)">
+                      <app-feather-icon name="eye" size="14px" class="me-2"></app-feather-icon>
+                      View
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="editCustomer(customer)">
+                      <app-feather-icon name="edit" size="14px" class="me-2"></app-feather-icon>
+                      Edit
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteCustomer(customer)">
+                      <app-feather-icon name="trash-2" size="14px" class="me-2"></app-feather-icon>
+                      Delete
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </ng-template>
           </app-data-table>
         </div>
       </div>
@@ -101,6 +133,30 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
         (customerAdded)="onCustomerAdded($event)"
         (modalClosed)="closeAddCustomerModal()">
       </app-add-customer-modal>
+
+      <!-- View Customer Modal -->
+      <app-view-customer-modal 
+        *ngIf="showViewCustomerModal && selectedCustomer"
+        [customer]="selectedCustomer"
+        (modalClosed)="onViewModalClosed()"
+        (editRequested)="onEditRequested($event)">
+      </app-view-customer-modal>
+
+      <!-- Edit Customer Modal -->
+      <app-edit-customer-modal 
+        *ngIf="showEditCustomerModal && selectedCustomer"
+        [customer]="selectedCustomer"
+        (customerUpdated)="onCustomerUpdated($event)"
+        (modalClosed)="onEditModalClosed()">
+      </app-edit-customer-modal>
+
+      <!-- Delete Customer Modal -->
+      <app-delete-customer-modal 
+        *ngIf="showDeleteCustomerModal && selectedCustomer"
+        [customer]="selectedCustomer"
+        (customerDeleted)="onCustomerDeleted($event)"
+        (modalClosed)="onDeleteModalClosed()">
+      </app-delete-customer-modal>
     </div>
   `,
   styleUrls: ['./customers-list.component.scss']
@@ -110,6 +166,10 @@ export class CustomersListComponent implements OnInit {
   filteredCustomers: Customer[] = [];
   stats: any = {};
   showAddCustomerModal = false;
+  showViewCustomerModal = false;
+  showEditCustomerModal = false;
+  showDeleteCustomerModal = false;
+  selectedCustomer: Customer | null = null;
 
   columns: any[] = [];
   
@@ -117,6 +177,9 @@ export class CustomersListComponent implements OnInit {
   currentPage = 1;
   pageSize = 10;
   totalPages = 1;
+  
+  // Dropdown state
+  openDropdownId: string | null = null;
 
   constructor(private customerService: CustomerService) {}
 
@@ -142,6 +205,11 @@ export class CustomersListComponent implements OnInit {
         }
       });
     }, 100);
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+      this.closeDropdown();
+    });
   }
 
   initializeColumns() {
@@ -202,21 +270,73 @@ export class CustomersListComponent implements OnInit {
 
 
   viewCustomer(customer: Customer) {
-    // TODO: Navigate to customer details
-    console.log('View customer:', customer);
+    this.closeDropdown();
+    this.selectedCustomer = customer;
+    this.showViewCustomerModal = true;
   }
 
   editCustomer(customer: Customer) {
-    // TODO: Navigate to edit customer
-    console.log('Edit customer:', customer);
+    this.closeDropdown();
+    this.selectedCustomer = customer;
+    this.showEditCustomerModal = true;
   }
 
   deleteCustomer(customer: Customer) {
-    if (confirm(`Are you sure you want to delete ${customer.name}?`)) {
-      this.customerService.deleteCustomer(customer.id);
+    this.closeDropdown();
+    this.selectedCustomer = customer;
+    this.showDeleteCustomerModal = true;
+  }
+
+  toggleDropdown(customerId: string, event: Event) {
+    event.stopPropagation();
+    if (this.openDropdownId === customerId) {
+      this.openDropdownId = null;
+    } else {
+      this.openDropdownId = customerId;
+    }
+  }
+
+  closeDropdown() {
+    this.openDropdownId = null;
+  }
+
+  // Modal event handlers
+  onViewModalClosed() {
+    this.showViewCustomerModal = false;
+    this.selectedCustomer = null;
+  }
+
+  onEditModalClosed() {
+    this.showEditCustomerModal = false;
+    this.selectedCustomer = null;
+  }
+
+  onDeleteModalClosed() {
+    this.showDeleteCustomerModal = false;
+    this.selectedCustomer = null;
+  }
+
+  onEditRequested(customer: Customer) {
+    this.showViewCustomerModal = false;
+    this.selectedCustomer = customer;
+    this.showEditCustomerModal = true;
+  }
+
+  onCustomerUpdated(updatedCustomer: any) {
+    // Update customer in the list
+    const index = this.customers.findIndex(c => c.id === updatedCustomer.id);
+    if (index !== -1) {
+      this.customers[index] = { ...this.customers[index], ...updatedCustomer };
       this.loadCustomers();
       this.loadStats();
     }
+  }
+
+  onCustomerDeleted(customer: Customer) {
+    // Remove customer from the list
+    this.customerService.deleteCustomer(customer.id);
+    this.loadCustomers();
+    this.loadStats();
   }
 
   formatCurrency(amount: number): string {

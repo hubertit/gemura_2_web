@@ -126,11 +126,18 @@ import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
               </div>
             </div>
 
-            <!-- Submit Button -->
+            <!-- Action Buttons -->
             <div class="form-actions">
               <button
+                type="button"
+                class="btn btn-danger-outline"
+                (click)="closeModal()"
+              >
+                Cancel
+              </button>
+              <button
                 type="submit"
-                class="submit-btn"
+                class="btn btn-primary"
                 [disabled]="customerForm.invalid || isSubmitting"
               >
                 <span *ngIf="!isSubmitting">Add Customer</span>

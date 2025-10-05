@@ -22,7 +22,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
           <button 
             *ngIf="showCancel" 
             type="button" 
-            class="btn btn-light" 
+            class="btn btn-danger-outline" 
             (click)="onCancel.emit()">
             {{ cancelText }}
           </button>
@@ -48,6 +48,31 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
     .gap-2 {
       gap: 0.5rem;
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      color: #dc3545;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover:not(:disabled) {
+        background: #dc3545;
+        color: white;
+      }
+
+      &:active:not(:disabled) {
+        transform: none;
+      }
+
+      &:focus {
+        outline: none;
+      }
     }
   `]
 })

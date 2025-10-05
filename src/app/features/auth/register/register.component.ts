@@ -47,14 +47,31 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
             errorMessage="Please enter a valid email address">
           </app-form-input>
 
-          <app-form-input
-            type="tel"
-            placeholder="Phone Number"
-            iconClass="fas fa-phone"
-            formControlName="phoneNumber"
-            [isInvalid]="!!(registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched)"
-            errorMessage="Phone number is required">
-          </app-form-input>
+          <!-- Phone Number with Country Code -->
+          <div class="form-group">
+            <div class="phone-input-container">
+              <div class="country-code-selector">
+                <select formControlName="countryCode" class="country-code-select">
+                  <option *ngFor="let country of countryCodes" [value]="country.code">
+                    {{ country.flag }} {{ country.code }}
+                  </option>
+                </select>
+              </div>
+              <div class="phone-number-input">
+                <i class="fas fa-phone input-icon"></i>
+                <input
+                  type="tel"
+                  placeholder="788606766"
+                  formControlName="phoneNumber"
+                  [class.is-invalid]="!!(registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched)"
+                  class="form-input"
+                />
+              </div>
+            </div>
+            <div class="invalid-feedback" *ngIf="!!(registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched)">
+              Phone number is required
+            </div>
+          </div>
 
           <app-form-input
             type="text"
@@ -115,6 +132,19 @@ export class RegisterComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   
+  countryCodes = [
+    { code: '+250', country: 'Rwanda', flag: '🇷🇼' },
+    { code: '+256', country: 'Uganda', flag: '🇺🇬' },
+    { code: '+254', country: 'Kenya', flag: '🇰🇪' },
+    { code: '+255', country: 'Tanzania', flag: '🇹🇿' },
+    { code: '+243', country: 'DRC', flag: '🇨🇩' },
+    { code: '+257', country: 'Burundi', flag: '🇧🇮' },
+    { code: '+1', country: 'USA', flag: '🇺🇸' },
+    { code: '+44', country: 'UK', flag: '🇬🇧' },
+    { code: '+33', country: 'France', flag: '🇫🇷' },
+    { code: '+49', country: 'Germany', flag: '🇩🇪' }
+  ];
+  
   accountTypeOptions = [
     { value: 'farmer', label: 'Farmer' },
     { value: 'veterinarian', label: 'Veterinarian' },
@@ -134,7 +164,8 @@ export class RegisterComponent implements OnInit {
           name: ['Test User', [Validators.required, Validators.minLength(2)]], // Pre-filled test data
           accountName: ['Test Account', [Validators.required, Validators.minLength(2)]], // Pre-filled test data
           email: ['test@example.com', [Validators.email]], // Pre-filled test data
-          phoneNumber: ['250788606766', [Validators.required, Validators.pattern(/^[+]?[0-9\s\-\(\)]+$/)]], // Pre-filled test data
+          countryCode: ['+250', [Validators.required]], // Pre-filled test data
+          phoneNumber: ['788606766', [Validators.required, Validators.pattern(/^[0-9\s\-\(\)]+$/)]], // Pre-filled test data
           idNumber: ['1234567890123456'], // Pre-filled test data
           password: ['Pass123', [Validators.required, Validators.minLength(6)]], // Pre-filled test data
           confirmPassword: ['Pass123', [Validators.required]], // Pre-filled test data
@@ -173,7 +204,7 @@ export class RegisterComponent implements OnInit {
         name: formData.name,
         accountName: formData.accountName,
         email: formData.email || null,
-        phoneNumber: formData.phoneNumber,
+        phoneNumber: formData.countryCode + formData.phoneNumber,
         idNumber: formData.idNumber || null,
         password: formData.password,
         accountType: formData.accountType
