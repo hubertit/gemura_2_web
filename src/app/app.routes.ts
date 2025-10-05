@@ -12,7 +12,7 @@ import { CustomersListComponent } from './features/customers/customers-list/cust
 import { AddCustomerComponent } from './features/customers/add-customer/add-customer.component';
 import { SoldMilkComponent } from './features/customers/sold-milk/sold-milk.component';
 import { SuppliersListComponent } from './features/suppliers/suppliers-list/suppliers-list.component';
-import { CollectionsComponent } from './features/collections/collections.component';
+import { CollectionsListComponent } from './features/collections/collections-list/collections-list.component';
 import { MilkSalesComponent } from './features/milk-sales/milk-sales.component';
 import { EntitiesComponent } from './features/entities/entities.component';
 import { UsersComponent } from './features/users/users.component';
@@ -80,10 +80,10 @@ export const routes: Routes = [
         path: 'suppliers/list',
         component: SuppliersListComponent
       },
-      {
-        path: 'collections',
-        component: CollectionsComponent
-      },
+        {
+          path: 'collections',
+          component: CollectionsListComponent
+        },
       {
         path: 'milk-sales',
         component: MilkSalesComponent

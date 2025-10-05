@@ -66049,57 +66049,1195 @@ var SuppliersListComponent = _SuppliersListComponent;
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SuppliersListComponent, { className: "SuppliersListComponent", filePath: "src/app/features/suppliers/suppliers-list/suppliers-list.component.ts", lineNumber: 137 });
 })();
 
-// src/app/features/collections/collections.component.ts
-var _CollectionsComponent = class _CollectionsComponent {
-};
-__name(_CollectionsComponent, "CollectionsComponent");
-__publicField(_CollectionsComponent, "\u0275fac", /* @__PURE__ */ __name(function CollectionsComponent_Factory(__ngFactoryType__) {
-  return new (__ngFactoryType__ || _CollectionsComponent)();
-}, "CollectionsComponent_Factory"));
-__publicField(_CollectionsComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CollectionsComponent, selectors: [["app-collections"]], decls: 14, vars: 0, consts: [[1, "collections-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "coming-soon"], [1, "coming-soon-content"], ["name", "package", "size", "64px", 1, "coming-soon-icon"]], template: /* @__PURE__ */ __name(function CollectionsComponent_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "h1");
-    \u0275\u0275text(4, "Collections");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "p", 3);
-    \u0275\u0275text(6, "Manage milk collections from suppliers");
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(7, "div", 4)(8, "div", 5);
-    \u0275\u0275element(9, "app-feather-icon", 6);
-    \u0275\u0275elementStart(10, "h2");
-    \u0275\u0275text(11, "Collections");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(12, "p");
-    \u0275\u0275text(13, "This feature is coming soon. You'll be able to manage milk collections from your suppliers.");
-    \u0275\u0275elementEnd()()()();
+// src/app/features/collections/collections.service.ts
+var _CollectionsService = class _CollectionsService {
+  http;
+  configService;
+  authService;
+  constructor(http, configService, authService) {
+    this.http = http;
+    this.configService = configService;
+    this.authService = authService;
   }
-}, "CollectionsComponent_Template"), dependencies: [CommonModule, FeatherIconComponent], styles: ["\n\n.collections-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .collections-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.coming-soon[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 400px;\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n}\n.coming-soon[_ngcontent-%COMP%]   .coming-soon-content[_ngcontent-%COMP%] {\n  text-align: center;\n  padding: 48px 24px;\n}\n.coming-soon[_ngcontent-%COMP%]   .coming-soon-content[_ngcontent-%COMP%]   .coming-soon-icon[_ngcontent-%COMP%] {\n  color: #004AAD;\n  margin-bottom: 24px;\n}\n.coming-soon[_ngcontent-%COMP%]   .coming-soon-content[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 16px 0;\n}\n.coming-soon[_ngcontent-%COMP%]   .coming-soon-content[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n  max-width: 400px;\n}\n/*# sourceMappingURL=collections.component.css.map */"] }));
-var CollectionsComponent = _CollectionsComponent;
+  getAuthToken() {
+    const token = this.authService.getToken();
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    return token;
+  }
+  handleError(error) {
+    let errorMessage = "An unknown error occurred!";
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      if (error.status === 404) {
+        errorMessage = "API endpoint not found.";
+      } else if (error.error && error.error.message) {
+        errorMessage = `Error: ${error.error.message}`;
+      } else {
+        errorMessage = `Error Code: ${error.status}
+Message: ${error.message}`;
+      }
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
+  getCollections() {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/collections/get"), { token }).pipe(map((response) => {
+      const collectionsData = Array.isArray(response) ? response : response.data || [];
+      return (collectionsData || []).map((json) => this.mapToCollection(json));
+    }), catchError(this.handleError));
+  }
+  getFilteredCollections(filters) {
+    const token = this.getAuthToken();
+    const requestData = {
+      token,
+      filters: __spreadProps(__spreadValues({}, filters), {
+        date_from: filters.dateFrom ? filters.dateFrom.toISOString().split("T")[0] : void 0,
+        date_to: filters.dateTo ? filters.dateTo.toISOString().split("T")[0] : void 0
+      })
+    };
+    return this.http.post(this.configService.getFullUrl("/collections/get"), requestData).pipe(map((response) => {
+      const collectionsData = Array.isArray(response) ? response : response.data || [];
+      return (collectionsData || []).map((json) => this.mapToCollection(json));
+    }), catchError(this.handleError));
+  }
+  createCollection(collection) {
+    const token = this.getAuthToken();
+    const requestData = {
+      token,
+      supplier_account_code: collection.supplierAccountCode,
+      quantity: collection.quantity,
+      status: collection.status,
+      collection_at: collection.collectionAt.toISOString().replace("T", " ").substring(0, 19),
+      notes: collection.notes
+    };
+    return this.http.post(this.configService.getFullUrl("/collections/create"), requestData).pipe(catchError(this.handleError));
+  }
+  updateCollection(updateRequest) {
+    const token = this.getAuthToken();
+    const requestData = {
+      token,
+      collection_id: updateRequest.collectionId
+    };
+    if (updateRequest.quantity !== void 0)
+      requestData.quantity = updateRequest.quantity;
+    if (updateRequest.pricePerLiter !== void 0)
+      requestData.unit_price = updateRequest.pricePerLiter;
+    if (updateRequest.status !== void 0)
+      requestData.status = updateRequest.status;
+    if (updateRequest.collectionAt !== void 0)
+      requestData.collection_at = updateRequest.collectionAt.toISOString().replace("T", " ").substring(0, 19);
+    if (updateRequest.notes !== void 0)
+      requestData.notes = updateRequest.notes;
+    return this.http.post(this.configService.getFullUrl("/collections/update"), requestData).pipe(catchError(this.handleError));
+  }
+  cancelCollection(collectionId) {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/collections/cancel"), { token, collection_id: collectionId }).pipe(catchError(this.handleError));
+  }
+  deleteCollection(collectionId) {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/collections/delete"), { token, collection_id: collectionId }).pipe(catchError(this.handleError));
+  }
+  approveCollection(approveRequest) {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/collections/approve"), {
+      token,
+      collection_id: approveRequest.collectionId,
+      notes: approveRequest.notes
+    }).pipe(catchError(this.handleError));
+  }
+  rejectCollection(rejectRequest) {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/collections/reject"), {
+      token,
+      collection_id: rejectRequest.collectionId,
+      rejection_reason: rejectRequest.rejectionReason,
+      notes: rejectRequest.notes
+    }).pipe(catchError(this.handleError));
+  }
+  getCollectionStats() {
+    const token = this.getAuthToken();
+    return this.http.post(this.configService.getFullUrl("/collections/stats"), { token }).pipe(map((response) => {
+      if (response.code === 200 || response.status === "success") {
+        return response.data || {};
+      } else {
+        throw new Error(response.message || "Failed to get collection stats");
+      }
+    }), catchError(this.handleError));
+  }
+  mapToCollection(json) {
+    const supplierAccount = json["supplier_account"];
+    return {
+      id: json["id"]?.toString() ?? "",
+      supplierId: supplierAccount?.code?.toString() ?? json["supplier_account_code"]?.toString() ?? "",
+      supplierName: supplierAccount?.name?.toString() ?? json["supplier_name"]?.toString() ?? "",
+      supplierPhone: json["supplier_phone"]?.toString() ?? "",
+      // Assuming this comes from API or needs to be fetched
+      quantity: parseFloat(json["quantity"]?.toString() ?? "0"),
+      pricePerLiter: parseFloat(json["unit_price"]?.toString() ?? "0"),
+      totalValue: parseFloat(json["total_amount"]?.toString() ?? "0"),
+      status: json["status"]?.toString() ?? "pending",
+      rejectionReason: json["rejection_reason"]?.toString(),
+      quality: json["quality"]?.toString(),
+      notes: json["notes"]?.toString(),
+      collectionDate: new Date(json["collection_at"] ?? Date.now()),
+      createdAt: new Date(json["created_at"] ?? Date.now()),
+      updatedAt: new Date(json["updated_at"] ?? Date.now())
+    };
+  }
+};
+__name(_CollectionsService, "CollectionsService");
+__publicField(_CollectionsService, "\u0275fac", /* @__PURE__ */ __name(function CollectionsService_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _CollectionsService)(\u0275\u0275inject(HttpClient), \u0275\u0275inject(ConfigService), \u0275\u0275inject(AuthService));
+}, "CollectionsService_Factory"));
+__publicField(_CollectionsService, "\u0275prov", /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _CollectionsService, factory: _CollectionsService.\u0275fac, providedIn: "root" }));
+var CollectionsService = _CollectionsService;
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CollectionsComponent, [{
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CollectionsService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [{ type: HttpClient }, { type: ConfigService }, { type: AuthService }], null);
+})();
+
+// src/app/shared/components/record-collection-modal/record-collection-modal.component.ts
+function RecordCollectionModalComponent_option_19_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 44);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const supplier_r2 = ctx.$implicit;
+    \u0275\u0275property("value", supplier_r2.accountCode);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate2(" ", supplier_r2.name, " - ", supplier_r2.phone, " ");
+  }
+}
+__name(RecordCollectionModalComponent_option_19_Template, "RecordCollectionModalComponent_option_19_Template");
+function RecordCollectionModalComponent_div_20_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 45);
+    \u0275\u0275text(1, " Please select a supplier ");
+    \u0275\u0275elementEnd();
+  }
+}
+__name(RecordCollectionModalComponent_div_20_Template, "RecordCollectionModalComponent_div_20_Template");
+function RecordCollectionModalComponent_div_28_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 45);
+    \u0275\u0275text(1, " Please enter a valid quantity ");
+    \u0275\u0275elementEnd();
+  }
+}
+__name(RecordCollectionModalComponent_div_28_Template, "RecordCollectionModalComponent_div_28_Template");
+function RecordCollectionModalComponent_div_62_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 46)(1, "h4");
+    \u0275\u0275text(2, "Collection Summary");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "div", 47)(4, "span");
+    \u0275\u0275text(5, "Supplier:");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "span");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(8, "div", 47)(9, "span");
+    \u0275\u0275text(10, "Quantity:");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "span");
+    \u0275\u0275text(12);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(13, "div", 47)(14, "span");
+    \u0275\u0275text(15, "Status:");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "span", 48);
+    \u0275\u0275text(17);
+    \u0275\u0275pipe(18, "titlecase");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(19, "div", 47)(20, "span");
+    \u0275\u0275text(21, "Date & Time:");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(22, "span");
+    \u0275\u0275text(23);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(7);
+    \u0275\u0275textInterpolate(ctx_r2.getSelectedSupplierName());
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate1("", ctx_r2.collectionData.quantity, "L");
+    \u0275\u0275advance(4);
+    \u0275\u0275classMap(ctx_r2.collectionData.status);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(18, 6, ctx_r2.collectionData.status), " ");
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate(ctx_r2.formatDateTime());
+  }
+}
+__name(RecordCollectionModalComponent_div_62_Template, "RecordCollectionModalComponent_div_62_Template");
+function RecordCollectionModalComponent_span_67_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "span", 49);
+  }
+}
+__name(RecordCollectionModalComponent_span_67_Template, "RecordCollectionModalComponent_span_67_Template");
+var _RecordCollectionModalComponent = class _RecordCollectionModalComponent {
+  collectionRecorded = new EventEmitter();
+  modalClosed = new EventEmitter();
+  collectionData = {
+    supplierAccountCode: "",
+    quantity: 0,
+    status: "accepted",
+    notes: "",
+    collectionAt: /* @__PURE__ */ new Date()
+  };
+  suppliers = [];
+  collectionDate = "";
+  collectionTime = "";
+  loading = false;
+  collectionsService = inject2(CollectionsService);
+  suppliersService = inject2(SuppliersService);
+  ngOnInit() {
+    this.setCurrentDateTime();
+    this.loadSuppliers();
+  }
+  setCurrentDateTime() {
+    const now = /* @__PURE__ */ new Date();
+    this.collectionDate = now.toISOString().split("T")[0];
+    this.collectionTime = now.toTimeString().split(" ")[0].substring(0, 5);
+  }
+  loadSuppliers() {
+    this.suppliersService.getSuppliers().subscribe({
+      next: /* @__PURE__ */ __name((response) => {
+        if (response.code === 200 || response.status === "success") {
+          this.suppliers = response.data || [];
+        }
+      }, "next"),
+      error: /* @__PURE__ */ __name((error) => {
+        console.error("Error loading suppliers:", error);
+        this.suppliers = [
+          { accountCode: "A_120BA3", name: "kayumba", phone: "+250 788 123 456" },
+          { accountCode: "A_BA957A", name: "pasteur", phone: "+250 788 234 567" },
+          { accountCode: "A_825DE9", name: "Rwahama", phone: "+250 788 345 678" },
+          { accountCode: "A_AE9A68", name: "celestin", phone: "+250 788 456 789" },
+          { accountCode: "A_1B047F", name: "Arbert", phone: "+250 788 567 890" }
+        ];
+      }, "error")
+    });
+  }
+  onSubmit() {
+    if (this.loading)
+      return;
+    this.loading = true;
+    const collectionDateTime = /* @__PURE__ */ new Date(`${this.collectionDate}T${this.collectionTime}`);
+    this.collectionData.collectionAt = collectionDateTime;
+    this.collectionsService.createCollection(this.collectionData).subscribe({
+      next: /* @__PURE__ */ __name((response) => {
+        console.log("Collection recorded successfully:", response);
+        this.collectionRecorded.emit(response);
+        this.closeModal();
+      }, "next"),
+      error: /* @__PURE__ */ __name((error) => {
+        console.error("Error recording collection:", error);
+        alert("Failed to record collection. Please try again.");
+      }, "error"),
+      complete: /* @__PURE__ */ __name(() => {
+        this.loading = false;
+      }, "complete")
+    });
+  }
+  closeModal() {
+    this.modalClosed.emit();
+  }
+  getSelectedSupplierName() {
+    const supplier = this.suppliers.find((s) => s.accountCode === this.collectionData.supplierAccountCode);
+    return supplier ? supplier.name : "";
+  }
+  formatDateTime() {
+    if (this.collectionDate && this.collectionTime) {
+      const date = /* @__PURE__ */ new Date(`${this.collectionDate}T${this.collectionTime}`);
+      return date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+    return "";
+  }
+};
+__name(_RecordCollectionModalComponent, "RecordCollectionModalComponent");
+__publicField(_RecordCollectionModalComponent, "\u0275fac", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _RecordCollectionModalComponent)();
+}, "RecordCollectionModalComponent_Factory"));
+__publicField(_RecordCollectionModalComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _RecordCollectionModalComponent, selectors: [["app-record-collection-modal"]], outputs: { collectionRecorded: "collectionRecorded", modalClosed: "modalClosed" }, decls: 69, vars: 12, consts: [["collectionForm", "ngForm"], ["supplierField", "ngModel"], ["quantityField", "ngModel"], ["statusField", "ngModel"], ["dateField", "ngModel"], ["timeField", "ngModel"], [1, "modal-overlay", 3, "click"], [1, "modal-container", 3, "click"], [1, "modal-header"], [1, "close-btn", 3, "click"], ["name", "x", "size", "20px"], [1, "modal-body"], [3, "ngSubmit"], [1, "form-group"], ["for", "supplier"], [1, "input-container"], ["name", "user", "size", "18px", 1, "input-icon"], ["id", "supplier", "name", "supplier", "required", "", 1, "form-input", 3, "ngModelChange", "ngModel"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["class", "error-message", 4, "ngIf"], ["for", "quantity"], ["name", "droplet", "size", "18px", 1, "input-icon"], ["type", "number", "id", "quantity", "name", "quantity", "required", "", "min", "0", "step", "0.1", "placeholder", "Enter quantity in liters", 1, "form-input", 3, "ngModelChange", "ngModel"], ["for", "status"], ["name", "check-circle", "size", "18px", 1, "input-icon"], ["id", "status", "name", "status", "required", "", 1, "form-input", 3, "ngModelChange", "ngModel"], ["value", "accepted"], ["value", "rejected"], [1, "form-row"], ["for", "collectionDate"], ["name", "calendar", "size", "18px", 1, "input-icon"], ["type", "date", "id", "collectionDate", "name", "collectionDate", "required", "", 1, "form-input", 3, "ngModelChange", "ngModel"], ["for", "collectionTime"], ["name", "clock", "size", "18px", 1, "input-icon"], ["type", "time", "id", "collectionTime", "name", "collectionTime", "required", "", 1, "form-input", 3, "ngModelChange", "ngModel"], ["for", "notes"], ["name", "file-text", "size", "18px", 1, "input-icon"], ["id", "notes", "name", "notes", "placeholder", "Add any additional notes...", "rows", "3", 1, "textarea-input", 3, "ngModelChange", "ngModel"], ["class", "summary-card", 4, "ngIf"], [1, "modal-footer"], ["type", "button", 1, "btn", "btn-danger-outline", 3, "click"], ["type", "submit", 1, "btn", "btn-primary", 3, "disabled"], ["class", "spinner-border spinner-border-sm me-2", "role", "status", 4, "ngIf"], [3, "value"], [1, "error-message"], [1, "summary-card"], [1, "summary-row"], [1, "status-badge"], ["role", "status", 1, "spinner-border", "spinner-border-sm", "me-2"]], template: /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 6);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_div_click_0_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.closeModal());
+    }, "RecordCollectionModalComponent_Template_div_click_0_listener"));
+    \u0275\u0275elementStart(1, "div", 7);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_div_click_1_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView($event.stopPropagation());
+    }, "RecordCollectionModalComponent_Template_div_click_1_listener"));
+    \u0275\u0275elementStart(2, "div", 8)(3, "h2");
+    \u0275\u0275text(4, "Record Collection");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "button", 9);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_button_click_5_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.closeModal());
+    }, "RecordCollectionModalComponent_Template_button_click_5_listener"));
+    \u0275\u0275element(6, "app-feather-icon", 10);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(7, "div", 11)(8, "form", 12, 0);
+    \u0275\u0275listener("ngSubmit", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_form_ngSubmit_8_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.onSubmit());
+    }, "RecordCollectionModalComponent_Template_form_ngSubmit_8_listener"));
+    \u0275\u0275elementStart(10, "div", 13)(11, "label", 14);
+    \u0275\u0275text(12, "Select Supplier *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "div", 15);
+    \u0275\u0275element(14, "app-feather-icon", 16);
+    \u0275\u0275elementStart(15, "select", 17, 1);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_select_ngModelChange_15_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.collectionData.supplierAccountCode, $event) || (ctx.collectionData.supplierAccountCode = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordCollectionModalComponent_Template_select_ngModelChange_15_listener"));
+    \u0275\u0275elementStart(17, "option", 18);
+    \u0275\u0275text(18, "Choose a supplier...");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(19, RecordCollectionModalComponent_option_19_Template, 2, 3, "option", 19);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(20, RecordCollectionModalComponent_div_20_Template, 2, 0, "div", 20);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(21, "div", 13)(22, "label", 21);
+    \u0275\u0275text(23, "Quantity (Liters) *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(24, "div", 15);
+    \u0275\u0275element(25, "app-feather-icon", 22);
+    \u0275\u0275elementStart(26, "input", 23, 2);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_input_ngModelChange_26_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.collectionData.quantity, $event) || (ctx.collectionData.quantity = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordCollectionModalComponent_Template_input_ngModelChange_26_listener"));
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(28, RecordCollectionModalComponent_div_28_Template, 2, 0, "div", 20);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(29, "div", 13)(30, "label", 24);
+    \u0275\u0275text(31, "Status *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(32, "div", 15);
+    \u0275\u0275element(33, "app-feather-icon", 25);
+    \u0275\u0275elementStart(34, "select", 26, 3);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_select_ngModelChange_34_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.collectionData.status, $event) || (ctx.collectionData.status = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordCollectionModalComponent_Template_select_ngModelChange_34_listener"));
+    \u0275\u0275elementStart(36, "option", 27);
+    \u0275\u0275text(37, "Accepted");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(38, "option", 28);
+    \u0275\u0275text(39, "Rejected");
+    \u0275\u0275elementEnd()()()();
+    \u0275\u0275elementStart(40, "div", 29)(41, "div", 13)(42, "label", 30);
+    \u0275\u0275text(43, "Collection Date *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(44, "div", 15);
+    \u0275\u0275element(45, "app-feather-icon", 31);
+    \u0275\u0275elementStart(46, "input", 32, 4);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_input_ngModelChange_46_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.collectionDate, $event) || (ctx.collectionDate = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordCollectionModalComponent_Template_input_ngModelChange_46_listener"));
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(48, "div", 13)(49, "label", 33);
+    \u0275\u0275text(50, "Collection Time *");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(51, "div", 15);
+    \u0275\u0275element(52, "app-feather-icon", 34);
+    \u0275\u0275elementStart(53, "input", 35, 5);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_input_ngModelChange_53_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.collectionTime, $event) || (ctx.collectionTime = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordCollectionModalComponent_Template_input_ngModelChange_53_listener"));
+    \u0275\u0275elementEnd()()()();
+    \u0275\u0275elementStart(55, "div", 13)(56, "label", 36);
+    \u0275\u0275text(57, "Notes (Optional)");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(58, "div", 15);
+    \u0275\u0275element(59, "app-feather-icon", 37);
+    \u0275\u0275elementStart(60, "textarea", 38);
+    \u0275\u0275twoWayListener("ngModelChange", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_textarea_ngModelChange_60_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      \u0275\u0275twoWayBindingSet(ctx.collectionData.notes, $event) || (ctx.collectionData.notes = $event);
+      return \u0275\u0275resetView($event);
+    }, "RecordCollectionModalComponent_Template_textarea_ngModelChange_60_listener"));
+    \u0275\u0275text(61, "                ");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275template(62, RecordCollectionModalComponent_div_62_Template, 24, 8, "div", 39);
+    \u0275\u0275elementStart(63, "div", 40)(64, "button", 41);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function RecordCollectionModalComponent_Template_button_click_64_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.closeModal());
+    }, "RecordCollectionModalComponent_Template_button_click_64_listener"));
+    \u0275\u0275text(65, "Cancel");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(66, "button", 42);
+    \u0275\u0275template(67, RecordCollectionModalComponent_span_67_Template, 1, 0, "span", 43);
+    \u0275\u0275text(68, " Record Collection ");
+    \u0275\u0275elementEnd()()()()()();
+  }
+  if (rf & 2) {
+    const collectionForm_r4 = \u0275\u0275reference(9);
+    const supplierField_r5 = \u0275\u0275reference(16);
+    const quantityField_r6 = \u0275\u0275reference(27);
+    \u0275\u0275advance(15);
+    \u0275\u0275twoWayProperty("ngModel", ctx.collectionData.supplierAccountCode);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngForOf", ctx.suppliers);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", supplierField_r5.invalid && supplierField_r5.touched);
+    \u0275\u0275advance(6);
+    \u0275\u0275twoWayProperty("ngModel", ctx.collectionData.quantity);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", quantityField_r6.invalid && quantityField_r6.touched);
+    \u0275\u0275advance(6);
+    \u0275\u0275twoWayProperty("ngModel", ctx.collectionData.status);
+    \u0275\u0275advance(12);
+    \u0275\u0275twoWayProperty("ngModel", ctx.collectionDate);
+    \u0275\u0275advance(7);
+    \u0275\u0275twoWayProperty("ngModel", ctx.collectionTime);
+    \u0275\u0275advance(7);
+    \u0275\u0275twoWayProperty("ngModel", ctx.collectionData.notes);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", ctx.collectionData.supplierAccountCode && ctx.collectionData.quantity);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("disabled", !collectionForm_r4.valid || ctx.loading);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx.loading);
+  }
+}, "RecordCollectionModalComponent_Template"), dependencies: [CommonModule, NgForOf, NgIf, FormsModule, \u0275NgNoValidate, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgControlStatusGroup, RequiredValidator, MinValidator, NgModel, NgForm, FeatherIconComponent, TitleCasePipe], styles: ["\n\n.modal-overlay[_ngcontent-%COMP%] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 1000;\n  padding: 20px;\n}\n.modal-container[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 8px;\n  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);\n  max-width: 600px;\n  width: 100%;\n  max-height: 90vh;\n  overflow-y: auto;\n  animation: _ngcontent-%COMP%_modalSlideIn 0.3s ease-out;\n}\n@keyframes _ngcontent-%COMP%_modalSlideIn {\n  from {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.modal-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 24px 24px 0 24px;\n  border-bottom: 1px solid #e2e8f0;\n  margin-bottom: 24px;\n}\n.modal-header[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.modal-header[_ngcontent-%COMP%]   .close-btn[_ngcontent-%COMP%] {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n}\n.modal-header[_ngcontent-%COMP%]   .close-btn[_ngcontent-%COMP%]:hover {\n  background: #f3f4f6;\n  color: #1e293b;\n}\n.modal-body[_ngcontent-%COMP%] {\n  padding: 0 24px 24px 24px;\n}\n.form-group[_ngcontent-%COMP%] {\n  margin-bottom: 20px;\n}\n.form-group[_ngcontent-%COMP%]   label[_ngcontent-%COMP%] {\n  display: block;\n  font-size: 14px;\n  font-weight: 500;\n  color: #1e293b;\n  margin-bottom: 8px;\n}\n.form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%] {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n.form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .input-icon[_ngcontent-%COMP%] {\n  position: absolute;\n  left: 12px;\n  color: #64748b;\n  z-index: 1;\n}\n.form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-input[_ngcontent-%COMP%] {\n  width: 100%;\n  padding: 12px 12px 12px 44px;\n  border: 1px solid #d1d5db;\n  border-radius: 8px;\n  font-size: 14px;\n  transition: all 0.2s ease;\n  background: #f9fafb;\n}\n.form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-input[_ngcontent-%COMP%]:focus {\n  outline: none;\n  border-color: #004AAD;\n  background: white;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .form-input.is-invalid[_ngcontent-%COMP%] {\n  border-color: #dc2626;\n  background: #fef2f2;\n}\n.form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .textarea-input[_ngcontent-%COMP%] {\n  width: 100%;\n  padding: 12px 12px 12px 44px;\n  border: 1px solid #d1d5db;\n  border-radius: 8px;\n  font-size: 14px;\n  transition: all 0.2s ease;\n  background: #f9fafb;\n  resize: vertical;\n  min-height: 80px;\n}\n.form-group[_ngcontent-%COMP%]   .input-container[_ngcontent-%COMP%]   .textarea-input[_ngcontent-%COMP%]:focus {\n  outline: none;\n  border-color: #004AAD;\n  background: white;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.form-group[_ngcontent-%COMP%]   .error-message[_ngcontent-%COMP%] {\n  color: #dc2626;\n  font-size: 12px;\n  margin-top: 4px;\n}\n.form-row[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n}\n@media (max-width: 768px) {\n  .form-row[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.summary-card[_ngcontent-%COMP%] {\n  background: #f8fafc;\n  border: 1px solid #e2e8f0;\n  border-radius: 8px;\n  padding: 16px;\n  margin: 20px 0;\n}\n.summary-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  font-size: 16px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 12px 0;\n}\n.summary-card[_ngcontent-%COMP%]   .summary-row[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 4px 0;\n  font-size: 14px;\n}\n.summary-card[_ngcontent-%COMP%]   .summary-row[_ngcontent-%COMP%]   span[_ngcontent-%COMP%]:first-child {\n  color: #64748b;\n}\n.summary-card[_ngcontent-%COMP%]   .summary-row[_ngcontent-%COMP%]   span[_ngcontent-%COMP%]:last-child {\n  font-weight: 500;\n  color: #1e293b;\n}\n.summary-card[_ngcontent-%COMP%]   .summary-row[_ngcontent-%COMP%]   .status-badge[_ngcontent-%COMP%] {\n  padding: 4px 8px;\n  border-radius: 4px;\n  font-size: 12px;\n  font-weight: 500;\n}\n.summary-card[_ngcontent-%COMP%]   .summary-row[_ngcontent-%COMP%]   .status-badge.accepted[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.summary-card[_ngcontent-%COMP%]   .summary-row[_ngcontent-%COMP%]   .status-badge.rejected[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.modal-footer[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: flex-end;\n  gap: 12px;\n  padding-top: 24px;\n  border-top: 1px solid #e2e8f0;\n  margin-top: 24px;\n}\n.btn[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-size: 14px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  border: 1px solid transparent;\n  text-decoration: none;\n}\n.btn[_ngcontent-%COMP%]:disabled {\n  opacity: 0.6;\n  cursor: not-allowed;\n}\n.btn.btn-primary[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n  border: none;\n}\n.btn.btn-primary[_ngcontent-%COMP%]:hover:not(:disabled) {\n  background: rgb(0, 63.0924855491, 147.5);\n  transform: translateY(-1px);\n}\n.btn.btn-primary[_ngcontent-%COMP%]:active {\n  transform: translateY(0);\n}\n.btn.btn-danger-outline[_ngcontent-%COMP%] {\n  background: transparent;\n  color: #dc2626;\n  border: 1px solid #dc2626;\n}\n.btn.btn-danger-outline[_ngcontent-%COMP%]:hover:not(:disabled) {\n  background: #fef2f2;\n  color: #b91c1c;\n}\n.spinner-border[_ngcontent-%COMP%] {\n  display: inline-block;\n  width: 1rem;\n  height: 1rem;\n  border: 0.125em solid currentColor;\n  border-right-color: transparent;\n  border-radius: 50%;\n  animation: _ngcontent-%COMP%_spinner-border 0.75s linear infinite;\n}\n@keyframes _ngcontent-%COMP%_spinner-border {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.me-2[_ngcontent-%COMP%] {\n  margin-right: 0.5rem;\n}\n@media (max-width: 768px) {\n  .modal-overlay[_ngcontent-%COMP%] {\n    padding: 10px;\n  }\n  .modal-container[_ngcontent-%COMP%] {\n    max-height: 95vh;\n  }\n  .modal-header[_ngcontent-%COMP%] {\n    padding: 16px 16px 0 16px;\n  }\n  .modal-header[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n    font-size: 20px;\n  }\n  .modal-body[_ngcontent-%COMP%] {\n    padding: 0 16px 16px 16px;\n  }\n  .modal-footer[_ngcontent-%COMP%] {\n    flex-direction: column-reverse;\n    gap: 8px;\n  }\n  .modal-footer[_ngcontent-%COMP%]   .btn[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: center;\n  }\n}\n@media (max-width: 480px) {\n  .modal-container[_ngcontent-%COMP%] {\n    border-radius: 4px;\n  }\n  .form-group[_ngcontent-%COMP%] {\n    margin-bottom: 16px;\n  }\n  .summary-card[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n}\n/*# sourceMappingURL=record-collection-modal.component.css.map */"] }));
+var RecordCollectionModalComponent = _RecordCollectionModalComponent;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(RecordCollectionModalComponent, [{
     type: Component,
-    args: [{ selector: "app-collections", standalone: true, imports: [CommonModule, FeatherIconComponent], template: `
-    <div class="collections-container">
-      <div class="page-header">
-        <div class="header-content">
-          <h1>Collections</h1>
-          <p class="page-description">Manage milk collections from suppliers</p>
+    args: [{ selector: "app-record-collection-modal", standalone: true, imports: [CommonModule, FormsModule, FeatherIconComponent], template: `
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h2>Record Collection</h2>
+          <button class="close-btn" (click)="closeModal()">
+            <app-feather-icon name="x" size="20px"></app-feather-icon>
+          </button>
         </div>
-      </div>
-      
-      <div class="coming-soon">
-        <div class="coming-soon-content">
-          <app-feather-icon name="package" size="64px" class="coming-soon-icon"></app-feather-icon>
-          <h2>Collections</h2>
-          <p>This feature is coming soon. You'll be able to manage milk collections from your suppliers.</p>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <form #collectionForm="ngForm" (ngSubmit)="onSubmit()">
+            <!-- Supplier Selection -->
+            <div class="form-group">
+              <label for="supplier">Select Supplier *</label>
+              <div class="input-container">
+                <app-feather-icon name="user" size="18px" class="input-icon"></app-feather-icon>
+                <select
+                  id="supplier"
+                  name="supplier"
+                  [(ngModel)]="collectionData.supplierAccountCode"
+                  #supplierField="ngModel"
+                  required
+                  class="form-input">
+                  <option value="">Choose a supplier...</option>
+                  <option *ngFor="let supplier of suppliers" [value]="supplier.accountCode">
+                    {{ supplier.name }} - {{ supplier.phone }}
+                  </option>
+                </select>
+              </div>
+              <div class="error-message" *ngIf="supplierField.invalid && supplierField.touched">
+                Please select a supplier
+              </div>
+            </div>
+
+            <!-- Quantity Field -->
+            <div class="form-group">
+              <label for="quantity">Quantity (Liters) *</label>
+              <div class="input-container">
+                <app-feather-icon name="droplet" size="18px" class="input-icon"></app-feather-icon>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  [(ngModel)]="collectionData.quantity"
+                  #quantityField="ngModel"
+                  required
+                  min="0"
+                  step="0.1"
+                  placeholder="Enter quantity in liters"
+                  class="form-input"
+                />
+              </div>
+              <div class="error-message" *ngIf="quantityField.invalid && quantityField.touched">
+                Please enter a valid quantity
+              </div>
+            </div>
+
+            <!-- Status Field -->
+            <div class="form-group">
+              <label for="status">Status *</label>
+              <div class="input-container">
+                <app-feather-icon name="check-circle" size="18px" class="input-icon"></app-feather-icon>
+                <select
+                  id="status"
+                  name="status"
+                  [(ngModel)]="collectionData.status"
+                  #statusField="ngModel"
+                  required
+                  class="form-input">
+                  <option value="accepted">Accepted</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Collection Date and Time -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="collectionDate">Collection Date *</label>
+                <div class="input-container">
+                  <app-feather-icon name="calendar" size="18px" class="input-icon"></app-feather-icon>
+                  <input
+                    type="date"
+                    id="collectionDate"
+                    name="collectionDate"
+                    [(ngModel)]="collectionDate"
+                    #dateField="ngModel"
+                    required
+                    class="form-input"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="collectionTime">Collection Time *</label>
+                <div class="input-container">
+                  <app-feather-icon name="clock" size="18px" class="input-icon"></app-feather-icon>
+                  <input
+                    type="time"
+                    id="collectionTime"
+                    name="collectionTime"
+                    [(ngModel)]="collectionTime"
+                    #timeField="ngModel"
+                    required
+                    class="form-input"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes Field -->
+            <div class="form-group">
+              <label for="notes">Notes (Optional)</label>
+              <div class="input-container">
+                <app-feather-icon name="file-text" size="18px" class="input-icon"></app-feather-icon>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  [(ngModel)]="collectionData.notes"
+                  placeholder="Add any additional notes..."
+                  rows="3"
+                  class="textarea-input">
+                </textarea>
+              </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="summary-card" *ngIf="collectionData.supplierAccountCode && collectionData.quantity">
+              <h4>Collection Summary</h4>
+              <div class="summary-row">
+                <span>Supplier:</span>
+                <span>{{ getSelectedSupplierName() }}</span>
+              </div>
+              <div class="summary-row">
+                <span>Quantity:</span>
+                <span>{{ collectionData.quantity }}L</span>
+              </div>
+              <div class="summary-row">
+                <span>Status:</span>
+                <span class="status-badge" [class]="collectionData.status">
+                  {{ collectionData.status | titlecase }}
+                </span>
+              </div>
+              <div class="summary-row">
+                <span>Date & Time:</span>
+                <span>{{ formatDateTime() }}</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger-outline" (click)="closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="!collectionForm.valid || loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                Record Collection
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  `, styles: ["/* src/app/features/collections/collections.component.scss */\n.collections-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .collections-container {\n    padding: 8px;\n  }\n}\n.page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header .header-content h1 {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header .header-content .page-description {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.coming-soon {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 400px;\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n}\n.coming-soon .coming-soon-content {\n  text-align: center;\n  padding: 48px 24px;\n}\n.coming-soon .coming-soon-content .coming-soon-icon {\n  color: #004AAD;\n  margin-bottom: 24px;\n}\n.coming-soon .coming-soon-content h2 {\n  font-size: 24px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 16px 0;\n}\n.coming-soon .coming-soon-content p {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n  max-width: 400px;\n}\n/*# sourceMappingURL=collections.component.css.map */\n"] }]
-  }], null, null);
+  `, styles: ["/* src/app/shared/components/record-collection-modal/record-collection-modal.component.scss */\n.modal-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 1000;\n  padding: 20px;\n}\n.modal-container {\n  background: white;\n  border-radius: 8px;\n  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);\n  max-width: 600px;\n  width: 100%;\n  max-height: 90vh;\n  overflow-y: auto;\n  animation: modalSlideIn 0.3s ease-out;\n}\n@keyframes modalSlideIn {\n  from {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.modal-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 24px 24px 0 24px;\n  border-bottom: 1px solid #e2e8f0;\n  margin-bottom: 24px;\n}\n.modal-header h2 {\n  font-size: 24px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.modal-header .close-btn {\n  background: none;\n  border: none;\n  color: #64748b;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: 6px;\n  transition: all 0.2s ease;\n}\n.modal-header .close-btn:hover {\n  background: #f3f4f6;\n  color: #1e293b;\n}\n.modal-body {\n  padding: 0 24px 24px 24px;\n}\n.form-group {\n  margin-bottom: 20px;\n}\n.form-group label {\n  display: block;\n  font-size: 14px;\n  font-weight: 500;\n  color: #1e293b;\n  margin-bottom: 8px;\n}\n.form-group .input-container {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n.form-group .input-container .input-icon {\n  position: absolute;\n  left: 12px;\n  color: #64748b;\n  z-index: 1;\n}\n.form-group .input-container .form-input {\n  width: 100%;\n  padding: 12px 12px 12px 44px;\n  border: 1px solid #d1d5db;\n  border-radius: 8px;\n  font-size: 14px;\n  transition: all 0.2s ease;\n  background: #f9fafb;\n}\n.form-group .input-container .form-input:focus {\n  outline: none;\n  border-color: #004AAD;\n  background: white;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.form-group .input-container .form-input.is-invalid {\n  border-color: #dc2626;\n  background: #fef2f2;\n}\n.form-group .input-container .textarea-input {\n  width: 100%;\n  padding: 12px 12px 12px 44px;\n  border: 1px solid #d1d5db;\n  border-radius: 8px;\n  font-size: 14px;\n  transition: all 0.2s ease;\n  background: #f9fafb;\n  resize: vertical;\n  min-height: 80px;\n}\n.form-group .input-container .textarea-input:focus {\n  outline: none;\n  border-color: #004AAD;\n  background: white;\n  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);\n}\n.form-group .error-message {\n  color: #dc2626;\n  font-size: 12px;\n  margin-top: 4px;\n}\n.form-row {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n}\n@media (max-width: 768px) {\n  .form-row {\n    grid-template-columns: 1fr;\n  }\n}\n.summary-card {\n  background: #f8fafc;\n  border: 1px solid #e2e8f0;\n  border-radius: 8px;\n  padding: 16px;\n  margin: 20px 0;\n}\n.summary-card h4 {\n  font-size: 16px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0 0 12px 0;\n}\n.summary-card .summary-row {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 4px 0;\n  font-size: 14px;\n}\n.summary-card .summary-row span:first-child {\n  color: #64748b;\n}\n.summary-card .summary-row span:last-child {\n  font-weight: 500;\n  color: #1e293b;\n}\n.summary-card .summary-row .status-badge {\n  padding: 4px 8px;\n  border-radius: 4px;\n  font-size: 12px;\n  font-weight: 500;\n}\n.summary-card .summary-row .status-badge.accepted {\n  background: #dcfce7;\n  color: #166534;\n}\n.summary-card .summary-row .status-badge.rejected {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.modal-footer {\n  display: flex;\n  justify-content: flex-end;\n  gap: 12px;\n  padding-top: 24px;\n  border-top: 1px solid #e2e8f0;\n  margin-top: 24px;\n}\n.btn {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-size: 14px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  border: 1px solid transparent;\n  text-decoration: none;\n}\n.btn:disabled {\n  opacity: 0.6;\n  cursor: not-allowed;\n}\n.btn.btn-primary {\n  background: #004AAD;\n  color: white;\n  border: none;\n}\n.btn.btn-primary:hover:not(:disabled) {\n  background: rgb(0, 63.0924855491, 147.5);\n  transform: translateY(-1px);\n}\n.btn.btn-primary:active {\n  transform: translateY(0);\n}\n.btn.btn-danger-outline {\n  background: transparent;\n  color: #dc2626;\n  border: 1px solid #dc2626;\n}\n.btn.btn-danger-outline:hover:not(:disabled) {\n  background: #fef2f2;\n  color: #b91c1c;\n}\n.spinner-border {\n  display: inline-block;\n  width: 1rem;\n  height: 1rem;\n  border: 0.125em solid currentColor;\n  border-right-color: transparent;\n  border-radius: 50%;\n  animation: spinner-border 0.75s linear infinite;\n}\n@keyframes spinner-border {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.me-2 {\n  margin-right: 0.5rem;\n}\n@media (max-width: 768px) {\n  .modal-overlay {\n    padding: 10px;\n  }\n  .modal-container {\n    max-height: 95vh;\n  }\n  .modal-header {\n    padding: 16px 16px 0 16px;\n  }\n  .modal-header h2 {\n    font-size: 20px;\n  }\n  .modal-body {\n    padding: 0 16px 16px 16px;\n  }\n  .modal-footer {\n    flex-direction: column-reverse;\n    gap: 8px;\n  }\n  .modal-footer .btn {\n    width: 100%;\n    justify-content: center;\n  }\n}\n@media (max-width: 480px) {\n  .modal-container {\n    border-radius: 4px;\n  }\n  .form-group {\n    margin-bottom: 16px;\n  }\n  .summary-card {\n    padding: 12px;\n  }\n}\n/*# sourceMappingURL=record-collection-modal.component.css.map */\n"] }]
+  }], null, { collectionRecorded: [{
+    type: Output
+  }], modalClosed: [{
+    type: Output
+  }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CollectionsComponent, { className: "CollectionsComponent", filePath: "src/app/features/collections/collections.component.ts", lineNumber: 29 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(RecordCollectionModalComponent, { className: "RecordCollectionModalComponent", filePath: "src/app/shared/components/record-collection-modal/record-collection-modal.component.ts", lineNumber: 180 });
+})();
+
+// src/app/features/collections/collections-list/collections-list.component.ts
+function CollectionsListComponent_ng_template_53_li_8_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r5 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "li")(1, "a", 29);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_li_8_Template_a_click_1_listener() {
+      \u0275\u0275restoreView(_r5);
+      const collection_r3 = \u0275\u0275nextContext().$implicit;
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.approveCollection(collection_r3));
+    }, "CollectionsListComponent_ng_template_53_li_8_Template_a_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 35);
+    \u0275\u0275text(3, " Approve ");
+    \u0275\u0275elementEnd()();
+  }
+}
+__name(CollectionsListComponent_ng_template_53_li_8_Template, "CollectionsListComponent_ng_template_53_li_8_Template");
+function CollectionsListComponent_ng_template_53_li_9_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r6 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "li")(1, "a", 29);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_li_9_Template_a_click_1_listener() {
+      \u0275\u0275restoreView(_r6);
+      const collection_r3 = \u0275\u0275nextContext().$implicit;
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.rejectCollection(collection_r3));
+    }, "CollectionsListComponent_ng_template_53_li_9_Template_a_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 36);
+    \u0275\u0275text(3, " Reject ");
+    \u0275\u0275elementEnd()();
+  }
+}
+__name(CollectionsListComponent_ng_template_53_li_9_Template, "CollectionsListComponent_ng_template_53_li_9_Template");
+function CollectionsListComponent_ng_template_53_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r2 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 25)(1, "button", 26);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_Template_button_click_1_listener($event) {
+      const collection_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.toggleDropdown(collection_r3.id, $event));
+    }, "CollectionsListComponent_ng_template_53_Template_button_click_1_listener"));
+    \u0275\u0275element(2, "app-feather-icon", 27);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "ul", 28)(4, "li")(5, "a", 29);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_Template_a_click_5_listener() {
+      const collection_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.viewCollection(collection_r3));
+    }, "CollectionsListComponent_ng_template_53_Template_a_click_5_listener"));
+    \u0275\u0275element(6, "app-feather-icon", 30);
+    \u0275\u0275text(7, " View ");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(8, CollectionsListComponent_ng_template_53_li_8_Template, 4, 0, "li", 31)(9, CollectionsListComponent_ng_template_53_li_9_Template, 4, 0, "li", 31);
+    \u0275\u0275elementStart(10, "li")(11, "a", 29);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_Template_a_click_11_listener() {
+      const collection_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.editCollection(collection_r3));
+    }, "CollectionsListComponent_ng_template_53_Template_a_click_11_listener"));
+    \u0275\u0275element(12, "app-feather-icon", 32);
+    \u0275\u0275text(13, " Edit ");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(14, "li")(15, "a", 33);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_ng_template_53_Template_a_click_15_listener() {
+      const collection_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.deleteCollection(collection_r3));
+    }, "CollectionsListComponent_ng_template_53_Template_a_click_15_listener"));
+    \u0275\u0275element(16, "app-feather-icon", 34);
+    \u0275\u0275text(17, " Delete ");
+    \u0275\u0275elementEnd()()()();
+  }
+  if (rf & 2) {
+    const collection_r3 = ctx.$implicit;
+    const ctx_r3 = \u0275\u0275nextContext();
+    \u0275\u0275classProp("show", ctx_r3.openDropdownId === collection_r3.id);
+    \u0275\u0275advance(3);
+    \u0275\u0275classProp("show", ctx_r3.openDropdownId === collection_r3.id);
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngIf", collection_r3.status === "pending");
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", collection_r3.status === "pending");
+  }
+}
+__name(CollectionsListComponent_ng_template_53_Template, "CollectionsListComponent_ng_template_53_Template");
+function CollectionsListComponent_app_record_collection_modal_55_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r7 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "app-record-collection-modal", 37);
+    \u0275\u0275listener("collectionRecorded", /* @__PURE__ */ __name(function CollectionsListComponent_app_record_collection_modal_55_Template_app_record_collection_modal_collectionRecorded_0_listener($event) {
+      \u0275\u0275restoreView(_r7);
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.onCollectionRecorded($event));
+    }, "CollectionsListComponent_app_record_collection_modal_55_Template_app_record_collection_modal_collectionRecorded_0_listener"))("modalClosed", /* @__PURE__ */ __name(function CollectionsListComponent_app_record_collection_modal_55_Template_app_record_collection_modal_modalClosed_0_listener() {
+      \u0275\u0275restoreView(_r7);
+      const ctx_r3 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r3.closeRecordCollectionModal());
+    }, "CollectionsListComponent_app_record_collection_modal_55_Template_app_record_collection_modal_modalClosed_0_listener"));
+    \u0275\u0275elementEnd();
+  }
+}
+__name(CollectionsListComponent_app_record_collection_modal_55_Template, "CollectionsListComponent_app_record_collection_modal_55_Template");
+var _CollectionsListComponent = class _CollectionsListComponent {
+  collectionsService;
+  collections = [];
+  filteredCollections = [];
+  stats = {};
+  loading = false;
+  error = null;
+  showRecordCollectionModal = false;
+  columns = [];
+  // Pagination properties
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
+  // Dropdown state
+  openDropdownId = null;
+  constructor(collectionsService) {
+    this.collectionsService = collectionsService;
+  }
+  ngOnInit() {
+    this.initializeColumns();
+    this.loadCollections();
+    this.loadStats();
+    document.addEventListener("click", () => {
+      this.closeDropdown();
+    });
+  }
+  initializeColumns() {
+    this.columns = [
+      { key: "index", title: "No.", type: "number", sortable: false },
+      { key: "supplierName", title: "Supplier", type: "text", sortable: true },
+      { key: "quantity", title: "Quantity (L)", type: "number", sortable: true },
+      { key: "pricePerLiter", title: "Price/Liter (RWF)", type: "number", sortable: true },
+      { key: "totalValue", title: "Total Value (RWF)", type: "number", sortable: true },
+      { key: "status", title: "Status", type: "status", sortable: true },
+      { key: "collectionDate", title: "Collection Date", type: "date", sortable: true }
+    ];
+  }
+  loadCollections() {
+    this.loading = true;
+    this.error = null;
+    this.collectionsService.getCollections().subscribe({
+      next: /* @__PURE__ */ __name((collections) => {
+        this.loading = false;
+        this.collections = collections || [];
+        this.collections = this.collections.map((collection, index) => __spreadProps(__spreadValues({}, collection), {
+          index: index + 1
+        }));
+        this.filteredCollections = [...this.collections];
+        this.loadStats();
+      }, "next"),
+      error: /* @__PURE__ */ __name((error) => {
+        this.loading = false;
+        this.error = error.message || "Failed to load collections";
+        console.error("Error loading collections:", error);
+        this.loadMockCollections();
+      }, "error")
+    });
+  }
+  loadMockCollections() {
+    const now = /* @__PURE__ */ new Date();
+    this.collections = [
+      {
+        id: "col_001",
+        supplierId: "SUP001",
+        supplierName: "Jean Baptiste",
+        supplierPhone: "+250 788 123 456",
+        quantity: 25.5,
+        pricePerLiter: 400,
+        totalValue: 10200,
+        status: "pending",
+        collectionDate: new Date(now.getTime() - 2 * 60 * 60 * 1e3),
+        // 2 hours ago
+        createdAt: new Date(now.getTime() - 2 * 60 * 60 * 1e3),
+        updatedAt: new Date(now.getTime() - 2 * 60 * 60 * 1e3)
+      },
+      {
+        id: "col_002",
+        supplierId: "SUP002",
+        supplierName: "Marie Claire",
+        supplierPhone: "+250 788 234 567",
+        quantity: 30,
+        pricePerLiter: 420,
+        totalValue: 12600,
+        status: "accepted",
+        collectionDate: new Date(now.getTime() - 4 * 60 * 60 * 1e3),
+        // 4 hours ago
+        createdAt: new Date(now.getTime() - 4 * 60 * 60 * 1e3),
+        updatedAt: new Date(now.getTime() - 4 * 60 * 60 * 1e3)
+      },
+      {
+        id: "col_003",
+        supplierId: "SUP003",
+        supplierName: "Pierre Nkurunziza",
+        supplierPhone: "+250 788 345 678",
+        quantity: 15,
+        pricePerLiter: 380,
+        totalValue: 5700,
+        status: "rejected",
+        rejectionReason: "Poor Quality",
+        collectionDate: new Date(now.getTime() - 6 * 60 * 60 * 1e3),
+        // 6 hours ago
+        createdAt: new Date(now.getTime() - 6 * 60 * 60 * 1e3),
+        updatedAt: new Date(now.getTime() - 6 * 60 * 60 * 1e3)
+      }
+    ];
+    this.collections = this.collections.map((collection, index) => __spreadProps(__spreadValues({}, collection), {
+      index: index + 1
+    }));
+    this.filteredCollections = [...this.collections];
+    this.loadStats();
+  }
+  loadStats() {
+    this.stats = {
+      totalCollections: this.collections.length,
+      totalQuantity: this.collections.reduce((sum, c) => sum + c.quantity, 0),
+      totalValue: this.collections.reduce((sum, c) => sum + c.totalValue, 0),
+      statusCounts: {
+        accepted: this.collections.filter((c) => c.status === "accepted").length,
+        rejected: this.collections.filter((c) => c.status === "rejected").length,
+        pending: this.collections.filter((c) => c.status === "pending").length,
+        cancelled: this.collections.filter((c) => c.status === "cancelled").length
+      }
+    };
+  }
+  handleSort(event) {
+    console.log("Sort:", event);
+  }
+  handlePageChange(page) {
+    this.currentPage = page;
+  }
+  handlePageSizeChange(size) {
+    this.pageSize = size;
+    this.currentPage = 1;
+  }
+  viewCollection(collection) {
+    this.closeDropdown();
+    console.log("View collection:", collection);
+  }
+  editCollection(collection) {
+    this.closeDropdown();
+    console.log("Edit collection:", collection);
+  }
+  deleteCollection(collection) {
+    this.closeDropdown();
+    console.log("Delete collection:", collection);
+  }
+  approveCollection(collection) {
+    this.closeDropdown();
+    console.log("Approve collection:", collection);
+  }
+  rejectCollection(collection) {
+    this.closeDropdown();
+    console.log("Reject collection:", collection);
+  }
+  toggleDropdown(collectionId, event) {
+    event.stopPropagation();
+    if (this.openDropdownId === collectionId) {
+      this.openDropdownId = null;
+    } else {
+      this.openDropdownId = collectionId;
+    }
+  }
+  closeDropdown() {
+    this.openDropdownId = null;
+  }
+  openRecordCollectionModal() {
+    this.showRecordCollectionModal = true;
+  }
+  closeRecordCollectionModal() {
+    this.showRecordCollectionModal = false;
+  }
+  onCollectionRecorded(collectionData) {
+    console.log("Collection recorded:", collectionData);
+    this.loadCollections();
+  }
+  formatCurrency(amount) {
+    return new Intl.NumberFormat("rw-RW", {
+      style: "currency",
+      currency: "RWF"
+    }).format(amount);
+  }
+  formatVolume(volume) {
+    return `${volume.toFixed(1)}L`;
+  }
+};
+__name(_CollectionsListComponent, "CollectionsListComponent");
+__publicField(_CollectionsListComponent, "\u0275fac", /* @__PURE__ */ __name(function CollectionsListComponent_Factory(__ngFactoryType__) {
+  return new (__ngFactoryType__ || _CollectionsListComponent)(\u0275\u0275directiveInject(CollectionsService));
+}, "CollectionsListComponent_Factory"));
+__publicField(_CollectionsListComponent, "\u0275cmp", /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CollectionsListComponent, selectors: [["app-collections-list"]], decls: 56, vars: 16, consts: [["rowActions", ""], [1, "collections-container"], [1, "page-header"], [1, "header-content"], [1, "page-description"], [1, "header-actions"], [1, "btn-primary", 3, "click"], ["name", "plus", "size", "16px"], [1, "stats-grid"], [1, "stat-card"], [1, "stat-icon"], ["name", "truck", "size", "24px"], [1, "stat-content"], [1, "stat-value"], [1, "stat-label"], ["name", "check-circle", "size", "24px"], ["name", "clock", "size", "24px"], ["name", "droplet", "size", "24px"], [1, "card"], [1, "card-header"], [1, "card-title-section"], [1, "collection-count"], [1, "card-body"], [3, "onSort", "onPageChange", "onPageSizeChange", "columns", "data", "striped", "hover", "showActions", "showPagination", "currentPage", "pageSize", "totalPages", "totalItems"], [3, "collectionRecorded", "modalClosed", 4, "ngIf"], [1, "dropdown"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", "dropdown-toggle", 3, "click"], ["name", "more-horizontal", "size", "16px"], [1, "dropdown-menu", "dropdown-menu-end"], ["href", "javascript:void(0)", 1, "dropdown-item", 3, "click"], ["name", "eye", "size", "14px", 1, "me-2"], [4, "ngIf"], ["name", "edit", "size", "14px", 1, "me-2"], ["href", "javascript:void(0)", 1, "dropdown-item", "text-danger", 3, "click"], ["name", "trash-2", "size", "14px", 1, "me-2"], ["name", "check", "size", "14px", 1, "me-2"], ["name", "x", "size", "14px", 1, "me-2"], [3, "collectionRecorded", "modalClosed"]], template: /* @__PURE__ */ __name(function CollectionsListComponent_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 1)(1, "div", 2)(2, "div", 3)(3, "h1");
+    \u0275\u0275text(4, "Milk Collections");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "p", 4);
+    \u0275\u0275text(6, "Track and manage milk collection from suppliers");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(7, "div", 5)(8, "button", 6);
+    \u0275\u0275listener("click", /* @__PURE__ */ __name(function CollectionsListComponent_Template_button_click_8_listener() {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.openRecordCollectionModal());
+    }, "CollectionsListComponent_Template_button_click_8_listener"));
+    \u0275\u0275element(9, "app-feather-icon", 7);
+    \u0275\u0275text(10, " Record Collection ");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(11, "div", 8)(12, "div", 9)(13, "div", 10);
+    \u0275\u0275element(14, "app-feather-icon", 11);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "div", 12)(16, "div", 13);
+    \u0275\u0275text(17);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(18, "div", 14);
+    \u0275\u0275text(19, "Total Collections");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(20, "div", 9)(21, "div", 10);
+    \u0275\u0275element(22, "app-feather-icon", 15);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(23, "div", 12)(24, "div", 13);
+    \u0275\u0275text(25);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(26, "div", 14);
+    \u0275\u0275text(27, "Accepted");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(28, "div", 9)(29, "div", 10);
+    \u0275\u0275element(30, "app-feather-icon", 16);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(31, "div", 12)(32, "div", 13);
+    \u0275\u0275text(33);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(34, "div", 14);
+    \u0275\u0275text(35, "Pending");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(36, "div", 9)(37, "div", 10);
+    \u0275\u0275element(38, "app-feather-icon", 17);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(39, "div", 12)(40, "div", 13);
+    \u0275\u0275text(41);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(42, "div", 14);
+    \u0275\u0275text(43, "Total Volume");
+    \u0275\u0275elementEnd()()()();
+    \u0275\u0275elementStart(44, "div", 18)(45, "div", 19)(46, "div", 20)(47, "h3");
+    \u0275\u0275text(48, "All Collections");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(49, "span", 21);
+    \u0275\u0275text(50);
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(51, "div", 22)(52, "app-data-table", 23);
+    \u0275\u0275listener("onSort", /* @__PURE__ */ __name(function CollectionsListComponent_Template_app_data_table_onSort_52_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.handleSort($event));
+    }, "CollectionsListComponent_Template_app_data_table_onSort_52_listener"))("onPageChange", /* @__PURE__ */ __name(function CollectionsListComponent_Template_app_data_table_onPageChange_52_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.handlePageChange($event));
+    }, "CollectionsListComponent_Template_app_data_table_onPageChange_52_listener"))("onPageSizeChange", /* @__PURE__ */ __name(function CollectionsListComponent_Template_app_data_table_onPageSizeChange_52_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      return \u0275\u0275resetView(ctx.handlePageSizeChange($event));
+    }, "CollectionsListComponent_Template_app_data_table_onPageSizeChange_52_listener"));
+    \u0275\u0275template(53, CollectionsListComponent_ng_template_53_Template, 18, 6, "ng-template", null, 0, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275template(55, CollectionsListComponent_app_record_collection_modal_55_Template, 1, 0, "app-record-collection-modal", 24);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    \u0275\u0275advance(17);
+    \u0275\u0275textInterpolate(ctx.stats.totalCollections);
+    \u0275\u0275advance(8);
+    \u0275\u0275textInterpolate(ctx.stats.statusCounts.accepted);
+    \u0275\u0275advance(8);
+    \u0275\u0275textInterpolate(ctx.stats.statusCounts.pending);
+    \u0275\u0275advance(8);
+    \u0275\u0275textInterpolate(ctx.formatVolume(ctx.stats.totalQuantity));
+    \u0275\u0275advance(9);
+    \u0275\u0275textInterpolate1("", ctx.collections.length, " collections");
+    \u0275\u0275advance(2);
+    \u0275\u0275property("columns", ctx.columns)("data", ctx.filteredCollections)("striped", true)("hover", true)("showActions", true)("showPagination", true)("currentPage", ctx.currentPage)("pageSize", ctx.pageSize)("totalPages", ctx.totalPages)("totalItems", ctx.collections.length);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngIf", ctx.showRecordCollectionModal);
+  }
+}, "CollectionsListComponent_Template"), dependencies: [CommonModule, NgIf, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, RecordCollectionModalComponent], styles: ["\n\n.collections-container[_ngcontent-%COMP%] {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .collections-container[_ngcontent-%COMP%] {\n    padding: 8px;\n  }\n}\n.page-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%] {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   .page-description[_ngcontent-%COMP%] {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%] {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-label[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%] {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card[_ngcontent-%COMP%]   .card-header[_ngcontent-%COMP%]   .card-title-section[_ngcontent-%COMP%]   .collection-count[_ngcontent-%COMP%] {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card[_ngcontent-%COMP%]   .card-body[_ngcontent-%COMP%] {\n  padding: 0;\n}\n.collection-info[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-avatar[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-details[_ngcontent-%COMP%]   .collection-name[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.collection-info[_ngcontent-%COMP%]   .collection-details[_ngcontent-%COMP%]   .collection-id[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.status-badge[_ngcontent-%COMP%] {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.pending[_ngcontent-%COMP%] {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.accepted[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.rejected[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.cancelled[_ngcontent-%COMP%] {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.amount[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon[_ngcontent-%COMP%]:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons[_ngcontent-%COMP%]   .btn-icon.danger[_ngcontent-%COMP%]:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary[_ngcontent-%COMP%] {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary[_ngcontent-%COMP%]:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: white;\n}\n.btn-secondary[_ngcontent-%COMP%] {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary[_ngcontent-%COMP%]   app-feather-icon[_ngcontent-%COMP%] {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-primary[_ngcontent-%COMP%], \n   .page-header[_ngcontent-%COMP%]   .header-actions[_ngcontent-%COMP%]   .btn-secondary[_ngcontent-%COMP%] {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 20px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-content[_ngcontent-%COMP%]   .stat-value[_ngcontent-%COMP%] {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .collections-container[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .page-header[_ngcontent-%COMP%]   .header-content[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%] {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid[_ngcontent-%COMP%]   .stat-card[_ngcontent-%COMP%]   .stat-icon[_ngcontent-%COMP%] {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=collections-list.component.css.map */"] }));
+var CollectionsListComponent = _CollectionsListComponent;
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CollectionsListComponent, [{
+    type: Component,
+    args: [{ selector: "app-collections-list", standalone: true, imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, RecordCollectionModalComponent], template: `
+    <div class="collections-container">
+      <!-- Header -->
+      <div class="page-header">
+        <div class="header-content">
+          <h1>Milk Collections</h1>
+          <p class="page-description">Track and manage milk collection from suppliers</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-primary" (click)="openRecordCollectionModal()">
+            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            Record Collection
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <app-feather-icon name="truck" size="24px"></app-feather-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.totalCollections }}</div>
+            <div class="stat-label">Total Collections</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <app-feather-icon name="check-circle" size="24px"></app-feather-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.statusCounts.accepted }}</div>
+            <div class="stat-label">Accepted</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <app-feather-icon name="clock" size="24px"></app-feather-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.statusCounts.pending }}</div>
+            <div class="stat-label">Pending</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <app-feather-icon name="droplet" size="24px"></app-feather-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ formatVolume(stats.totalQuantity) }}</div>
+            <div class="stat-label">Total Volume</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collections Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-section">
+            <h3>All Collections</h3>
+            <span class="collection-count">{{ collections.length }} collections</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <app-data-table
+            [columns]="columns"
+            [data]="filteredCollections"
+            [striped]="true"
+            [hover]="true"
+            [showActions]="true"
+            [showPagination]="true"
+            [currentPage]="currentPage"
+            [pageSize]="pageSize"
+            [totalPages]="totalPages"
+            [totalItems]="collections.length"
+            (onSort)="handleSort($event)"
+            (onPageChange)="handlePageChange($event)"
+            (onPageSizeChange)="handlePageSizeChange($event)">
+            
+            <ng-template #rowActions let-collection>
+              <div class="dropdown" [class.show]="openDropdownId === collection.id">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" 
+                        (click)="toggleDropdown(collection.id, $event)">
+                  <app-feather-icon name="more-horizontal" size="16px"></app-feather-icon>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" [class.show]="openDropdownId === collection.id">
+                  <li>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewCollection(collection)">
+                      <app-feather-icon name="eye" size="14px" class="me-2"></app-feather-icon>
+                      View
+                    </a>
+                  </li>
+                  <li *ngIf="collection.status === 'pending'">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="approveCollection(collection)">
+                      <app-feather-icon name="check" size="14px" class="me-2"></app-feather-icon>
+                      Approve
+                    </a>
+                  </li>
+                  <li *ngIf="collection.status === 'pending'">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="rejectCollection(collection)">
+                      <app-feather-icon name="x" size="14px" class="me-2"></app-feather-icon>
+                      Reject
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="editCollection(collection)">
+                      <app-feather-icon name="edit" size="14px" class="me-2"></app-feather-icon>
+                      Edit
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteCollection(collection)">
+                      <app-feather-icon name="trash-2" size="14px" class="me-2"></app-feather-icon>
+                      Delete
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </ng-template>
+          </app-data-table>
+        </div>
+      </div>
+
+      <!-- Record Collection Modal -->
+      <app-record-collection-modal 
+        *ngIf="showRecordCollectionModal"
+        (collectionRecorded)="onCollectionRecorded($event)"
+        (modalClosed)="closeRecordCollectionModal()">
+      </app-record-collection-modal>
+    </div>
+  `, styles: ["/* src/app/features/collections/collections-list/collections-list.component.scss */\n.collections-container {\n  padding: 12px;\n  min-height: auto;\n}\n@media (max-width: 768px) {\n  .collections-container {\n    padding: 8px;\n  }\n}\n.page-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 32px;\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .page-header {\n    flex-direction: column;\n    gap: 16px;\n  }\n}\n.page-header .header-content h1 {\n  font-size: 32px;\n  font-weight: 700;\n  color: #1e293b;\n  margin: 0 0 8px 0;\n}\n.page-header .header-content .page-description {\n  color: #64748b;\n  font-size: 16px;\n  margin: 0;\n}\n.page-header .header-actions {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions {\n    width: 100%;\n    justify-content: stretch;\n  }\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 20px;\n  margin-bottom: 24px;\n}\n@media (max-width: 768px) {\n  .stats-grid {\n    grid-template-columns: 1fr;\n    gap: 16px;\n  }\n}\n.stat-card {\n  background: white;\n  border-radius: 12px;\n  padding: 20px;\n  border: 1px solid #e2e8f0;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  transition: all 0.2s ease;\n  cursor: pointer;\n}\n.stat-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);\n}\n.stat-card .stat-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 12px;\n  background: transparent;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #004AAD;\n  flex-shrink: 0;\n}\n.stat-card .stat-content {\n  flex: 1;\n}\n.stat-card .stat-content .stat-value {\n  font-size: 24px;\n  font-weight: 700;\n  color: #1e293b;\n  margin-bottom: 4px;\n}\n.stat-card .stat-content .stat-label {\n  font-size: 14px;\n  color: #64748b;\n  font-weight: 500;\n}\n.card {\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.card .card-header {\n  padding: 24px;\n  border-bottom: 1px solid #e2e8f0;\n  background: #f8fafc;\n}\n.card .card-header .card-title-section {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 16px;\n}\n.card .card-header .card-title-section h3 {\n  font-size: 20px;\n  font-weight: 600;\n  color: #1e293b;\n  margin: 0;\n}\n.card .card-header .card-title-section .collection-count {\n  background: #e2e8f0;\n  color: #64748b;\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 500;\n}\n.card .card-body {\n  padding: 0;\n}\n.collection-info {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.collection-info .collection-avatar {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  object-fit: cover;\n  border: 2px solid #f1f5f9;\n}\n.collection-info .collection-details .collection-name {\n  font-weight: 600;\n  color: #1e293b;\n  font-size: 14px;\n  margin-bottom: 2px;\n}\n.collection-info .collection-details .collection-id {\n  font-size: 12px;\n  color: #94a3b8;\n}\n.status-badge {\n  display: inline-block;\n  padding: 4px 8px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.status-badge.pending {\n  background: #fef3c7;\n  color: #92400e;\n}\n.status-badge.accepted {\n  background: #dcfce7;\n  color: #166534;\n}\n.status-badge.rejected {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.status-badge.cancelled {\n  background: #f3f4f6;\n  color: #6b7280;\n}\n.amount {\n  font-weight: 600;\n  color: #059669;\n  font-size: 14px;\n}\n.action-buttons {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.action-buttons .btn-icon {\n  width: 32px;\n  height: 32px;\n  border: none;\n  border-radius: 6px;\n  background: #f8fafc;\n  color: #64748b;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: all 0.2s ease;\n}\n.action-buttons .btn-icon:hover {\n  background: #e2e8f0;\n  color: #1e293b;\n}\n.action-buttons .btn-icon.danger:hover {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.btn-primary {\n  background: #004AAD;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-primary:hover {\n  background: #003d8f;\n  transform: translateY(-1px);\n}\n.btn-primary app-feather-icon {\n  color: white;\n}\n.btn-secondary {\n  background: white;\n  color: #64748b;\n  border: 1px solid #d1d5db;\n  padding: 10px 20px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 14px;\n}\n.btn-secondary:hover {\n  background: #f8fafc;\n  border-color: #94a3b8;\n  color: #1e293b;\n}\n.btn-secondary app-feather-icon {\n  color: #64748b;\n}\n@media (max-width: 768px) {\n  .page-header .header-actions .btn-primary,\n  .page-header .header-actions .btn-secondary {\n    flex: 1;\n    justify-content: center;\n  }\n  .stats-grid .stat-card {\n    padding: 20px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 40px;\n    height: 40px;\n  }\n  .stats-grid .stat-card .stat-content .stat-value {\n    font-size: 20px;\n  }\n}\n@media (max-width: 480px) {\n  .collections-container {\n    padding: 12px;\n  }\n  .page-header .header-content h1 {\n    font-size: 24px;\n  }\n  .stats-grid .stat-card {\n    padding: 16px;\n    flex-direction: column;\n    text-align: center;\n    gap: 12px;\n  }\n  .stats-grid .stat-card .stat-icon {\n    width: 36px;\n    height: 36px;\n  }\n}\n/*# sourceMappingURL=collections-list.component.css.map */\n"] }]
+  }], () => [{ type: CollectionsService }], null);
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CollectionsListComponent, { className: "CollectionsListComponent", filePath: "src/app/features/collections/collections-list/collections-list.component.ts", lineNumber: 149 });
 })();
 
 // src/app/features/milk-sales/milk-sales.component.ts
@@ -67924,7 +69062,7 @@ var routes = [
       },
       {
         path: "collections",
-        component: CollectionsComponent
+        component: CollectionsListComponent
       },
       {
         path: "milk-sales",
