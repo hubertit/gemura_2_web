@@ -2,8 +2,8 @@ import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
-import { SuppliersService } from '../../features/suppliers/suppliers.service';
-import { CreateSupplierRequest } from '../../features/suppliers/supplier.model';
+import { SuppliersService } from '../../../features/suppliers/suppliers.service';
+import { CreateSupplierRequest } from '../../../features/suppliers/supplier.model';
 
 @Component({
   selector: 'app-add-supplier-modal',

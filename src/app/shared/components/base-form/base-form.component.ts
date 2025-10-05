@@ -23,7 +23,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
             *ngIf="showCancel" 
             type="button" 
             class="btn btn-danger-outline" 
-            (click)="onCancel.emit()">
+            (click)="cancel()">
             {{ cancelText }}
           </button>
           <button 
@@ -91,5 +91,9 @@ export class BaseFormComponent {
     if (this.form.valid) {
       this.onSubmit.emit();
     }
+  }
+
+  cancel(): void {
+    this.onCancel.emit();
   }
 }
