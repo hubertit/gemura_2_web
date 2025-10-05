@@ -6,11 +6,12 @@ import { SuppliersService } from '../suppliers.service';
 import { Supplier } from '../supplier.model';
 import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
+import { AddSupplierModalComponent } from '../../../shared/components/add-supplier-modal/add-supplier-modal.component';
 
 @Component({
   selector: 'app-suppliers-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent],
+  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, AddSupplierModalComponent],
   template: `
     <div class="suppliers-container">
       <!-- Header -->
@@ -122,6 +123,13 @@ import { DataTableComponent } from '../../../shared/components/data-table/data-t
           </app-data-table>
         </div>
       </div>
+
+      <!-- Add Supplier Modal -->
+      <app-add-supplier-modal 
+        *ngIf="showAddSupplierModal"
+        (supplierAdded)="onSupplierAdded($event)"
+        (modalClosed)="closeAddSupplierModal()">
+      </app-add-supplier-modal>
     </div>
   `,
   styleUrls: ['./suppliers-list.component.scss']
@@ -132,6 +140,7 @@ export class SuppliersListComponent implements OnInit {
   stats: any = {};
   loading = false;
   error: string | null = null;
+  showAddSupplierModal = false;
 
   columns: any[] = [];
   
@@ -250,8 +259,17 @@ export class SuppliersListComponent implements OnInit {
   }
 
   openAddSupplierModal() {
-    // Navigate to add supplier page
-    window.location.href = '/suppliers/add';
+    this.showAddSupplierModal = true;
+  }
+
+  closeAddSupplierModal() {
+    this.showAddSupplierModal = false;
+  }
+
+  onSupplierAdded(supplierData: any) {
+    console.log('Supplier added:', supplierData);
+    // Reload suppliers from API
+    this.loadSuppliers();
   }
 
   formatCurrency(amount: number): string {
