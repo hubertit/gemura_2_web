@@ -140,65 +140,70 @@
     }
   }
 
-  .phone-input-container {
-    display: flex;
-    gap: 8px;
-    align-items: stretch;
-
-    .country-code-selector {
-      flex-shrink: 0;
-      width: 120px;
-
-      .country-code-select {
-        width: 100%;
-        padding: 12px 8px;
-        border: 1px solid #d1d5db;
-        border-radius: 12px;
-        font-size: 14px;
-        background: #f9fafb;
-        cursor: pointer;
-        transition: all 0.2s ease;
-
-        &:focus {
-          outline: none;
-          border-color: #004AAD;
-          background: white;
-          box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
-        }
-      }
-    }
-
-    .phone-number-input {
-      flex: 1;
-      position: relative;
+  .unified-phone-input {
+    .phone-input-wrapper {
       display: flex;
-      align-items: center;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      background: #f9fafb;
+      transition: all 0.2s ease;
+      overflow: hidden;
 
-      .input-icon {
-        position: absolute;
-        left: 12px;
-        color: #9ca3af;
-        z-index: 1;
+      &:focus-within {
+        border-color: #004AAD;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
       }
 
-      .form-input {
-        width: 100%;
-        padding: 12px 12px 12px 44px;
-        border: 1px solid #d1d5db;
-        border-radius: 12px;
-        font-size: 16px;
-        background: #f9fafb;
-        transition: all 0.2s ease;
+      .country-code-section {
+        flex-shrink: 0;
+        border-right: 1px solid #d1d5db;
+        background: #f3f4f6;
 
-        &:focus {
+        .country-code-select {
+          border: none;
+          background: transparent;
+          padding: 12px 8px;
+          font-size: 14px;
+          cursor: pointer;
           outline: none;
-          border-color: #004AAD;
-          background: white;
-          box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
+          min-width: 100px;
+          color: #374151;
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+
+      .phone-number-section {
+        flex: 1;
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        .input-icon {
+          position: absolute;
+          left: 12px;
+          color: #9ca3af;
+          z-index: 1;
         }
 
-        &::placeholder {
-          color: #9ca3af;
+        .phone-input {
+          width: 100%;
+          border: none;
+          background: transparent;
+          padding: 12px 12px 12px 44px;
+          font-size: 16px;
+          outline: none;
+
+          &::placeholder {
+            color: #9ca3af;
+          }
+
+          &:focus {
+            outline: none;
+          }
         }
       }
     }
@@ -322,19 +327,22 @@
       font-size: 14px;
     }
 
-    .phone-input-container {
-      .country-code-selector {
-        width: 100px;
-
-        .country-code-select {
-          padding: 10px 6px;
-          font-size: 12px;
+    .unified-phone-input {
+      .phone-input-wrapper {
+        .country-code-section {
+          .country-code-select {
+            padding: 10px 6px;
+            font-size: 12px;
+            min-width: 80px;
+          }
         }
-      }
 
-      .phone-number-input .form-input {
-        padding: 10px 10px 10px 40px;
-        font-size: 14px;
+        .phone-number-section {
+          .phone-input {
+            padding: 10px 10px 10px 40px;
+            font-size: 14px;
+          }
+        }
       }
     }
   }

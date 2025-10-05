@@ -49,23 +49,25 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
 
           <!-- Phone Number with Country Code -->
           <div class="form-group">
-            <div class="phone-input-container">
-              <div class="country-code-selector">
-                <select formControlName="countryCode" class="country-code-select">
-                  <option *ngFor="let country of countryCodes" [value]="country.code">
-                    {{ country.flag }} {{ country.code }}
-                  </option>
-                </select>
-              </div>
-              <div class="phone-number-input">
-                <i class="fas fa-phone input-icon"></i>
-                <input
-                  type="tel"
-                  placeholder="788606766"
-                  formControlName="phoneNumber"
-                  [class.is-invalid]="!!(registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched)"
-                  class="form-input"
-                />
+            <div class="unified-phone-input">
+              <div class="phone-input-wrapper">
+                <div class="country-code-section">
+                  <select formControlName="countryCode" class="country-code-select">
+                    <option *ngFor="let country of countryCodes" [value]="country.code">
+                      {{ country.flag }} {{ country.code }}
+                    </option>
+                  </select>
+                </div>
+                <div class="phone-number-section">
+                  <i class="fas fa-phone input-icon"></i>
+                  <input
+                    type="tel"
+                    placeholder="788606766"
+                    formControlName="phoneNumber"
+                    [class.is-invalid]="!!(registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched)"
+                    class="phone-input"
+                  />
+                </div>
               </div>
             </div>
             <div class="invalid-feedback" *ngIf="!!(registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched)">

@@ -48,26 +48,28 @@ import { Customer } from '../../../core/services/customer.service';
               <!-- Phone Field -->
               <div class="form-group">
                 <label for="phone">Phone Number *</label>
-                <div class="phone-input-container">
-                  <div class="country-code-selector">
-                    <select [(ngModel)]="customerData.countryCode" name="countryCode" class="country-code-select">
-                      <option *ngFor="let country of countryCodes" [value]="country.code">
-                        {{ country.flag }} {{ country.code }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="phone-number-input">
-                    <app-feather-icon name="phone" size="18px" class="input-icon"></app-feather-icon>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      [(ngModel)]="customerData.phone"
-                      #phoneField="ngModel"
-                      required
-                      placeholder="788606765"
-                      class="form-input"
-                    />
+                <div class="unified-phone-input">
+                  <div class="phone-input-wrapper">
+                    <div class="country-code-section">
+                      <select [(ngModel)]="customerData.countryCode" name="countryCode" class="country-code-select">
+                        <option *ngFor="let country of countryCodes" [value]="country.code">
+                          {{ country.flag }} {{ country.code }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="phone-number-section">
+                      <app-feather-icon name="phone" size="18px" class="input-icon"></app-feather-icon>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        [(ngModel)]="customerData.phone"
+                        #phoneField="ngModel"
+                        required
+                        placeholder="788606765"
+                        class="phone-input"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="error-message" *ngIf="phoneField.invalid && phoneField.touched">

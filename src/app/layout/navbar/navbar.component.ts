@@ -397,8 +397,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.showUserMenu = false;
         
         // Show success message
-        // You can add a toast notification here if you have a notification service
         console.log('Account switched to:', account.account_name);
+        
+        // Reload the current page to refresh all data with new account context
+        window.location.reload();
       },
       error: (error) => {
         console.error('Failed to switch account:', error);
