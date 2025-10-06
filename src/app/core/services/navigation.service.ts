@@ -82,13 +82,17 @@ export class NavigationService {
   constructor(private authService: AuthService) {}
 
   getMenuItems(): MenuItem[] {
-    // For now, show all menu items to all user roles
-    return this.menuItems.map(item => {
-      // If item has children, show all children too
+    // Hide specific items temporarily (Feed, Chats, Settings)
+    const hiddenTitles = new Set(['Feed', 'Chats', 'Settings']);
+
+    const filtered = this.menuItems
+      .filter(item => !hiddenTitles.has(item.title));
+
+    return filtered.map(item => {
       if (item.children) {
         return {
           ...item,
-          children: item.children
+          children: item.children?.filter(child => !hiddenTitles.has(child.title))
         };
       }
       return item;
