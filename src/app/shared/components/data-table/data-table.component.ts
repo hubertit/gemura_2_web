@@ -38,8 +38,28 @@ export interface TableColumn {
 
       <!-- Loading State -->
       <div *ngIf="loading" class="loading-container">
-        <div class="loading-spinner"></div>
-        <p class="loading-text">Loading data...</p>
+        <div class="loading-header">
+          <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+          </div>
+          <p class="loading-text">Loading data...</p>
+        </div>
+        
+        <!-- Skeleton Table -->
+        <div class="skeleton-table">
+          <div class="skeleton-header">
+            <div *ngFor="let col of columns" class="skeleton-header-cell"></div>
+            <div *ngIf="showActions && rowActions" class="skeleton-header-cell actions-skeleton"></div>
+          </div>
+          <div class="skeleton-body">
+            <div *ngFor="let row of [1,2,3,4,5]" class="skeleton-row">
+              <div *ngFor="let col of columns" class="skeleton-cell"></div>
+              <div *ngIf="showActions && rowActions" class="skeleton-cell actions-skeleton"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Main Table -->
