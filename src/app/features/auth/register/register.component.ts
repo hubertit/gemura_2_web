@@ -18,34 +18,35 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
       authLinkLabel="Sign In"
       authLinkRoute="/login">
       
-      <ng-template #formTemplate>
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
-          <app-form-input
-            type="text"
-            placeholder="Full Name"
-            iconClass="fas fa-user"
-            formControlName="name"
-            [isInvalid]="!!(registerForm.get('name')?.invalid && registerForm.get('name')?.touched)"
-            errorMessage="Full name is required">
-          </app-form-input>
+          <ng-template #formTemplate>
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+              <app-form-input
+                type="select"
+                placeholder="Select Account Type"
+                iconClass="fas fa-user-tag"
+                formControlName="accountType"
+                [isInvalid]="!!(registerForm.get('accountType')?.invalid && registerForm.get('accountType')?.touched)"
+                errorMessage="Please select an account type"
+                [options]="accountTypeOptions">
+              </app-form-input>
 
-          <app-form-input
-            type="text"
-            placeholder="Account Name"
-            iconClass="fas fa-building"
-            formControlName="accountName"
-            [isInvalid]="!!(registerForm.get('accountName')?.invalid && registerForm.get('accountName')?.touched)"
-            errorMessage="Account name is required">
-          </app-form-input>
+              <app-form-input
+                type="text"
+                placeholder="Full Name"
+                iconClass="fas fa-user"
+                formControlName="name"
+                [isInvalid]="!!(registerForm.get('name')?.invalid && registerForm.get('name')?.touched)"
+                errorMessage="Full name is required">
+              </app-form-input>
 
-          <app-form-input
-            type="email"
-            placeholder="Email (Optional)"
-            iconClass="fas fa-envelope"
-            formControlName="email"
-            [isInvalid]="!!(registerForm.get('email')?.invalid && registerForm.get('email')?.touched)"
-            errorMessage="Please enter a valid email address">
-          </app-form-input>
+              <app-form-input
+                type="email"
+                placeholder="Email (Optional)"
+                iconClass="fas fa-envelope"
+                formControlName="email"
+                [isInvalid]="!!(registerForm.get('email')?.invalid && registerForm.get('email')?.touched)"
+                errorMessage="Please enter a valid email address">
+              </app-form-input>
 
           <!-- Phone Number with Country Code -->
           <div class="form-group">
@@ -104,16 +105,6 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
             [showPasswordToggle]="true">
           </app-form-input>
 
-          <app-form-input
-            type="select"
-            placeholder="Select Account Type"
-            iconClass="fas fa-user-tag"
-            formControlName="accountType"
-            [isInvalid]="!!(registerForm.get('accountType')?.invalid && registerForm.get('accountType')?.touched)"
-            errorMessage="Please select an account type"
-            [options]="accountTypeOptions">
-          </app-form-input>
-
           <app-alert 
             type="danger" 
             [message]="errorMessage">
@@ -164,7 +155,7 @@ export class RegisterComponent implements OnInit {
       ) {
         this.registerForm = this.fb.group({
           name: ['', [Validators.required, Validators.minLength(2)]], // Empty placeholder
-          accountName: ['', [Validators.required, Validators.minLength(2)]], // Empty placeholder
+          accountName: ['', [Validators.required, Validators.minLength(2)]], // Auto-filled from name
           email: ['', [Validators.email]], // Empty placeholder
           countryCode: ['+250', [Validators.required]], // Default to Rwanda
           phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9\s\-\(\)]+$/)]], // Empty placeholder
@@ -173,6 +164,13 @@ export class RegisterComponent implements OnInit {
           confirmPassword: ['', [Validators.required]], // Empty placeholder
           accountType: ['', [Validators.required]] // Empty placeholder
         }, { validators: this.passwordMatchValidator });
+
+        // Auto-fill account name when name changes
+        this.registerForm.get('name')?.valueChanges.subscribe(name => {
+          if (name && name.trim()) {
+            this.registerForm.get('accountName')?.setValue(name.trim(), { emitEvent: false });
+          }
+        });
       }
 
   ngOnInit(): void {
