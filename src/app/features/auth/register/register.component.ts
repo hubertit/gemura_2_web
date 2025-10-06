@@ -163,15 +163,15 @@ export class RegisterComponent implements OnInit {
         private router: Router
       ) {
         this.registerForm = this.fb.group({
-          name: ['Test User', [Validators.required, Validators.minLength(2)]], // Pre-filled test data
-          accountName: ['Test Account', [Validators.required, Validators.minLength(2)]], // Pre-filled test data
-          email: ['test@example.com', [Validators.email]], // Pre-filled test data
-          countryCode: ['+250', [Validators.required]], // Pre-filled test data
-          phoneNumber: ['788606766', [Validators.required, Validators.pattern(/^[0-9\s\-\(\)]+$/)]], // Pre-filled test data
-          idNumber: ['1234567890123456'], // Pre-filled test data
-          password: ['Pass123', [Validators.required, Validators.minLength(6)]], // Pre-filled test data
-          confirmPassword: ['Pass123', [Validators.required]], // Pre-filled test data
-          accountType: ['farmer', [Validators.required]] // Pre-filled test data
+          name: ['', [Validators.required, Validators.minLength(2)]], // Empty placeholder
+          accountName: ['', [Validators.required, Validators.minLength(2)]], // Empty placeholder
+          email: ['', [Validators.email]], // Empty placeholder
+          countryCode: ['+250', [Validators.required]], // Default to Rwanda
+          phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9\s\-\(\)]+$/)]], // Empty placeholder
+          idNumber: [''], // Empty placeholder
+          password: ['', [Validators.required, Validators.minLength(6)]], // Empty placeholder
+          confirmPassword: ['', [Validators.required]], // Empty placeholder
+          accountType: ['', [Validators.required]] // Empty placeholder
         }, { validators: this.passwordMatchValidator });
       }
 

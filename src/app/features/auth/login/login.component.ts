@@ -78,8 +78,8 @@ export class LoginComponent implements OnInit {
         private router: Router
       ) {
         this.loginForm = this.fb.group({
-          identifier: ['250788606765', [Validators.required]], // Pre-filled with test credentials
-          password: ['Pass123', Validators.required] // Pre-filled with test credentials
+          identifier: ['', [Validators.required]], // Empty placeholder
+          password: ['', Validators.required] // Empty placeholder
         });
       }
 
