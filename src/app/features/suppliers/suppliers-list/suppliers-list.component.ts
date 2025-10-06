@@ -88,6 +88,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
             [pageSize]="pageSize"
             [totalPages]="totalPages"
             [totalItems]="suppliers.length"
+            [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">

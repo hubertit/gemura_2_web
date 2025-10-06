@@ -108,6 +108,7 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
             [data]="filteredSales"
             [striped]="true"
             [hover]="true"
+            [loading]="loading"
             (onSort)="handleSort($event)"
             (onSearch)="handleSearch($event)"
             (onPageChange)="handlePageChange($event)"
@@ -123,6 +124,7 @@ export class SoldMilkComponent implements OnInit {
   sales: MilkSale[] = [];
   filteredSales: MilkSale[] = [];
   customers: any[] = [];
+  loading = false;
   searchTerm = '';
   statusFilter = '';
   customerFilter = '';
@@ -154,8 +156,14 @@ export class SoldMilkComponent implements OnInit {
   }
 
   loadSales() {
-    this.sales = this.customerService.getMilkSales();
-    this.filteredSales = [...this.sales];
+    this.loading = true;
+    
+    // Simulate API call delay
+    setTimeout(() => {
+      this.sales = this.customerService.getMilkSales();
+      this.filteredSales = [...this.sales];
+      this.loading = false;
+    }, 1000);
   }
 
   loadCustomers() {

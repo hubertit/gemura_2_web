@@ -91,6 +91,7 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
             [pageSize]="pageSize"
             [totalPages]="totalPages"
             [totalItems]="customers.length"
+            [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)">
@@ -165,6 +166,7 @@ export class CustomersListComponent implements OnInit {
   customers: Customer[] = [];
   filteredCustomers: Customer[] = [];
   stats: any = {};
+  loading = false;
   showAddCustomerModal = false;
   showViewCustomerModal = false;
   showEditCustomerModal = false;
@@ -226,13 +228,19 @@ export class CustomersListComponent implements OnInit {
   }
 
   loadCustomers() {
-    this.customers = this.customerService.getCustomers();
-    // Add index to each customer for the No. column
-    this.customers = this.customers.map((customer, index) => ({
-      ...customer,
-      index: index + 1
-    }));
-    this.filteredCustomers = [...this.customers];
+    this.loading = true;
+    
+    // Simulate API call delay
+    setTimeout(() => {
+      this.customers = this.customerService.getCustomers();
+      // Add index to each customer for the No. column
+      this.customers = this.customers.map((customer, index) => ({
+        ...customer,
+        index: index + 1
+      }));
+      this.filteredCustomers = [...this.customers];
+      this.loading = false;
+    }, 1000);
   }
 
   loadStats() {
