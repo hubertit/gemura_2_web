@@ -60,6 +60,7 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
   `,
   styles: [`
     @use '../../../../styles/variables' as *;
+    @use 'sass:color';
 
     :root {
       --second-rotation: 0deg;
@@ -216,7 +217,7 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
       gap: 0.5rem;
 
       &:hover:not(:disabled) {
-        background: darken($primary, 5%);
+        background: color.adjust($primary, $lightness: -5%);
       }
 
       &:disabled {

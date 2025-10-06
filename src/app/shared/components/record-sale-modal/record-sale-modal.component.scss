@@ -1,4 +1,5 @@
 @use '../../../../styles/_variables' as *;
+@use 'sass:color';
 
 .modal-overlay {
   position: fixed;
@@ -68,7 +69,7 @@
     }
 
     &:active {
-      background-color: darken($hover-color, 5%);
+      background-color: color.adjust($hover-color, $lightness: -5%);
     }
   }
 }
@@ -187,13 +188,13 @@
         border: 1px solid $primary;
 
         &:hover:not(:disabled) {
-          background-color: darken($primary, 5%);
-          border-color: darken($primary, 5%);
+          background-color: color.adjust($primary, $lightness: -5%);
+          border-color: color.adjust($primary, $lightness: -5%);
         }
 
         &:active:not(:disabled) {
-          background-color: darken($primary, 10%);
-          border-color: darken($primary, 10%);
+          background-color: color.adjust($primary, $lightness: -10%);
+          border-color: color.adjust($primary, $lightness: -10%);
         }
       }
 
@@ -208,8 +209,8 @@
         }
 
         &:active:not(:disabled) {
-          background-color: darken($danger, 5%);
-          border-color: darken($danger, 5%);
+          background-color: color.adjust($danger, $lightness: -5%);
+          border-color: color.adjust($danger, $lightness: -5%);
         }
       }
     }
