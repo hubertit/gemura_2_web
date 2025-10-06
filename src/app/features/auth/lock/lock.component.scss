@@ -3,82 +3,161 @@
 
 .user-info {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba($primary, 0.05), rgba($primary, 0.02));
+  border-radius: 16px;
+  border: 1px solid rgba($primary, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, $primary, color.adjust($primary, $lightness: 20%), $primary);
+  }
 
   .user-avatar {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
-    margin: 0 auto 1rem;
+    margin: 0 auto 1.2rem;
     overflow: hidden;
-    border: 3px solid $primary;
-    box-shadow: 0 4px 12px rgba($primary, 0.2);
+    border: 4px solid $primary;
+    box-shadow: 0 8px 25px rgba($primary, 0.3);
+    position: relative;
+    transition: all 0.3s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, $primary, color.adjust($primary, $lightness: 20%), $primary);
+      z-index: -1;
+      animation: rotate 3s linear infinite;
+    }
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 35px rgba($primary, 0.4);
+    }
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.1);
     }
   }
 
   h5 {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.3rem;
+    font-weight: 700;
     color: $text-primary-color;
     margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, $text-primary-color, $primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .text-muted {
     color: $text-secondary-color;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     margin: 0;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
 .auth-form {
   .auth-btn {
     width: 100%;
-    padding: 14px 24px;
-    background: $primary;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, $primary 0%, color.adjust($primary, $lightness: -10%) 100%);
     color: white;
-    border: 1px solid $primary;
-    border-radius: 8px;
+    border: none;
+    border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba($primary, 0.3);
 
-    &:hover:not(:disabled) {
-      background: color.adjust($primary, $lightness: -8%);
-      border-color: color.adjust($primary, $lightness: -8%);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba($primary, 0.3);
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
     }
 
-    &:active {
-      transform: translateY(0);
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, color.adjust($primary, $lightness: -5%) 0%, color.adjust($primary, $lightness: -15%) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba($primary, 0.4);
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba($primary, 0.3);
     }
 
     &:disabled {
       background: $gray-400;
-      border-color: $gray-400;
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
+      box-shadow: 0 2px 8px rgba($gray-400, 0.2);
+      opacity: 0.6;
     }
 
     i {
       font-size: 16px;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover:not(:disabled) i {
+      transform: scale(1.1);
     }
   }
 
   .auth-links {
-    margin-top: 0;
+    margin-top: 8px;
     text-align: center;
 
     .switch-account {
@@ -89,19 +168,47 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s ease;
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid rgba($text-secondary-color, 0.2);
+      background: rgba($text-secondary-color, 0.02);
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(135deg, rgba($primary, 0.1), rgba($primary, 0.05));
+        transition: width 0.3s ease;
+        z-index: 0;
+      }
 
       &:hover {
         color: $primary;
         background: rgba($primary, 0.05);
-        border-color: rgba($primary, 0.2);
+        border-color: rgba($primary, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba($primary, 0.15);
+
+        &::before {
+          width: 100%;
+        }
       }
 
       i {
         font-size: 14px;
+        transition: transform 0.2s ease;
+        position: relative;
+        z-index: 1;
+      }
+
+      &:hover i {
+        transform: translateX(-2px);
       }
     }
   }
