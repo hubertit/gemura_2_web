@@ -100,13 +100,10 @@ export class LoginComponent implements OnInit {
               console.log('🔧 LoginComponent: Login successful:', user);
               this.isLoading = false;
               this.isSuccess = true;
-              this.successMessage = 'Login successful! Redirecting to dashboard...';
+              this.successMessage = '';
               this.errorMessage = '';
-              
-              // Redirect after 3 seconds
-              setTimeout(() => {
-                this.router.navigate(['/dashboard']);
-              }, 3000);
+              // Redirect immediately
+              this.router.navigate(['/dashboard']);
             },
             error: (error) => {
               console.log('🔧 LoginComponent: Login failed:', error);
