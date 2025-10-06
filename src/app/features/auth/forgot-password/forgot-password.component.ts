@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { FormInputComponent } from '../../../shared/components/form-input/form-input.component';
+import { AlertComponent } from '../../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormInputComponent, AlertComponent],
   template: `
     <div class="auth-page">
       <!-- Left side - Forgot Password Form -->
@@ -24,27 +26,24 @@ import { AuthService } from '../../../core/services/auth.service';
           </div>
 
           <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmit()" class="login-form">
-            <div class="form-group">
-              <div class="input-wrapper">
-                <i class="fas fa-envelope"></i>
-                <input 
-                  type="email" 
-                  formControlName="email" 
-                  placeholder="Enter your email address"
-                  [class.is-invalid]="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched">
-              </div>
-              <div class="invalid-feedback" *ngIf="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched">
-                Please enter a valid email address
-              </div>
-            </div>
+            <app-form-input
+              type="email"
+              placeholder="Enter your email address"
+              iconClass="fas fa-envelope"
+              formControlName="email"
+              [isInvalid]="!!(forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched)"
+              errorMessage="Please enter a valid email address">
+            </app-form-input>
 
-            <div class="alert alert-success" *ngIf="successMessage">
-              {{ successMessage }}
-            </div>
+            <app-alert 
+              type="success" 
+              [message]="successMessage">
+            </app-alert>
 
-            <div class="alert alert-danger" *ngIf="errorMessage">
-              {{ errorMessage }}
-            </div>
+            <app-alert 
+              type="danger" 
+              [message]="errorMessage">
+            </app-alert>
 
             <button type="submit" class="login-btn" [disabled]="forgotPasswordForm.invalid || isLoading">
               <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
