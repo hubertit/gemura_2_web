@@ -276,6 +276,11 @@
   border-radius: $border-radius-lg;
   overflow: hidden;
   min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 
   .loading-header {
     display: flex;
