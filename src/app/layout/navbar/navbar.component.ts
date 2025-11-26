@@ -2,17 +2,17 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService, Account } from '../../core/services/auth.service';
-import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../shared/components/lucide-icon/lucide-icon.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FeatherIconComponent],
+  imports: [CommonModule, RouterModule, LucideIconComponent],
   template: `
     <nav class="navbar" [class.sidebar-collapsed]="isSidebarCollapsed">
       <div class="navbar-left">
         <button class="menu-toggle" (click)="onToggleSidebar()">
-          <app-feather-icon name="menu" size="18px"></app-feather-icon>
+          <app-lucide-icon name="menu" size="18px"></app-lucide-icon>
         </button>
         
         <div class="datetime-display">
@@ -24,7 +24,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
       <div class="navbar-right">
         <div class="nav-item notification-item" (click)="toggleNotificationPanel()">
           <button class="icon-button">
-            <app-feather-icon name="bell" size="18px"></app-feather-icon>
+            <app-lucide-icon name="bell" size="18px"></app-lucide-icon>
             <span class="badge">3</span>
           </button>
 
@@ -38,7 +38,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
             <div class="notification-list">
               <div class="notification-item" *ngFor="let notification of notifications">
                 <div class="notification-avatar">
-                  <app-feather-icon [name]="notification.icon" size="16px"></app-feather-icon>
+                  <app-lucide-icon [name]="notification.icon" size="16px"></app-lucide-icon>
                 </div>
                 <div class="notification-content">
                   <div class="notification-title">{{ notification.title }}</div>
@@ -51,7 +51,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
 
             <div class="panel-footer">
               <button class="view-all-btn" (click)="viewAllNotifications()">
-                <app-feather-icon name="eye" size="14px"></app-feather-icon>
+                <app-lucide-icon name="eye" size="14px"></app-lucide-icon>
                 <span>View All Notifications</span>
               </button>
             </div>
@@ -60,7 +60,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
 
         <div class="nav-item message-item" (click)="toggleMessagePanel()">
           <button class="icon-button">
-            <app-feather-icon name="mail" size="18px"></app-feather-icon>
+            <app-lucide-icon name="mail" size="18px"></app-lucide-icon>
             <span class="badge">5</span>
           </button>
 
@@ -87,7 +87,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
 
             <div class="panel-footer">
               <button class="view-all-btn" (click)="viewAllMessages()">
-                <app-feather-icon name="mail" size="14px"></app-feather-icon>
+                <app-lucide-icon name="mail" size="14px"></app-lucide-icon>
                 <span>View All Messages</span>
               </button>
             </div>
@@ -98,7 +98,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
           <button class="language-button">
             <img [src]="currentLanguage.flag" [alt]="currentLanguage.name" class="language-flag">
             <span class="language-name">{{ currentLanguage.code }}</span>
-            <app-feather-icon name="chevron-down" size="14px"></app-feather-icon>
+            <app-lucide-icon name="chevron-down" size="14px"></app-lucide-icon>
           </button>
 
           <!-- Language Dropdown Menu -->
@@ -111,7 +111,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
                 (click)="selectLanguage(language)">
                 <img [src]="language.flag" [alt]="language.name" class="flag">
                 <span class="name">{{ language.name }}</span>
-                <app-feather-icon name="check" size="14px" *ngIf="language.code === currentLanguage.code"></app-feather-icon>
+                <app-lucide-icon name="check" size="14px" *ngIf="language.code === currentLanguage.code"></app-lucide-icon>
               </button>
             </div>
           </div>
@@ -123,7 +123,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
             <span class="user-name">{{ currentAccount?.account_name || 'User' }}</span>
             <span class="user-role">{{ currentAccount?.role || 'Guest' }}</span>
           </div>
-          <app-feather-icon name="chevron-down" size="16px"></app-feather-icon>
+          <app-lucide-icon name="chevron-down" size="16px"></app-lucide-icon>
 
           <!-- User Dropdown Menu -->
           <div class="user-menu" *ngIf="showUserMenu">
@@ -140,7 +140,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
               <div class="section-header">
                 <h6>Switch Account</h6>
                 <button class="add-account-btn" (click)="addNewAccount()">
-                  <app-feather-icon name="plus" size="14px"></app-feather-icon>
+                  <app-lucide-icon name="plus" size="14px"></app-lucide-icon>
                 </button>
               </div>
               <div class="account-options">
@@ -154,7 +154,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
                     <span class="name">{{ account.account_name }}</span>
                     <span class="role">{{ account.role }}</span>
                   </div>
-                  <app-feather-icon name="check" size="14px" *ngIf="account.account_id === currentAccount?.account_id"></app-feather-icon>
+                  <app-lucide-icon name="check" size="14px" *ngIf="account.account_id === currentAccount?.account_id"></app-lucide-icon>
                 </button>
               </div>
             </div>
@@ -163,20 +163,20 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
             
             <div class="menu-items">
               <a href="javascript:void(0)" class="menu-item">
-                <app-feather-icon name="user" size="16px"></app-feather-icon>
+                <app-lucide-icon name="user" size="16px"></app-lucide-icon>
                 <span>My Profile</span>
               </a>
               <a href="javascript:void(0)" class="menu-item">
-                <app-feather-icon name="settings" size="16px"></app-feather-icon>
+                <app-lucide-icon name="settings" size="16px"></app-lucide-icon>
                 <span>Settings</span>
               </a>
               <div class="divider"></div>
               <a href="javascript:void(0)" class="menu-item" (click)="lockScreen()">
-                <app-feather-icon name="lock" size="16px"></app-feather-icon>
+                <app-lucide-icon name="lock" size="16px"></app-lucide-icon>
                 <span>Lock Screen</span>
               </a>
               <a href="javascript:void(0)" class="menu-item" (click)="logout()">
-                <app-feather-icon name="log-out" size="16px"></app-feather-icon>
+                <app-lucide-icon name="log-out" size="16px"></app-lucide-icon>
                 <span>Logout</span>
               </a>
             </div>

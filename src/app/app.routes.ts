@@ -21,6 +21,11 @@ import { LogsComponent } from './features/logs/logs.component';
 import { AuditComponent } from './features/audit/audit.component';
 import { LockComponent } from './features/auth/lock/lock.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { InventoryListComponent } from './features/inventory/inventory-list/inventory-list.component';
+import { StockMovementsComponent } from './features/inventory/stock-movements/stock-movements.component';
+import { EmployeesComponent } from './features/payroll/employees/employees.component';
+import { PayrollProcessingComponent } from './features/payroll/payroll-processing/payroll-processing.component';
+import { AdvancesComponent } from './features/payroll/advances/advances.component';
 
 export const routes: Routes = [
   {
@@ -107,6 +112,26 @@ export const routes: Routes = [
       {
         path: 'audit',
         component: AuditComponent
+      },
+      {
+        path: 'inventory',
+        component: InventoryListComponent
+      },
+      {
+        path: 'inventory/movements',
+        component: StockMovementsComponent
+      },
+      {
+        path: 'payroll/employees',
+        component: EmployeesComponent
+      },
+      {
+        path: 'payroll/processing',
+        component: PayrollProcessingComponent
+      },
+      {
+        path: 'payroll/advances',
+        component: AdvancesComponent
       },
       {
         path: '',

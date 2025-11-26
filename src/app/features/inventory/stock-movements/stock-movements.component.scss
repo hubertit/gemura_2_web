@@ -1,0 +1,468 @@
+// Variables matching ESB project
+$primary: #1b2e4b;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-600: #6c757d;
+$border-radius: 0.25rem;
+$border-radius-lg: 0.5rem;
+$box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+.movements-container {
+  padding: 12px;
+  min-height: auto;
+}
+
+// Page Header
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .header-content {
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.8125rem;
+
+      a {
+        color: $primary;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      span {
+        color: $gray-600;
+      }
+
+      app-feather-icon {
+        color: $gray-600;
+      }
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #3b3f5c;
+      margin: 0 0 4px 0;
+    }
+
+    .page-description {
+      color: $gray-600;
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+// Stats Grid
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: $box-shadow-sm;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: $border-radius-lg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &.in {
+      background: rgba(#10b981, 0.1);
+      color: #10b981;
+    }
+
+    &.out {
+      background: rgba(#ef4444, 0.1);
+      color: #ef4444;
+    }
+
+    &.adjustment {
+      background: rgba(#3b82f6, 0.1);
+      color: #3b82f6;
+    }
+
+    &.total {
+      background: rgba($primary, 0.08);
+      color: $primary;
+    }
+  }
+
+  .stat-content {
+    .stat-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: $gray-600;
+    }
+  }
+}
+
+// Filter Section
+.filter-section {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 160px;
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: $gray-600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-select, .form-control {
+      padding: 0.5rem 0.875rem;
+      border: 1px solid $gray-300;
+      border-radius: $border-radius;
+      font-size: 0.875rem;
+      color: #1e293b;
+      background-color: white;
+
+      &:focus {
+        outline: none;
+        border-color: rgba($primary, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba($primary, 0.15);
+      }
+    }
+
+    &.filter-actions {
+      min-width: auto;
+    }
+  }
+
+  .btn-clear {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 0.875rem;
+    background: white;
+    border: 1px solid $gray-300;
+    border-radius: $border-radius;
+    color: $gray-600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $primary;
+      color: $primary;
+    }
+  }
+}
+
+// Card
+.card {
+  background: white;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow;
+  border: none;
+  overflow: hidden;
+
+  .card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba($primary, 0.1);
+    background-color: white;
+
+    .card-title-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+      }
+
+      .item-count {
+        background: $gray-200;
+        color: $gray-600;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .card-body {
+    padding: 0;
+  }
+}
+
+// Table
+.movements-table {
+  overflow-x: auto;
+
+  .table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+
+    thead th {
+      background: rgba($primary, 0.03);
+      padding: 12px 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: $gray-600;
+      border-bottom: 1px solid rgba($primary, 0.1);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.875rem;
+      color: #1e293b;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: rgba($primary, 0.02);
+    }
+  }
+}
+
+.date-cell {
+  .date {
+    display: block;
+    font-weight: 500;
+  }
+
+  .time {
+    display: block;
+    font-size: 0.75rem;
+    color: $gray-600;
+  }
+}
+
+.item-cell {
+  .item-name {
+    font-weight: 500;
+  }
+}
+
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.in {
+    background: rgba(#10b981, 0.1);
+    color: #059669;
+  }
+
+  &.out {
+    background: rgba(#ef4444, 0.1);
+    color: #dc2626;
+  }
+
+  &.adjustment {
+    background: rgba(#3b82f6, 0.1);
+    color: #2563eb;
+  }
+}
+
+.quantity-cell {
+  font-weight: 600;
+  font-size: 0.9375rem;
+
+  &.in { color: #059669; }
+  &.out { color: #dc2626; }
+  &.adjustment { color: #2563eb; }
+}
+
+.stock-cell {
+  color: $gray-600;
+
+  .highlight { color: #059669; font-weight: 500; }
+  .warning { color: #dc2626; font-weight: 500; }
+}
+
+.reason-cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-cell {
+  color: $gray-600;
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: $gray-600;
+
+  app-feather-icon {
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+}
+
+// Pagination
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid #f1f5f9;
+
+  .page-info {
+    font-size: 0.8125rem;
+    color: $gray-600;
+  }
+
+  .page-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .page-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid $gray-300;
+      border-radius: $border-radius;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover:not(:disabled) {
+        border-color: $primary;
+        color: $primary;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .page-number {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #1e293b;
+    }
+  }
+}
+
+// Buttons
+.btn-outline {
+  background: white !important;
+  color: #495057 !important;
+  border: 1px solid $gray-300 !important;
+  padding: 0.5rem 1rem;
+  border-radius: $border-radius;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  box-shadow: none !important;
+
+  &:hover {
+    background: #f8f9fa !important;
+    border-color: rgba($primary, 0.3) !important;
+    color: $primary !important;
+  }
+
+  app-feather-icon {
+    color: #495057;
+    flex-shrink: 0;
+  }
+
+  &:hover app-feather-icon {
+    color: $primary;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .filter-section {
+    flex-direction: column;
+
+    .filter-group {
+      width: 100%;
+    }
+  }
+
+  .pagination-wrapper {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+

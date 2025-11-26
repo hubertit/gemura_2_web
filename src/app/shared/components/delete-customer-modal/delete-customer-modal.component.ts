@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../lucide-icon/lucide-icon.component';
 import { Customer } from '../../../core/services/customer.service';
 
 @Component({
   selector: 'app-delete-customer-modal',
   standalone: true,
-  imports: [CommonModule, FeatherIconComponent],
+  imports: [CommonModule, LucideIconComponent],
   template: `
     <!-- Modal -->
     <div class="modal fade" [class.show]="true" [style.display]="'block'" 
@@ -17,7 +17,7 @@ import { Customer } from '../../../core/services/customer.service';
           <div class="modal-header">
             <h5 class="modal-title">Delete Customer</h5>
             <button type="button" class="btn-close-custom" (click)="closeModal()" aria-label="Close">
-              <app-feather-icon name="x" size="18px"></app-feather-icon>
+              <app-lucide-icon name="x" size="18px"></app-lucide-icon>
             </button>
           </div>
 
@@ -25,7 +25,7 @@ import { Customer } from '../../../core/services/customer.service';
         <div class="modal-body">
           <div class="delete-warning">
             <div class="warning-icon">
-              <app-feather-icon name="alert-triangle" size="48px"></app-feather-icon>
+              <app-lucide-icon name="alert-triangle" size="48px"></app-lucide-icon>
             </div>
             
             <h3>Are you sure you want to delete this customer?</h3>
@@ -61,7 +61,7 @@ import { Customer } from '../../../core/services/customer.service';
             <button type="button" class="btn btn-danger" (click)="confirmDelete()" [disabled]="isDeleting">
               <span *ngIf="!isDeleting">Delete Customer</span>
               <span *ngIf="isDeleting">Deleting...</span>
-              <app-feather-icon name="loader" size="16px" *ngIf="isDeleting" class="spinning"></app-feather-icon>
+              <app-lucide-icon name="loader" size="16px" *ngIf="isDeleting" class="spinning"></app-lucide-icon>
             </button>
           </div>
         </div>

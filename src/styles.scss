@@ -45,10 +45,62 @@ body {
   padding: 1.5rem;
 }
 
-// Utility classes
-.shadow-sm { box-shadow: $box-shadow-sm !important; }
-.shadow { box-shadow: $box-shadow !important; }
-.shadow-lg { box-shadow: $box-shadow-lg !important; }
+// Utility classes - shadows disabled
+.shadow-sm { box-shadow: none !important; }
+.shadow { box-shadow: none !important; }
+.shadow-lg { box-shadow: none !important; }
+
+// Global card/widget styling - consistent thin border, no shadow, small radius (4px)
+.card,
+.stat-card,
+.stats-card,
+.summary-card,
+.quick-action-card,
+.metric-card,
+.widget,
+.panel {
+  box-shadow: none !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 4px !important;
+}
+
+// Global button styling - no shadows, small radius (4px)
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-info,
+button[class*="btn"] {
+  box-shadow: none !important;
+  border-radius: 4px !important;
+  
+  &:hover, &:focus, &:active, &:focus-visible {
+    box-shadow: none !important;
+  }
+}
+
+// Form inputs - consistent small radius
+.form-control,
+.form-select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+select,
+textarea {
+  border-radius: 4px !important;
+}
+
+// Tables and table containers
+.table-responsive,
+.table-container {
+  border-radius: 4px !important;
+}
 
 .rounded { border-radius: $border-radius !important; }
 .rounded-lg { border-radius: $border-radius-lg !important; }

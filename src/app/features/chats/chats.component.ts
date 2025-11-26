@@ -2,14 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../shared/components/lucide-icon/lucide-icon.component';
 import { ChatService, Chat, ChatMessage } from '../../core/services/chat.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chats',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, FeatherIconComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LucideIconComponent],
   template: `
     <div class="chats-container">
       <!-- Header -->
@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs';
         </div>
         <div class="header-actions">
           <button class="btn-primary" (click)="startNewChat()">
-            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            <app-lucide-icon name="plus" size="16px"></app-lucide-icon>
             New Chat
           </button>
         </div>
@@ -35,7 +35,7 @@ import { Subscription } from 'rxjs';
              [class.active]="currentChatId === chat.id">
           <div class="chat-avatar">
             <div class="avatar-content" *ngIf="chat.avatar === 'bot-icon'; else userAvatar">
-              <app-feather-icon name="bot" size="24px"></app-feather-icon>
+              <app-lucide-icon name="bot" size="24px"></app-lucide-icon>
             </div>
             <ng-template #userAvatar>
               <img [src]="chat.avatar || 'assets/img/user.png'" [alt]="chat.name">
@@ -51,12 +51,12 @@ import { Subscription } from 'rxjs';
               <p class="last-message">{{ chat.lastMessage?.content || 'No messages yet' }}</p>
               <div class="chat-badges">
                 <span class="unread-count" *ngIf="chat.unreadCount > 0">{{ chat.unreadCount }}</span>
-                <app-feather-icon 
+                <app-lucide-icon 
                   name="check" 
                   size="12px" 
                   *ngIf="chat.lastMessage?.isOwn"
                   [class.read]="chat.lastMessage?.status === 'read'">
-                </app-feather-icon>
+                </app-lucide-icon>
               </div>
             </div>
           </div>
@@ -69,12 +69,12 @@ import { Subscription } from 'rxjs';
         <!-- Chat Header -->
         <div class="chat-header-bar">
           <button class="back-btn" (click)="closeChat()">
-            <app-feather-icon name="arrow-left" size="20px"></app-feather-icon>
+            <app-lucide-icon name="arrow-left" size="20px"></app-lucide-icon>
           </button>
           <div class="chat-info">
             <div class="chat-avatar-small">
               <div class="avatar-content" *ngIf="currentChat.avatar === 'bot-icon'; else userAvatarSmall">
-                <app-feather-icon name="bot" size="20px"></app-feather-icon>
+                <app-lucide-icon name="bot" size="20px"></app-lucide-icon>
               </div>
               <ng-template #userAvatarSmall>
                 <img [src]="currentChat.avatar || 'assets/img/user.png'" [alt]="currentChat.name">
@@ -93,13 +93,13 @@ import { Subscription } from 'rxjs';
           </div>
           <div class="chat-actions">
             <button class="action-btn">
-              <app-feather-icon name="phone" size="18px"></app-feather-icon>
+              <app-lucide-icon name="phone" size="18px"></app-lucide-icon>
             </button>
             <button class="action-btn">
-              <app-feather-icon name="video" size="18px"></app-feather-icon>
+              <app-lucide-icon name="video" size="18px"></app-lucide-icon>
             </button>
             <button class="action-btn">
-              <app-feather-icon name="more-vertical" size="18px"></app-feather-icon>
+              <app-lucide-icon name="more-vertical" size="18px"></app-lucide-icon>
             </button>
           </div>
         </div>
@@ -127,11 +127,11 @@ import { Subscription } from 'rxjs';
                 </div>
                 <div class="message-text">{{ message.content }}</div>
                 <div class="message-status" *ngIf="message.isOwn">
-                  <app-feather-icon 
+                  <app-lucide-icon 
                     name="check" 
                     size="12px"
                     [class.read]="message.status === 'read'">
-                  </app-feather-icon>
+                  </app-lucide-icon>
                 </div>
               </div>
             </div>
@@ -141,7 +141,7 @@ import { Subscription } from 'rxjs';
         <!-- Message Input -->
         <div class="message-input">
           <button class="attach-btn">
-            <app-feather-icon name="paperclip" size="20px"></app-feather-icon>
+            <app-lucide-icon name="paperclip" size="20px"></app-lucide-icon>
           </button>
           <div class="input-container">
             <input 
@@ -152,7 +152,7 @@ import { Subscription } from 'rxjs';
               class="message-field">
           </div>
           <button class="send-btn" (click)="sendMessage()" [disabled]="!newMessage.trim()">
-            <app-feather-icon name="send" size="18px"></app-feather-icon>
+            <app-lucide-icon name="send" size="18px"></app-lucide-icon>
           </button>
         </div>
       </div>

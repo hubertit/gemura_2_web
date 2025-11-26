@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../lucide-icon/lucide-icon.component';
 import { Customer } from '../../../core/services/customer.service';
 
 @Component({
   selector: 'app-view-customer-modal',
   standalone: true,
-  imports: [CommonModule, FeatherIconComponent],
+  imports: [CommonModule, LucideIconComponent],
   template: `
     <!-- Modal -->
     <div class="modal fade" [class.show]="true" [style.display]="'block'" 
@@ -17,7 +17,7 @@ import { Customer } from '../../../core/services/customer.service';
           <div class="modal-header">
             <h5 class="modal-title">Customer Details</h5>
             <button type="button" class="btn-close-custom" (click)="closeModal()" aria-label="Close">
-              <app-feather-icon name="x" size="18px"></app-feather-icon>
+              <app-lucide-icon name="x" size="18px"></app-lucide-icon>
             </button>
           </div>
 
@@ -33,7 +33,7 @@ import { Customer } from '../../../core/services/customer.service';
             <div class="customer-details">
               <div class="detail-row">
                 <div class="detail-label">
-                  <app-feather-icon name="user" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="user" size="16px"></app-lucide-icon>
                   Name
                 </div>
                 <div class="detail-value">{{ customer.name }}</div>
@@ -41,7 +41,7 @@ import { Customer } from '../../../core/services/customer.service';
 
               <div class="detail-row">
                 <div class="detail-label">
-                  <app-feather-icon name="phone" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="phone" size="16px"></app-lucide-icon>
                   Phone
                 </div>
                 <div class="detail-value">{{ customer.phone }}</div>
@@ -49,7 +49,7 @@ import { Customer } from '../../../core/services/customer.service';
 
               <div class="detail-row" *ngIf="customer.email">
                 <div class="detail-label">
-                  <app-feather-icon name="mail" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="mail" size="16px"></app-lucide-icon>
                   Email
                 </div>
                 <div class="detail-value">{{ customer.email }}</div>
@@ -57,7 +57,7 @@ import { Customer } from '../../../core/services/customer.service';
 
               <div class="detail-row">
                 <div class="detail-label">
-                  <app-feather-icon name="map-pin" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="map-pin" size="16px"></app-lucide-icon>
                   Address
                 </div>
                 <div class="detail-value">{{ customer.address || customer.location }}</div>
@@ -65,7 +65,7 @@ import { Customer } from '../../../core/services/customer.service';
 
               <div class="detail-row">
                 <div class="detail-label">
-                  <app-feather-icon name="dollar-sign" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="dollar-sign" size="16px"></app-lucide-icon>
                   Price per Liter
                 </div>
                 <div class="detail-value">{{ formatCurrency(customer.pricePerLiter || customer.buyingPricePerLiter) }}</div>
@@ -73,7 +73,7 @@ import { Customer } from '../../../core/services/customer.service';
 
               <div class="detail-row">
                 <div class="detail-label">
-                  <app-feather-icon name="tag" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="tag" size="16px"></app-lucide-icon>
                   Customer Type
                 </div>
                 <div class="detail-value">{{ customer.customerType || 'Individual' }}</div>
@@ -81,7 +81,7 @@ import { Customer } from '../../../core/services/customer.service';
 
               <div class="detail-row">
                 <div class="detail-label">
-                  <app-feather-icon name="credit-card" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="credit-card" size="16px"></app-lucide-icon>
                   Payment Method
                 </div>
                 <div class="detail-value">{{ customer.paymentMethod || 'Cash' }}</div>
@@ -89,7 +89,7 @@ import { Customer } from '../../../core/services/customer.service';
 
               <div class="detail-row">
                 <div class="detail-label">
-                  <app-feather-icon name="calendar" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="calendar" size="16px"></app-lucide-icon>
                   Registered
                 </div>
                 <div class="detail-value">{{ formatDate(customer.registrationDate || customer.createdAt) }}</div>
@@ -97,7 +97,7 @@ import { Customer } from '../../../core/services/customer.service';
 
               <div class="detail-row">
                 <div class="detail-label">
-                  <app-feather-icon name="activity" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="activity" size="16px"></app-lucide-icon>
                   Status
                 </div>
                 <div class="detail-value">

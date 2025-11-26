@@ -34,8 +34,7 @@
   cursor: pointer;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
   }
 
   &.collections {
@@ -155,8 +154,7 @@
 
   &:hover {
     border-color: #004AAD;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 74, 173, 0.15);
+    transform: translateY(-1px);
   }
 
   &:active {
@@ -691,7 +689,6 @@
     border-radius: 12px;
     padding: 40px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 
     .loading-spinner {
       width: 40px;

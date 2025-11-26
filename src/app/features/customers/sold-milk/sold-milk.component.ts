@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
 import { CustomerService, MilkSale } from '../../../core/services/customer.service';
 
 @Component({
   selector: 'app-sold-milk',
   standalone: true,
-  imports: [CommonModule, FormsModule, FeatherIconComponent, DataTableComponent],
+  imports: [CommonModule, FormsModule, LucideIconComponent, DataTableComponent],
   template: `
     <div class="sold-milk-container">
       <!-- Header -->
@@ -19,11 +19,11 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
         </div>
         <div class="header-actions">
           <button class="btn-secondary" (click)="exportSales()">
-            <app-feather-icon name="download" size="16px"></app-feather-icon>
+            <app-lucide-icon name="download" size="16px"></app-lucide-icon>
             Export
           </button>
           <button class="btn-primary" (click)="addSale()">
-            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            <app-lucide-icon name="plus" size="16px"></app-lucide-icon>
             Record Sale
           </button>
         </div>
@@ -33,7 +33,7 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="shopping-cart" size="24px"></app-feather-icon>
+            <app-lucide-icon name="shopping-cart" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.totalSales }}</div>
@@ -42,7 +42,7 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="droplet" size="24px"></app-feather-icon>
+            <app-lucide-icon name="droplet" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.totalQuantity }}L</div>
@@ -51,7 +51,7 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
+            <app-lucide-icon name="dollar-sign" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatCurrency(stats.totalRevenue) }}</div>
@@ -60,7 +60,7 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="trending-up" size="24px"></app-feather-icon>
+            <app-lucide-icon name="trending-up" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatCurrency(stats.averageOrderValue) }}</div>
@@ -78,7 +78,7 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
           </div>
           <div class="card-actions">
             <div class="search-box">
-              <app-feather-icon name="search" size="16px"></app-feather-icon>
+              <app-lucide-icon name="search" size="16px"></app-lucide-icon>
               <input 
                 type="text" 
                 placeholder="Search sales..." 
@@ -106,7 +106,7 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
           <app-data-table
             [columns]="columns"
             [data]="filteredSales"
-            [striped]="true"
+            [striped]="false"
             [hover]="true"
             [loading]="loading"
             (onSort)="handleSort($event)"
@@ -276,13 +276,13 @@ export class SoldMilkComponent implements OnInit {
   actionsTemplate = (sale: MilkSale) => `
     <div class="action-buttons">
       <button class="btn-icon" title="View" (click)="viewSale(sale)">
-        <app-feather-icon name="eye" size="16px"></app-feather-icon>
+        <app-lucide-icon name="eye" size="16px"></app-lucide-icon>
       </button>
       <button class="btn-icon" title="Edit" (click)="editSale(sale)">
-        <app-feather-icon name="edit" size="16px"></app-feather-icon>
+        <app-lucide-icon name="edit" size="16px"></app-lucide-icon>
       </button>
       <button class="btn-icon danger" title="Delete" (click)="deleteSale(sale)">
-        <app-feather-icon name="trash-2" size="16px"></app-feather-icon>
+        <app-lucide-icon name="trash-2" size="16px"></app-lucide-icon>
       </button>
     </div>
   `;

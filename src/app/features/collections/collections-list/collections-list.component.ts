@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
+import { SkeletonLoaderComponent } from '../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { RecordCollectionModalComponent } from '../../../shared/components/record-collection-modal/record-collection-modal.component';
 import { CollectionsService } from '../collections.service';
 import { Collection } from '../collection.model';
@@ -11,9 +12,15 @@ import { Collection } from '../collection.model';
 @Component({
   selector: 'app-collections-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, RecordCollectionModalComponent],
+  imports: [CommonModule, RouterModule, FormsModule, LucideIconComponent, DataTableComponent, SkeletonLoaderComponent, RecordCollectionModalComponent],
   template: `
     <div class="collections-container">
+      <!-- Skeleton Loader -->
+      <ng-container *ngIf="loading">
+        <app-skeleton-loader type="stats"></app-skeleton-loader>
+      </ng-container>
+
+      <ng-container *ngIf="!loading">
       <!-- Header -->
       <div class="page-header">
         <div class="header-content">
@@ -22,7 +29,7 @@ import { Collection } from '../collection.model';
         </div>
         <div class="header-actions">
           <button class="btn-primary" (click)="openRecordCollectionModal()">
-            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            <app-lucide-icon name="plus" size="16px"></app-lucide-icon>
             Record Collection
           </button>
         </div>
@@ -32,7 +39,7 @@ import { Collection } from '../collection.model';
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="truck" size="24px"></app-feather-icon>
+            <app-lucide-icon name="truck" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.totalCollections }}</div>
@@ -41,7 +48,7 @@ import { Collection } from '../collection.model';
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="check-circle" size="24px"></app-feather-icon>
+            <app-lucide-icon name="check-circle" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.statusCounts.accepted }}</div>
@@ -50,7 +57,7 @@ import { Collection } from '../collection.model';
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="clock" size="24px"></app-feather-icon>
+            <app-lucide-icon name="clock" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.statusCounts.pending }}</div>
@@ -59,7 +66,7 @@ import { Collection } from '../collection.model';
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="droplet" size="24px"></app-feather-icon>
+            <app-lucide-icon name="droplet" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatVolume(stats.totalQuantity) }}</div>
@@ -80,7 +87,7 @@ import { Collection } from '../collection.model';
           <app-data-table
             [columns]="columns"
             [data]="filteredCollections"
-            [striped]="true"
+            [striped]="false"
             [hover]="true"
             [showActions]="true"
             [showPagination]="true"
@@ -103,36 +110,36 @@ import { Collection } from '../collection.model';
               <div class="dropdown" [class.show]="openDropdownId === collection.id">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" 
                         (click)="toggleDropdown(collection.id, $event)">
-                  <app-feather-icon name="more-horizontal" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="more-horizontal" size="16px"></app-lucide-icon>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" [class.show]="openDropdownId === collection.id">
                   <li>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="viewCollection(collection)">
-                      <app-feather-icon name="eye" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="eye" size="14px" class="me-2"></app-lucide-icon>
                       View
                     </a>
                   </li>
                   <li *ngIf="collection.status === 'pending'">
                     <a class="dropdown-item" href="javascript:void(0)" (click)="approveCollection(collection)">
-                      <app-feather-icon name="check" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="check" size="14px" class="me-2"></app-lucide-icon>
                       Approve
                     </a>
                   </li>
                   <li *ngIf="collection.status === 'pending'">
                     <a class="dropdown-item" href="javascript:void(0)" (click)="rejectCollection(collection)">
-                      <app-feather-icon name="x" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="x" size="14px" class="me-2"></app-lucide-icon>
                       Reject
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="editCollection(collection)">
-                      <app-feather-icon name="edit" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="edit" size="14px" class="me-2"></app-lucide-icon>
                       Edit
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteCollection(collection)">
-                      <app-feather-icon name="trash-2" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="trash-2" size="14px" class="me-2"></app-lucide-icon>
                       Delete
                     </a>
                   </li>
@@ -149,6 +156,7 @@ import { Collection } from '../collection.model';
         (collectionRecorded)="onCollectionRecorded($event)"
         (modalClosed)="closeRecordCollectionModal()">
       </app-record-collection-modal>
+      </ng-container>
     </div>
   `,
   styleUrls: ['./collections-list.component.scss']

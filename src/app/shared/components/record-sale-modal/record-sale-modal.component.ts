@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../lucide-icon/lucide-icon.component';
 import { SalesService } from '../../../features/sales/sales.service';
 import { CreateSaleRequest } from '../../../features/sales/sale.model';
 import { CustomerService } from '../../../core/services/customer.service';
@@ -12,7 +12,7 @@ import { catchError, map } from 'rxjs/operators';
 @Component({
   selector: 'app-record-sale-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, FeatherIconComponent],
+  imports: [CommonModule, FormsModule, LucideIconComponent],
   template: `
     <div class="modal-overlay" (click)="closeModal()">
       <div class="modal-container" (click)="$event.stopPropagation()">
@@ -20,7 +20,7 @@ import { catchError, map } from 'rxjs/operators';
         <div class="modal-header">
           <h2>Record Milk Sale</h2>
           <button class="close-btn" (click)="closeModal()">
-            <app-feather-icon name="x" size="20px"></app-feather-icon>
+            <app-lucide-icon name="x" size="20px"></app-lucide-icon>
           </button>
         </div>
 
@@ -31,7 +31,7 @@ import { catchError, map } from 'rxjs/operators';
             <div class="form-group">
               <label for="customer">Select Customer *</label>
               <div class="input-container">
-                <app-feather-icon name="user" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="user" size="18px" class="input-icon"></app-lucide-icon>
                 <select
                   id="customer"
                   name="customer"
@@ -55,7 +55,7 @@ import { catchError, map } from 'rxjs/operators';
             <div class="form-group">
               <label for="quantity">Quantity (Liters) *</label>
               <div class="input-container">
-                <app-feather-icon name="droplet" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="droplet" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="number"
                   id="quantity"
@@ -78,7 +78,7 @@ import { catchError, map } from 'rxjs/operators';
             <div class="form-group">
               <label for="status">Status *</label>
               <div class="input-container">
-                <app-feather-icon name="check-circle" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="check-circle" size="18px" class="input-icon"></app-lucide-icon>
                 <select
                   id="status"
                   name="status"
@@ -120,7 +120,7 @@ import { catchError, map } from 'rxjs/operators';
             <div class="form-group">
               <label for="notes">Notes (Optional)</label>
               <div class="input-container">
-                <app-feather-icon name="file-text" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="file-text" size="18px" class="input-icon"></app-lucide-icon>
                 <textarea
                   id="notes"
                   name="notes"
@@ -148,7 +148,7 @@ import { catchError, map } from 'rxjs/operators';
               >
                 <span *ngIf="!isSubmitting">Record Sale</span>
                 <span *ngIf="isSubmitting">Recording...</span>
-                <app-feather-icon name="loader" size="16px" *ngIf="isSubmitting" class="spinning"></app-feather-icon>
+                <app-lucide-icon name="loader" size="16px" *ngIf="isSubmitting" class="spinning"></app-lucide-icon>
               </button>
             </div>
           </form>

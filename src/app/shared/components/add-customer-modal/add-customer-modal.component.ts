@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../lucide-icon/lucide-icon.component';
 
 @Component({
   selector: 'app-add-customer-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, FeatherIconComponent],
+  imports: [CommonModule, FormsModule, LucideIconComponent],
   template: `
     <div class="modal-overlay" (click)="closeModal()">
       <div class="modal-container" (click)="$event.stopPropagation()">
@@ -14,7 +14,7 @@ import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
         <div class="modal-header">
           <h2>Add New Customer</h2>
           <button class="close-btn" (click)="closeModal()">
-            <app-feather-icon name="x" size="20px"></app-feather-icon>
+            <app-lucide-icon name="x" size="20px"></app-lucide-icon>
           </button>
         </div>
 
@@ -25,7 +25,7 @@ import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
             <div class="form-group">
               <label for="name">Full Name *</label>
               <div class="input-container">
-                <app-feather-icon name="user" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="user" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="text"
                   id="name"
@@ -55,7 +55,7 @@ import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
                     </select>
                   </div>
                   <div class="phone-number-section">
-                    <app-feather-icon name="phone" size="18px" class="input-icon"></app-feather-icon>
+                    <app-lucide-icon name="phone" size="18px" class="input-icon"></app-lucide-icon>
                     <input
                       type="tel"
                       id="phone"
@@ -78,7 +78,7 @@ import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
             <div class="form-group">
               <label for="email">Email Address</label>
               <div class="input-container">
-                <app-feather-icon name="mail" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="mail" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="email"
                   id="email"
@@ -94,7 +94,7 @@ import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
             <div class="form-group">
               <label for="address">Address</label>
               <div class="input-container">
-                <app-feather-icon name="map-pin" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="map-pin" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="text"
                   id="address"
@@ -110,7 +110,7 @@ import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
             <div class="form-group">
               <label for="idNumber">National ID</label>
               <div class="input-container">
-                <app-feather-icon name="hash" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="hash" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="text"
                   id="idNumber"
@@ -126,7 +126,7 @@ import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
             <div class="form-group">
               <label for="pricePerLiter">Price per Liter (RWF) *</label>
               <div class="input-container">
-                <app-feather-icon name="dollar-sign" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="dollar-sign" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="number"
                   id="pricePerLiter"

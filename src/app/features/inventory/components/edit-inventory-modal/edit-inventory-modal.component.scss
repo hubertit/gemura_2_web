@@ -1,0 +1,15 @@
+@use '../../../../../styles/modal';
+
+$primary: #1b2e4b;
+
+.info-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #dbeafe;
+  border-radius: 0.25rem;
+  color: #1e40af;
+  font-size: 0.8125rem;
+  margin-top: 8px;
+}

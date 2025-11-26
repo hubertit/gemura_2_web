@@ -2,20 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 import { CustomerService, Customer } from '../../../core/services/customer.service';
 
 @Component({
   selector: 'app-add-customer',
   standalone: true,
-  imports: [CommonModule, FormsModule, FeatherIconComponent],
+  imports: [CommonModule, FormsModule, LucideIconComponent],
   template: `
     <div class="add-customer-container">
       <!-- Header -->
       <div class="page-header">
         <div class="header-content">
           <button class="back-btn" (click)="goBack()">
-            <app-feather-icon name="arrow-left" size="20px"></app-feather-icon>
+            <app-lucide-icon name="arrow-left" size="20px"></app-lucide-icon>
           </button>
           <div class="header-text">
             <h1>Add New Customer</h1>
@@ -186,8 +186,8 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
               Cancel
             </button>
             <button type="submit" class="btn-primary" [disabled]="!customerForm.valid || isSubmitting">
-              <app-feather-icon *ngIf="isSubmitting" name="loader" size="16px" class="spinning"></app-feather-icon>
-              <app-feather-icon *ngIf="!isSubmitting" name="save" size="16px"></app-feather-icon>
+              <app-lucide-icon *ngIf="isSubmitting" name="loader" size="16px" class="spinning"></app-lucide-icon>
+              <app-lucide-icon *ngIf="!isSubmitting" name="save" size="16px"></app-lucide-icon>
               {{ isSubmitting ? 'Creating...' : 'Create Customer' }}
             </button>
           </div>

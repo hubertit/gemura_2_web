@@ -1,0 +1,217 @@
+@use '../../../../../styles/modal';
+
+$primary: #1b2e4b;
+$gray-600: #6c757d;
+
+// Item header
+.item-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba($primary, 0.1);
+
+  .item-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba($primary, 0.08);
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary;
+  }
+
+  .item-title {
+    flex: 1;
+
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0 0 4px 0;
+    }
+
+    .sku {
+      font-size: 0.8125rem;
+      color: $gray-600;
+    }
+  }
+
+  .status-badge {
+    padding: 0.4em 0.6em;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &.in-stock {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    &.low-stock {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &.out-of-stock {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+  }
+}
+
+// Details grid
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .label {
+      font-size: 0.75rem;
+      color: $gray-600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .value {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #1e293b;
+
+      &.highlight {
+        color: $primary;
+        font-weight: 600;
+      }
+
+      &.warning {
+        color: #f59e0b;
+      }
+    }
+  }
+}
+
+// Description
+.description {
+  margin-bottom: 20px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 0.25rem;
+
+  .label {
+    font-size: 0.75rem;
+    color: $gray-600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #1e293b;
+    line-height: 1.5;
+  }
+}
+
+// Movements section
+.movements-section {
+  h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .movements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .movement-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    border-radius: 0.25rem;
+
+    .movement-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.in {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      &.out {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+
+      &.adjustment {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+    }
+
+    .movement-details {
+      flex: 1;
+
+      .movement-type {
+        display: block;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #1e293b;
+      }
+
+      .movement-reason {
+        font-size: 0.75rem;
+        color: $gray-600;
+      }
+    }
+
+    .movement-quantity {
+      font-weight: 600;
+      font-size: 0.875rem;
+
+      &.in { color: #065f46; }
+      &.out { color: #dc2626; }
+      &.adjustment { color: #1e40af; }
+    }
+
+    .movement-date {
+      font-size: 0.75rem;
+      color: $gray-600;
+    }
+  }
+
+  .no-movements {
+    text-align: center;
+    color: $gray-600;
+    font-size: 0.875rem;
+    padding: 16px;
+  }
+}

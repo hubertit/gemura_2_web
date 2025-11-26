@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../shared/components/lucide-icon/lucide-icon.component';
 
 export interface FeedPost {
   id: string;
@@ -43,7 +43,7 @@ export interface Comment {
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, FormsModule, FeatherIconComponent],
+  imports: [CommonModule, FormsModule, LucideIconComponent],
   template: `
     <div class="feed-container">
       <!-- Feed Header -->
@@ -51,7 +51,7 @@ export interface Comment {
         <h1>Feed</h1>
         <div class="feed-actions">
           <button class="btn-primary" (click)="createPost()">
-            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            <app-lucide-icon name="plus" size="16px"></app-lucide-icon>
             Create Post
           </button>
         </div>
@@ -62,7 +62,7 @@ export interface Comment {
         <div class="create-post-header">
           <h3>Create New Post</h3>
           <button class="btn-close" (click)="closeCreatePost()">
-            <app-feather-icon name="x" size="20px"></app-feather-icon>
+            <app-lucide-icon name="x" size="20px"></app-lucide-icon>
           </button>
         </div>
         <div class="create-post-content">
@@ -75,11 +75,11 @@ export interface Comment {
           <div class="create-post-actions">
             <div class="post-options">
               <button class="option-btn" (click)="addImage()">
-                <app-feather-icon name="image" size="16px"></app-feather-icon>
+                <app-lucide-icon name="image" size="16px"></app-lucide-icon>
                 Photo
               </button>
               <button class="option-btn" (click)="addVideo()">
-                <app-feather-icon name="video" size="16px"></app-feather-icon>
+                <app-lucide-icon name="video" size="16px"></app-lucide-icon>
                 Video
               </button>
             </div>
@@ -100,14 +100,14 @@ export interface Comment {
               <div class="user-details">
                 <div class="user-name">
                   {{ post.user.name }}
-                  <app-feather-icon *ngIf="post.user.verified" name="check-circle" size="16px" class="verified-icon"></app-feather-icon>
+                  <app-lucide-icon *ngIf="post.user.verified" name="check-circle" size="16px" class="verified-icon"></app-lucide-icon>
                 </div>
                 <div class="user-username">@{{ post.user.username }}</div>
                 <div class="post-time">{{ formatTime(post.timestamp) }}</div>
               </div>
             </div>
             <button class="post-menu">
-              <app-feather-icon name="more-horizontal" size="20px"></app-feather-icon>
+              <app-lucide-icon name="more-horizontal" size="20px"></app-lucide-icon>
             </button>
           </div>
 
@@ -142,15 +142,15 @@ export interface Comment {
               class="action-btn" 
               [class.liked]="post.isLiked"
               (click)="toggleLike(post)">
-              <app-feather-icon 
+              <app-lucide-icon 
                 name="heart" 
                 size="18px">
-              </app-feather-icon>
+              </app-lucide-icon>
               <span>{{ post.likes }}</span>
             </button>
 
             <button class="action-btn" (click)="toggleComments(post)">
-              <app-feather-icon name="message-circle" size="18px"></app-feather-icon>
+              <app-lucide-icon name="message-circle" size="18px"></app-lucide-icon>
               <span>{{ post.comments }}</span>
             </button>
 
@@ -158,12 +158,12 @@ export interface Comment {
               class="action-btn" 
               [class.shared]="post.isShared"
               (click)="toggleShare(post)">
-              <app-feather-icon name="share-2" size="18px"></app-feather-icon>
+              <app-lucide-icon name="share-2" size="18px"></app-lucide-icon>
               <span>{{ post.shares }}</span>
             </button>
 
             <button class="action-btn">
-              <app-feather-icon name="bookmark" size="18px"></app-feather-icon>
+              <app-lucide-icon name="bookmark" size="18px"></app-lucide-icon>
             </button>
           </div>
 
@@ -179,7 +179,7 @@ export interface Comment {
                   class="comment-input"
                   (keyup.enter)="addComment(post)">
                 <button class="comment-btn" (click)="addComment(post)" [disabled]="!newCommentText.trim()">
-                  <app-feather-icon name="send" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="send" size="16px"></app-lucide-icon>
                 </button>
               </div>
             </div>
@@ -196,10 +196,10 @@ export interface Comment {
                   <p class="comment-text">{{ comment.text }}</p>
                   <div class="comment-actions">
                     <button class="comment-action" (click)="toggleCommentLike(comment)">
-                      <app-feather-icon 
+                      <app-lucide-icon 
                         name="heart" 
                         size="14px">
-                      </app-feather-icon>
+                      </app-lucide-icon>
                       <span>{{ comment.likes }}</span>
                     </button>
                     <button class="comment-action">Reply</button>

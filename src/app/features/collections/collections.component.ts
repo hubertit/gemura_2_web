@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../shared/components/lucide-icon/lucide-icon.component';
 
 @Component({
   selector: 'app-collections',
   standalone: true,
-  imports: [CommonModule, FeatherIconComponent],
+  imports: [CommonModule, LucideIconComponent],
   template: `
     <div class="collections-container">
       <div class="page-header">
@@ -17,7 +17,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
       
       <div class="coming-soon">
         <div class="coming-soon-content">
-          <app-feather-icon name="package" size="64px" class="coming-soon-icon"></app-feather-icon>
+          <app-lucide-icon name="package" size="64px" class="coming-soon-icon"></app-lucide-icon>
           <h2>Collections</h2>
           <p>This feature is coming soon. You'll be able to manage milk collections from your suppliers.</p>
         </div>

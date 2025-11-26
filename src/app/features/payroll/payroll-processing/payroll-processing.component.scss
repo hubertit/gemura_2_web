@@ -1,0 +1,597 @@
+@use '../../../../styles/modal';
+@use '../../../../styles/variables' as *;
+
+.payroll-container {
+  padding: 12px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .header-content {
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: $text-primary-color;
+      margin: 0 0 4px 0;
+    }
+
+    .page-description {
+      color: $gray-600;
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+}
+
+.btn-primary {
+  background: $primary;
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: $border-radius;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  transition: $transition-base;
+
+  &:hover {
+    background: darken($primary, 8%);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: $surface-color;
+  border-radius: $border-radius-lg;
+  padding: 16px;
+  border: 1px solid $border-color;
+  box-shadow: $box-shadow-sm;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: $border-radius-lg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.pending {
+      background: rgba($warning, 0.15);
+      color: darken($warning, 15%);
+    }
+
+    &.approved {
+      background: rgba($info, 0.1);
+      color: $info;
+    }
+
+    &.paid {
+      background: rgba($success, 0.1);
+      color: $success;
+    }
+
+    &.amount {
+      background: rgba($primary, 0.1);
+      color: $primary;
+    }
+  }
+
+  .stat-content {
+    .stat-value {
+      display: block;
+      font-size: 20px;
+      font-weight: 600;
+      color: $text-primary-color;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: $gray-600;
+    }
+  }
+}
+
+.filter-section {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: $gray-600;
+      text-transform: uppercase;
+    }
+
+    input, select {
+      padding: 0.5rem 0.875rem;
+      border: 1px solid $gray-300;
+      border-radius: $border-radius;
+      font-size: 0.875rem;
+      color: $text-primary-color;
+      background: $surface-color;
+
+      &:focus {
+        outline: none;
+        border-color: rgba($primary, 0.5);
+      }
+    }
+  }
+}
+
+.card {
+  background: $surface-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow;
+  border: none;
+  overflow: hidden;
+
+  .card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba($primary, 0.1);
+    background: $surface-color;
+
+    .card-title-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: $text-primary-color;
+        margin: 0;
+      }
+
+      .item-count {
+        background: $gray-200;
+        color: $gray-600;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .card-body {
+    padding: 0;
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead th {
+    background: rgba($primary, 0.03);
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: $gray-600;
+    border-bottom: 1px solid rgba($primary, 0.1);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid $gray-100;
+    font-size: 0.875rem;
+    color: $text-primary-color;
+    vertical-align: middle;
+  }
+
+  tbody tr:hover {
+    background: rgba($primary, 0.02);
+  }
+}
+
+.person-cell .name {
+  font-weight: 500;
+}
+
+.type-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.employee {
+    background: rgba($info, 0.1);
+    color: $info;
+  }
+
+  &.supplier {
+    background: rgba(#8b5cf6, 0.1);
+    color: #8b5cf6;
+  }
+}
+
+.deductions .has-deductions {
+  color: $danger;
+  font-weight: 500;
+}
+
+.net-amount {
+  font-weight: 600;
+  color: $primary;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.draft {
+    background: rgba($warning, 0.15);
+    color: darken($warning, 25%);
+  }
+
+  &.approved {
+    background: rgba($info, 0.15);
+    color: darken($info, 15%);
+  }
+
+  &.paid {
+    background: rgba($success, 0.15);
+    color: darken($success, 10%);
+  }
+}
+
+.actions-cell {
+  display: flex;
+  gap: 4px;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: $transition-base;
+
+  &.view {
+    background: rgba($primary, 0.08);
+    color: $primary;
+
+    &:hover {
+      background: rgba($primary, 0.15);
+    }
+  }
+
+  &.approve {
+    background: rgba($success, 0.08);
+    color: $success;
+
+    &:hover {
+      background: rgba($success, 0.15);
+    }
+  }
+
+  &.pay {
+    background: rgba($info, 0.08);
+    color: $info;
+
+    &:hover {
+      background: rgba($info, 0.15);
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: $gray-600;
+
+  app-lucide-icon {
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $text-primary-color;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+}
+
+// Generate Modal
+.employee-selection {
+  margin-top: 16px;
+
+  > label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $text-primary-color;
+    margin-bottom: 8px;
+  }
+
+  .checkbox-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid $gray-300;
+    border-radius: $border-radius;
+    padding: 8px;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: $border-radius;
+
+    &:hover {
+      background: $gray-100;
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: $primary;
+    }
+
+    .name {
+      flex: 1;
+      font-size: 0.875rem;
+    }
+
+    .salary {
+      font-size: 0.75rem;
+      color: $gray-600;
+    }
+  }
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: $primary;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  padding: 8px 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.summary-box {
+  background: $gray-100;
+  border-radius: $border-radius;
+  padding: 12px 16px;
+  margin-top: 16px;
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 0.875rem;
+
+    &:last-child {
+      font-weight: 600;
+      color: $primary;
+    }
+  }
+}
+
+// View Modal
+.view-modal {
+  max-width: 500px;
+
+  .record-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba($primary, 0.1);
+
+    h3 {
+      margin: 0;
+      font-size: 1.125rem;
+      color: $text-primary-color;
+    }
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+
+    .detail-item {
+      .label {
+        display: block;
+        font-size: 0.75rem;
+        color: $gray-600;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      .value {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: $text-primary-color;
+      }
+    }
+  }
+
+  .deductions-section {
+    background: $gray-100;
+    border-radius: $border-radius;
+    padding: 16px;
+    margin-bottom: 16px;
+
+    h4 {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: $text-primary-color;
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+    }
+
+    .deduction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba($primary, 0.1);
+
+      .deduction-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .type {
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 0.625rem;
+          font-weight: 600;
+          text-transform: uppercase;
+
+          &.advance {
+            background: rgba($info, 0.15);
+            color: darken($info, 15%);
+          }
+
+          &.product_debt {
+            background: rgba($warning, 0.15);
+            color: darken($warning, 25%);
+          }
+        }
+
+        .desc {
+          font-size: 0.8125rem;
+          color: $text-primary-color;
+        }
+      }
+
+      .amount {
+        font-weight: 500;
+        color: $danger;
+        font-size: 0.875rem;
+      }
+    }
+
+    .deduction-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 12px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: $danger;
+    }
+  }
+
+  .net-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: rgba($primary, 0.05);
+    border-radius: $border-radius;
+
+    .label {
+      font-weight: 600;
+      color: $text-primary-color;
+    }
+
+    .net-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: $primary;
+    }
+  }
+}
+
+// Pay Modal
+.pay-modal {
+  max-width: 400px;
+
+  .pay-summary {
+    text-align: center;
+    padding: 20px 0;
+
+    p {
+      margin: 0 0 8px 0;
+      color: $text-primary-color;
+    }
+
+    .pay-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $primary;
+    }
+  }
+}
+
+.btn-secondary {
+  background: $surface-color;
+  color: $gray-700;
+  border: 1px solid $gray-300;
+  padding: 0.625rem 1.25rem;
+  border-radius: $border-radius;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background: $gray-100;
+  }
+}

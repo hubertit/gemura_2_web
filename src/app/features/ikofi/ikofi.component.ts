@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../shared/components/lucide-icon/lucide-icon.component';
 
 @Component({
   selector: 'app-ikofi',
   standalone: true,
-  imports: [CommonModule, FeatherIconComponent],
+  imports: [CommonModule, LucideIconComponent],
   template: `
     <div class="ikofi-container">
       <!-- Header -->
@@ -16,7 +16,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
         </div>
         <div class="header-actions">
           <button class="icon-btn" (click)="createWallet()" title="Create Wallet">
-            <app-feather-icon name="plus" size="20px"></app-feather-icon>
+            <app-lucide-icon name="plus" size="20px"></app-lucide-icon>
           </button>
         </div>
       </div>
@@ -26,25 +26,25 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
         <div class="actions-grid">
           <button class="action-btn" (click)="quickAction('pay')">
             <div class="action-icon">
-              <app-feather-icon name="credit-card" size="20px"></app-feather-icon>
+              <app-lucide-icon name="credit-card" size="20px"></app-lucide-icon>
             </div>
             <span class="action-label">Pay</span>
           </button>
           <button class="action-btn" (click)="quickAction('request')">
             <div class="action-icon">
-              <app-feather-icon name="user-plus" size="20px"></app-feather-icon>
+              <app-lucide-icon name="user-plus" size="20px"></app-lucide-icon>
             </div>
             <span class="action-label">Request</span>
           </button>
           <button class="action-btn" (click)="quickAction('top-up')">
             <div class="action-icon">
-              <app-feather-icon name="trending-up" size="20px"></app-feather-icon>
+              <app-lucide-icon name="trending-up" size="20px"></app-lucide-icon>
             </div>
             <span class="action-label">Top Up</span>
           </button>
           <button class="action-btn" (click)="quickAction('withdraw')">
             <div class="action-icon">
-              <app-feather-icon name="trending-down" size="20px"></app-feather-icon>
+              <app-lucide-icon name="trending-down" size="20px"></app-lucide-icon>
             </div>
             <span class="action-label">Withdraw</span>
           </button>
@@ -55,7 +55,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
       <div class="services-grid">
         <div class="service-card" (click)="navigateToService('savings')">
           <div class="service-icon">
-            <app-feather-icon name="save" size="24px"></app-feather-icon>
+            <app-lucide-icon name="save" size="24px"></app-lucide-icon>
           </div>
           <div class="service-content">
             <h3>Savings</h3>
@@ -69,7 +69,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
 
         <div class="service-card" (click)="navigateToService('loans')">
           <div class="service-icon">
-            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
+            <app-lucide-icon name="dollar-sign" size="24px"></app-lucide-icon>
           </div>
           <div class="service-content">
             <h3>Loans</h3>
@@ -83,7 +83,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
 
         <div class="service-card" (click)="navigateToService('insurance')">
           <div class="service-icon">
-            <app-feather-icon name="shield" size="24px"></app-feather-icon>
+            <app-lucide-icon name="shield" size="24px"></app-lucide-icon>
           </div>
           <div class="service-content">
             <h3>Insurance</h3>
@@ -97,7 +97,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
 
         <div class="service-card" (click)="navigateToService('payments')">
           <div class="service-icon">
-            <app-feather-icon name="smartphone" size="24px"></app-feather-icon>
+            <app-lucide-icon name="smartphone" size="24px"></app-lucide-icon>
           </div>
           <div class="service-content">
             <h3>Payments</h3>
@@ -119,7 +119,7 @@ import { FeatherIconComponent } from '../../shared/components/feather-icon/feath
         <div class="transactions-list">
           <div class="transaction-item" *ngFor="let transaction of recentTransactions">
             <div class="transaction-icon">
-              <app-feather-icon [name]="transaction.icon" size="16px"></app-feather-icon>
+              <app-lucide-icon [name]="transaction.icon" size="16px"></app-lucide-icon>
             </div>
             <div class="transaction-details">
               <div class="transaction-title">{{ transaction.title }}</div>

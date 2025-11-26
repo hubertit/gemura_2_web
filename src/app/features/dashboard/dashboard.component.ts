@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService, DashboardOverview, Wallet } from '../../core/services/dashboard.service';
-import { NavigationService } from '../../core/services/navigation.service';
-import { FeatherIconComponent } from '../../shared/components/feather-icon/feather-icon.component';
+import { NavigationService } from '../navigation/services/navigation.service';
+import { LucideIconComponent } from '../../shared/components/lucide-icon/lucide-icon.component';
 import { AddCustomerModalComponent } from '../../shared/components/add-customer-modal/add-customer-modal.component';
 import { AddSupplierModalComponent } from '../../shared/components/add-supplier-modal/add-supplier-modal.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
@@ -47,7 +47,7 @@ export interface ChartOptions {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FeatherIconComponent, AddCustomerModalComponent, AddSupplierModalComponent, NgApexchartsModule],
+  imports: [CommonModule, RouterModule, LucideIconComponent, AddCustomerModalComponent, AddSupplierModalComponent, NgApexchartsModule],
   template: `
     <div class="dashboard-container">
 
@@ -57,28 +57,28 @@ export interface ChartOptions {
         <div class="actions-grid">
           <button class="action-btn" (click)="quickAction('collect')">
             <div class="action-icon">
-              <app-feather-icon name="truck" size="20px"></app-feather-icon>
+              <app-lucide-icon name="truck" size="20px"></app-lucide-icon>
             </div>
             <span class="action-label">Collect Milk</span>
           </button>
           
           <button class="action-btn" (click)="quickAction('sell')">
             <div class="action-icon">
-              <app-feather-icon name="shopping-cart" size="20px"></app-feather-icon>
+              <app-lucide-icon name="shopping-cart" size="20px"></app-lucide-icon>
             </div>
             <span class="action-label">Sell Milk</span>
           </button>
           
           <button class="action-btn" (click)="quickAction('supplier')">
             <div class="action-icon">
-              <app-feather-icon name="user-plus" size="20px"></app-feather-icon>
+              <app-lucide-icon name="user-plus" size="20px"></app-lucide-icon>
             </div>
             <span class="action-label">Add Supplier</span>
           </button>
           
           <button class="action-btn" (click)="quickAction('customer')">
             <div class="action-icon">
-              <app-feather-icon name="users" size="20px"></app-feather-icon>
+              <app-lucide-icon name="users" size="20px"></app-lucide-icon>
             </div>
             <span class="action-label">Add Customer</span>
           </button>
@@ -90,7 +90,7 @@ export interface ChartOptions {
         <!-- Milk Collections -->
         <div class="stat-card collections" (click)="navigateToCollections()">
           <div class="stat-icon">
-            <app-feather-icon name="truck" size="28px"></app-feather-icon>
+            <app-lucide-icon name="truck" size="28px"></app-lucide-icon>
           </div>
           <div class="stat-details">
             <div class="stat-title">Milk Collections</div>
@@ -107,7 +107,7 @@ export interface ChartOptions {
         <!-- Milk Sales -->
         <div class="stat-card sales" (click)="navigateToSales()">
           <div class="stat-icon">
-            <app-feather-icon name="shopping-cart" size="28px"></app-feather-icon>
+            <app-lucide-icon name="shopping-cart" size="28px"></app-lucide-icon>
           </div>
           <div class="stat-details">
             <div class="stat-title">Milk Sales</div>
@@ -124,7 +124,7 @@ export interface ChartOptions {
         <!-- Active Suppliers -->
         <div class="stat-card suppliers" (click)="navigateToSuppliers()">
           <div class="stat-icon">
-            <app-feather-icon name="user-plus" size="28px"></app-feather-icon>
+            <app-lucide-icon name="user-plus" size="28px"></app-lucide-icon>
           </div>
           <div class="stat-details">
             <div class="stat-title">Active Suppliers</div>
@@ -141,7 +141,7 @@ export interface ChartOptions {
         <!-- Active Customers -->
         <div class="stat-card customers" (click)="navigateToCustomers()">
           <div class="stat-icon">
-            <app-feather-icon name="users" size="28px"></app-feather-icon>
+            <app-lucide-icon name="users" size="28px"></app-lucide-icon>
           </div>
           <div class="stat-details">
             <div class="stat-title">Active Customers</div>
@@ -216,10 +216,10 @@ export interface ChartOptions {
                *ngFor="let transaction of (overview?.recent_transactions || []).slice(0, 5)"
                (click)="viewTransactionDetails(transaction)">
             <div class="activity-icon" [class]="transaction.type.toLowerCase()">
-              <app-feather-icon 
+              <app-lucide-icon 
                 [name]="transaction.type.toLowerCase() === 'collection' ? 'truck' : 'shopping-cart'" 
                 size="16px">
-              </app-feather-icon>
+              </app-lucide-icon>
             </div>
             <div class="activity-content">
               <div class="activity-title">
@@ -315,7 +315,7 @@ export interface ChartOptions {
       <!-- Error States -->
       <div class="error-section" *ngIf="errorMessage">
         <div class="error-card">
-          <app-feather-icon name="alert-circle" size="32px"></app-feather-icon>
+          <app-lucide-icon name="alert-circle" size="32px"></app-lucide-icon>
           <h3>Failed to Load Dashboard</h3>
           <p>{{ errorMessage }}</p>
           <div class="error-actions">
@@ -378,7 +378,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadDashboardData();
-    this.startAutoRefresh();
+    // Auto-refresh disabled
+    // this.startAutoRefresh();
     this.listenForAccountChanges();
   }
 

@@ -190,7 +190,7 @@
     color: white;
     background: rgba(white, 0.1);
     
-    app-feather-icon {
+    app-lucide-icon {
       opacity: 1;
     }
   }
@@ -199,13 +199,13 @@
     color: white;
     background: rgba(white, 0.1);
     
-    app-feather-icon {
+    app-lucide-icon {
       opacity: 1;
     }
   }
 
-  app-feather-icon {
-    margin-right: 1rem;
+  app-lucide-icon {
+    margin-right: 0.875rem;
     width: 20px;
     height: 20px;
     display: flex;
@@ -213,6 +213,7 @@
     justify-content: center;
     opacity: 0.8;
     transition: opacity 0.2s ease;
+    flex-shrink: 0;
   }
 
   .nav-text {
@@ -239,12 +240,15 @@
   background: rgba(black, 0.1);
 
   .submenu-item {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 0.75rem 1.75rem 0.75rem 4rem;
     color: rgba(white, 0.7);
     text-decoration: none;
     font-size: 0.875rem;
     transition: all 0.2s ease;
+    cursor: pointer;
 
     &:hover {
       color: white;
@@ -255,7 +259,34 @@
       color: white;
       background: rgba(black, 0.15);
     }
+
+    &.parent {
+      font-weight: 500;
+
+      app-feather-icon {
+        transition: transform 0.2s ease;
+      }
+
+      &.expanded app-feather-icon {
+        transform: rotate(90deg);
+      }
+    }
+
+    &.nested {
+      padding-left: 5rem;
+      font-size: 0.8125rem;
+    }
   }
+
+  .nested-submenu {
+    .nested-submenu-items {
+      background: rgba(black, 0.05);
+    }
+  }
+}
+
+.rotated {
+  transform: rotate(90deg);
 }
 
 .sidebar-footer {

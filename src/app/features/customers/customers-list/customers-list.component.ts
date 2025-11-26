@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
+import { SkeletonLoaderComponent } from '../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { AddCustomerModalComponent } from '../../../shared/components/add-customer-modal/add-customer-modal.component';
 import { ViewCustomerModalComponent } from '../../../shared/components/view-customer-modal/view-customer-modal.component';
 import { EditCustomerModalComponent } from '../../../shared/components/edit-customer-modal/edit-customer-modal.component';
@@ -13,28 +14,35 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
 @Component({
   selector: 'app-customers-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, AddCustomerModalComponent, ViewCustomerModalComponent, EditCustomerModalComponent, DeleteCustomerModalComponent],
+  imports: [CommonModule, RouterModule, FormsModule, LucideIconComponent, DataTableComponent, SkeletonLoaderComponent, AddCustomerModalComponent, ViewCustomerModalComponent, EditCustomerModalComponent, DeleteCustomerModalComponent],
   template: `
     <div class="customers-container">
-      <!-- Header -->
-      <div class="page-header">
-        <div class="header-content">
-          <h1>Customers</h1>
-          <p class="page-description">Manage your customer database and track sales</p>
-        </div>
-        <div class="header-actions">
-          <button class="btn-primary" (click)="openAddCustomerModal()">
-            <app-feather-icon name="plus" size="16px"></app-feather-icon>
-            Add Customer
-          </button>
-        </div>
-      </div>
+      <!-- Skeleton Loader -->
+      <ng-container *ngIf="loading">
+        <app-skeleton-loader type="stats"></app-skeleton-loader>
+      </ng-container>
 
-      <!-- Stats Cards -->
-      <div class="stats-grid">
+      <!-- Content -->
+      <ng-container *ngIf="!loading">
+        <!-- Header -->
+        <div class="page-header">
+          <div class="header-content">
+            <h1>Customers</h1>
+            <p class="page-description">Manage your customer database and track sales</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn-primary" (click)="openAddCustomerModal()">
+              <app-lucide-icon name="plus" size="16px"></app-lucide-icon>
+              Add Customer
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="users" size="24px"></app-feather-icon>
+            <app-lucide-icon name="users" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.totalCustomers }}</div>
@@ -43,7 +51,7 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="user-check" size="24px"></app-feather-icon>
+            <app-lucide-icon name="user-check" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.activeCustomers }}</div>
@@ -52,7 +60,7 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
+            <app-lucide-icon name="dollar-sign" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatCurrency(stats.averagePrice) }}</div>
@@ -61,7 +69,7 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="trending-up" size="24px"></app-feather-icon>
+            <app-lucide-icon name="trending-up" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatCurrency(stats.totalRevenue) }}</div>
@@ -83,7 +91,7 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
           <app-data-table
             [columns]="columns"
             [data]="filteredCustomers"
-            [striped]="true"
+            [striped]="false"
             [hover]="true"
             [showActions]="true"
             [showPagination]="true"
@@ -100,24 +108,24 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
               <div class="dropdown" [class.show]="openDropdownId === customer.id">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" 
                         (click)="toggleDropdown(customer.id, $event)">
-                  <app-feather-icon name="more-horizontal" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="more-horizontal" size="16px"></app-lucide-icon>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" [class.show]="openDropdownId === customer.id">
                   <li>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="viewCustomer(customer)">
-                      <app-feather-icon name="eye" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="eye" size="14px" class="me-2"></app-lucide-icon>
                       View
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="editCustomer(customer)">
-                      <app-feather-icon name="edit" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="edit" size="14px" class="me-2"></app-lucide-icon>
                       Edit
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteCustomer(customer)">
-                      <app-feather-icon name="trash-2" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="trash-2" size="14px" class="me-2"></app-lucide-icon>
                       Delete
                     </a>
                   </li>
@@ -152,12 +160,13 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
       </app-edit-customer-modal>
 
       <!-- Delete Customer Modal -->
-      <app-delete-customer-modal 
-        *ngIf="showDeleteCustomerModal && selectedCustomer"
-        [customer]="selectedCustomer"
-        (customerDeleted)="onCustomerDeleted($event)"
-        (modalClosed)="onDeleteModalClosed()">
-      </app-delete-customer-modal>
+        <app-delete-customer-modal 
+          *ngIf="showDeleteCustomerModal && selectedCustomer"
+          [customer]="selectedCustomer"
+          (customerDeleted)="onCustomerDeleted($event)"
+          (modalClosed)="onDeleteModalClosed()">
+        </app-delete-customer-modal>
+      </ng-container>
     </div>
   `,
   styleUrls: ['./customers-list.component.scss']

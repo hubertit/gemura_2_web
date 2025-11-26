@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../lucide-icon/lucide-icon.component';
 import { SuppliersService } from '../../../features/suppliers/suppliers.service';
 import { CreateSupplierRequest } from '../../../features/suppliers/supplier.model';
 
 @Component({
   selector: 'app-add-supplier-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, FeatherIconComponent],
+  imports: [CommonModule, FormsModule, LucideIconComponent],
   template: `
     <div class="modal-overlay" (click)="closeModal()">
       <div class="modal-container" (click)="$event.stopPropagation()">
@@ -16,7 +16,7 @@ import { CreateSupplierRequest } from '../../../features/suppliers/supplier.mode
         <div class="modal-header">
           <h2>Add New Supplier</h2>
           <button class="close-btn" (click)="closeModal()">
-            <app-feather-icon name="x" size="20px"></app-feather-icon>
+            <app-lucide-icon name="x" size="20px"></app-lucide-icon>
           </button>
         </div>
 
@@ -27,7 +27,7 @@ import { CreateSupplierRequest } from '../../../features/suppliers/supplier.mode
             <div class="form-group">
               <label for="name">Full Name *</label>
               <div class="input-container">
-                <app-feather-icon name="user" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="user" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="text"
                   id="name"
@@ -57,7 +57,7 @@ import { CreateSupplierRequest } from '../../../features/suppliers/supplier.mode
                     </select>
                   </div>
                   <div class="phone-number-section">
-                    <app-feather-icon name="phone" size="18px" class="input-icon"></app-feather-icon>
+                    <app-lucide-icon name="phone" size="18px" class="input-icon"></app-lucide-icon>
                     <input
                       type="tel"
                       id="phone"
@@ -80,7 +80,7 @@ import { CreateSupplierRequest } from '../../../features/suppliers/supplier.mode
             <div class="form-group">
               <label for="email">Email Address</label>
               <div class="input-container">
-                <app-feather-icon name="mail" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="mail" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="email"
                   id="email"
@@ -96,7 +96,7 @@ import { CreateSupplierRequest } from '../../../features/suppliers/supplier.mode
             <div class="form-group">
               <label for="location">Address</label>
               <div class="input-container">
-                <app-feather-icon name="map-pin" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="map-pin" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="text"
                   id="location"
@@ -112,7 +112,7 @@ import { CreateSupplierRequest } from '../../../features/suppliers/supplier.mode
             <div class="form-group">
               <label for="idNumber">National ID</label>
               <div class="input-container">
-                <app-feather-icon name="hash" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="hash" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="text"
                   id="idNumber"
@@ -128,7 +128,7 @@ import { CreateSupplierRequest } from '../../../features/suppliers/supplier.mode
             <div class="form-group">
               <label for="sellingPricePerLiter">Price per Liter (RWF) *</label>
               <div class="input-container">
-                <app-feather-icon name="dollar-sign" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="dollar-sign" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="number"
                   id="sellingPricePerLiter"

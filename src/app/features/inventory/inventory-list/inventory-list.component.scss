@@ -1,0 +1,331 @@
+@use '../../../../styles/variables' as *;
+
+// Variables matching ESB project
+$primary: #1b2e4b;
+$secondary: #515365;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-600: #6c757d;
+$border-radius: 0.25rem;
+$border-radius-lg: 0.5rem;
+$box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+.inventory-container {
+  padding: 12px;
+  min-height: auto;
+
+  @media (max-width: 768px) {
+    padding: 8px;
+  }
+}
+
+// Page Header
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .header-content {
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #3b3f5c;
+      margin: 0 0 4px 0;
+    }
+
+    .page-description {
+      color: $gray-600;
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+// Stats Grid
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+.stat-card {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: $box-shadow-sm;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: $box-shadow;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: $border-radius-lg;
+    background: rgba($primary, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary;
+    flex-shrink: 0;
+  }
+
+  &.warning .stat-icon {
+    background: rgba(#f59e0b, 0.1);
+    color: #f59e0b;
+  }
+
+  &.danger .stat-icon {
+    background: rgba(#ef4444, 0.1);
+    color: #ef4444;
+  }
+
+  .stat-content {
+    flex: 1;
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: $gray-600;
+      font-weight: 500;
+    }
+  }
+}
+
+// Filter Section
+.filter-section {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 160px;
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: $gray-600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-select {
+      padding: 0.5rem 0.875rem;
+      border: 1px solid $gray-300;
+      border-radius: $border-radius;
+      font-size: 0.875rem;
+      color: #1e293b;
+      background-color: white;
+
+      &:focus {
+        outline: none;
+        border-color: rgba($primary, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba($primary, 0.15);
+      }
+    }
+  }
+}
+
+// Card Styles (matching ESB)
+.card {
+  background: white;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow;
+  border: none;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+
+  .card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba($primary, 0.1);
+    background-color: white;
+
+    .card-title-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+      }
+
+      .item-count {
+        background: $gray-200;
+        color: $gray-600;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .card-body {
+    padding: 0;
+  }
+}
+
+// Buttons (matching ESB)
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: $border-radius;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 6px rgba($primary, 0.2);
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #3498db;
+    border-color: #3498db;
+    box-shadow: 0 4px 12px rgba($primary, 0.3);
+    transform: translateY(-1px);
+  }
+
+  app-feather-icon {
+    color: white;
+    flex-shrink: 0;
+  }
+}
+
+.btn-outline {
+  background: white !important;
+  color: #495057 !important;
+  border: 1px solid $gray-300 !important;
+  padding: 0.5rem 1rem;
+  border-radius: $border-radius;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  box-shadow: none !important;
+  text-decoration: none;
+
+  &:hover {
+    background: #f8f9fa !important;
+    border-color: rgba($primary, 0.3) !important;
+    color: $primary !important;
+  }
+
+  app-feather-icon {
+    color: #495057;
+    flex-shrink: 0;
+  }
+
+  &:hover app-feather-icon {
+    color: $primary;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .page-header {
+    .header-actions {
+      .btn-primary,
+      .btn-outline {
+        flex: 1;
+        justify-content: center;
+        min-width: 90px;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+  }
+
+  .stats-grid {
+    .stat-card {
+      padding: 12px;
+      
+      .stat-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .stat-content {
+        .stat-value {
+          font-size: 16px;
+        }
+        .stat-label {
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .inventory-container {
+    padding: 8px;
+  }
+
+  .page-header {
+    .header-content {
+      h1 {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .filter-section {
+    flex-direction: column;
+
+    .filter-group {
+      width: 100%;
+    }
+  }
+}
+

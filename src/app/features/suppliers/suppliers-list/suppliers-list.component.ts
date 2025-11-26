@@ -4,16 +4,23 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SuppliersService } from '../suppliers.service';
 import { Supplier } from '../supplier.model';
-import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
+import { SkeletonLoaderComponent } from '../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { AddSupplierModalComponent } from '../../../shared/components/add-supplier-modal/add-supplier-modal.component';
 
 @Component({
   selector: 'app-suppliers-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent, DataTableComponent, AddSupplierModalComponent],
+  imports: [CommonModule, RouterModule, FormsModule, LucideIconComponent, DataTableComponent, SkeletonLoaderComponent, AddSupplierModalComponent],
   template: `
     <div class="suppliers-container">
+      <!-- Skeleton Loader -->
+      <ng-container *ngIf="loading">
+        <app-skeleton-loader type="stats"></app-skeleton-loader>
+      </ng-container>
+
+      <ng-container *ngIf="!loading">
       <!-- Header -->
       <div class="page-header">
         <div class="header-content">
@@ -22,7 +29,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
         </div>
         <div class="header-actions">
           <button class="btn-primary" (click)="openAddSupplierModal()">
-            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            <app-lucide-icon name="plus" size="16px"></app-lucide-icon>
             Add Supplier
           </button>
         </div>
@@ -32,7 +39,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="truck" size="24px"></app-feather-icon>
+            <app-lucide-icon name="truck" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.totalSuppliers }}</div>
@@ -41,7 +48,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="user-check" size="24px"></app-feather-icon>
+            <app-lucide-icon name="user-check" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.activeSuppliers }}</div>
@@ -50,7 +57,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
+            <app-lucide-icon name="dollar-sign" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatCurrency(stats.averagePrice) }}</div>
@@ -59,7 +66,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="droplet" size="24px"></app-feather-icon>
+            <app-lucide-icon name="droplet" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatVolume(stats.totalProduction) }}</div>
@@ -80,7 +87,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
           <app-data-table
             [columns]="columns"
             [data]="filteredSuppliers"
-            [striped]="true"
+            [striped]="false"
             [hover]="true"
             [showActions]="true"
             [showPagination]="true"
@@ -97,24 +104,24 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
               <div class="dropdown" [class.show]="openDropdownId === supplier.id">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" 
                         (click)="toggleDropdown(supplier.id, $event)">
-                  <app-feather-icon name="more-horizontal" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="more-horizontal" size="16px"></app-lucide-icon>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" [class.show]="openDropdownId === supplier.id">
                   <li>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="viewSupplier(supplier)">
-                      <app-feather-icon name="eye" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="eye" size="14px" class="me-2"></app-lucide-icon>
                       View
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="editSupplier(supplier)">
-                      <app-feather-icon name="edit" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="edit" size="14px" class="me-2"></app-lucide-icon>
                       Edit
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteSupplier(supplier)">
-                      <app-feather-icon name="trash-2" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="trash-2" size="14px" class="me-2"></app-lucide-icon>
                       Delete
                     </a>
                   </li>
@@ -131,6 +138,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
         (supplierAdded)="onSupplierAdded($event)"
         (modalClosed)="closeAddSupplierModal()">
       </app-add-supplier-modal>
+      </ng-container>
     </div>
   `,
   styleUrls: ['./suppliers-list.component.scss']

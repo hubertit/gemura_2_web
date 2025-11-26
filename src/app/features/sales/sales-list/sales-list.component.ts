@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy, inject, TemplateRef, ViewChild } from '@a
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
+import { SkeletonLoaderComponent } from '../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { SalesService } from '../sales.service';
 import { Sale, SaleStats } from '../sale.model';
 import { Subject, takeUntil } from 'rxjs';
@@ -16,12 +17,19 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
     CommonModule,
     RouterModule,
     FormsModule,
-    FeatherIconComponent,
+    LucideIconComponent,
     DataTableComponent,
+    SkeletonLoaderComponent,
     RecordSaleModalComponent,
   ],
   template: `
     <div class="sales-container">
+      <!-- Skeleton Loader -->
+      <ng-container *ngIf="loading">
+        <app-skeleton-loader type="stats"></app-skeleton-loader>
+      </ng-container>
+
+      <ng-container *ngIf="!loading">
       <!-- Header -->
       <div class="page-header">
         <div class="header-content">
@@ -30,7 +38,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
         </div>
         <div class="header-actions">
           <button class="btn-primary" (click)="openRecordSaleModal()">
-            <app-feather-icon name="plus" size="16px"></app-feather-icon>
+            <app-lucide-icon name="plus" size="16px"></app-lucide-icon>
             Record Sale
           </button>
         </div>
@@ -40,7 +48,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="droplet" size="24px"></app-feather-icon>
+            <app-lucide-icon name="droplet" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatVolume(stats.totalQuantity) }}</div>
@@ -49,7 +57,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="dollar-sign" size="24px"></app-feather-icon>
+            <app-lucide-icon name="dollar-sign" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ formatCurrency(stats.totalValue) }}</div>
@@ -58,7 +66,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="check-circle" size="24px"></app-feather-icon>
+            <app-lucide-icon name="check-circle" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.statusCounts['accepted'] || 0 }}</div>
@@ -67,7 +75,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <app-feather-icon name="x-circle" size="24px"></app-feather-icon>
+            <app-lucide-icon name="x-circle" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ stats.statusCounts['rejected'] || 0 }}</div>
@@ -88,7 +96,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
           <app-data-table
             [columns]="columns"
             [data]="filteredSales"
-            [striped]="true"
+            [striped]="false"
             [hover]="true"
             [showActions]="true"
             [showPagination]="true"
@@ -114,36 +122,36 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
                   type="button"
                   (click)="toggleDropdown(sale.id, $event)"
                 >
-                  <app-feather-icon name="more-horizontal" size="16px"></app-feather-icon>
+                  <app-lucide-icon name="more-horizontal" size="16px"></app-lucide-icon>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" [class.show]="openDropdownId === sale.id">
                   <li>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="viewSale(sale)">
-                      <app-feather-icon name="eye" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="eye" size="14px" class="me-2"></app-lucide-icon>
                       View
                     </a>
                   </li>
                   <li *ngIf="sale.status === 'pending'">
                     <a class="dropdown-item" href="javascript:void(0)" (click)="approveSale(sale)">
-                      <app-feather-icon name="check" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="check" size="14px" class="me-2"></app-lucide-icon>
                       Approve
                     </a>
                   </li>
                   <li *ngIf="sale.status === 'pending'">
                     <a class="dropdown-item" href="javascript:void(0)" (click)="rejectSale(sale)">
-                      <app-feather-icon name="x" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="x" size="14px" class="me-2"></app-lucide-icon>
                       Reject
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="editSale(sale)">
-                      <app-feather-icon name="edit" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="edit" size="14px" class="me-2"></app-lucide-icon>
                       Edit
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteSale(sale)">
-                      <app-feather-icon name="trash-2" size="14px" class="me-2"></app-feather-icon>
+                      <app-lucide-icon name="trash-2" size="14px" class="me-2"></app-lucide-icon>
                       Delete
                     </a>
                   </li>
@@ -160,6 +168,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
         (saleRecorded)="onSaleRecorded($event)"
         (modalClosed)="closeRecordSaleModal()"
       ></app-record-sale-modal>
+      </ng-container>
     </div>
   `,
   styleUrls: ['./sales-list.component.scss'],

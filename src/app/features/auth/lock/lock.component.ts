@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { InactivityService } from '../../../core/services/inactivity.service';
-import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 import { FormInputComponent } from '../../../shared/components/form-input/form-input.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { AnalogClockComponent } from '../../../shared/components/analog-clock/analog-clock.component';

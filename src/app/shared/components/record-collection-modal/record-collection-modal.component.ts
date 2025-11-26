@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FeatherIconComponent } from '../feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../lucide-icon/lucide-icon.component';
 import { CollectionsService } from '../../../features/collections/collections.service';
 import { SuppliersService } from '../../../features/suppliers/suppliers.service';
 import { CreateCollectionRequest } from '../../../features/collections/collection.model';
@@ -9,7 +9,7 @@ import { CreateCollectionRequest } from '../../../features/collections/collectio
 @Component({
   selector: 'app-record-collection-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, FeatherIconComponent],
+  imports: [CommonModule, FormsModule, LucideIconComponent],
   template: `
     <div class="modal-overlay" (click)="closeModal()">
       <div class="modal-container" (click)="$event.stopPropagation()">
@@ -17,7 +17,7 @@ import { CreateCollectionRequest } from '../../../features/collections/collectio
         <div class="modal-header">
           <h2>Record Collection</h2>
           <button class="close-btn" (click)="closeModal()">
-            <app-feather-icon name="x" size="20px"></app-feather-icon>
+            <app-lucide-icon name="x" size="20px"></app-lucide-icon>
           </button>
         </div>
 
@@ -28,7 +28,7 @@ import { CreateCollectionRequest } from '../../../features/collections/collectio
             <div class="form-group">
               <label for="supplier">Select Supplier *</label>
               <div class="input-container">
-                <app-feather-icon name="user" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="user" size="18px" class="input-icon"></app-lucide-icon>
                 <select
                   id="supplier"
                   name="supplier"
@@ -51,7 +51,7 @@ import { CreateCollectionRequest } from '../../../features/collections/collectio
             <div class="form-group">
               <label for="quantity">Quantity (Liters) *</label>
               <div class="input-container">
-                <app-feather-icon name="droplet" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="droplet" size="18px" class="input-icon"></app-lucide-icon>
                 <input
                   type="number"
                   id="quantity"
@@ -74,7 +74,7 @@ import { CreateCollectionRequest } from '../../../features/collections/collectio
             <div class="form-group">
               <label for="status">Status *</label>
               <div class="input-container">
-                <app-feather-icon name="check-circle" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="check-circle" size="18px" class="input-icon"></app-lucide-icon>
                 <select
                   id="status"
                   name="status"
@@ -93,7 +93,7 @@ import { CreateCollectionRequest } from '../../../features/collections/collectio
               <div class="form-group">
                 <label for="collectionDate">Collection Date *</label>
                 <div class="input-container">
-                  <app-feather-icon name="calendar" size="18px" class="input-icon"></app-feather-icon>
+                  <app-lucide-icon name="calendar" size="18px" class="input-icon"></app-lucide-icon>
                   <input
                     type="date"
                     id="collectionDate"
@@ -109,7 +109,7 @@ import { CreateCollectionRequest } from '../../../features/collections/collectio
               <div class="form-group">
                 <label for="collectionTime">Collection Time *</label>
                 <div class="input-container">
-                  <app-feather-icon name="clock" size="18px" class="input-icon"></app-feather-icon>
+                  <app-lucide-icon name="clock" size="18px" class="input-icon"></app-lucide-icon>
                   <input
                     type="time"
                     id="collectionTime"
@@ -127,7 +127,7 @@ import { CreateCollectionRequest } from '../../../features/collections/collectio
             <div class="form-group">
               <label for="notes">Notes (Optional)</label>
               <div class="input-container">
-                <app-feather-icon name="file-text" size="18px" class="input-icon"></app-feather-icon>
+                <app-lucide-icon name="file-text" size="18px" class="input-icon"></app-lucide-icon>
                 <textarea
                   id="notes"
                   name="notes"

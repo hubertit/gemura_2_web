@@ -35,19 +35,19 @@ $font-weight-normal: 400;
 $font-weight-semibold: 600;
 $line-height-base: 1.5;
 
-// Border radius
-$border-radius: 0.25rem;
-$border-radius-lg: 0.5rem;
-$border-radius-sm: 0.2rem;
+// Border radius - small like ESB (4px)
+$border-radius: 4px;
+$border-radius-lg: 8px;
+$border-radius-sm: 2px;
 
 // Transitions
 $transition-base: all 0.2s ease;
 
-// Shadows
-$box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-$box-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-$box-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+// Shadows - disabled for cleaner look
+$box-shadow: none;
+$box-shadow-sm: none;
+$box-shadow-md: none;
+$box-shadow-lg: none;
 
 // Spacer for components
 $spacer: 1rem;

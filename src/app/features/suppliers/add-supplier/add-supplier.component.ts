@@ -4,12 +4,12 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { SuppliersService } from '../suppliers.service';
 import { CreateSupplierRequest } from '../supplier.model';
-import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
+import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 
 @Component({
   selector: 'app-add-supplier',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FeatherIconComponent],
+  imports: [CommonModule, RouterModule, FormsModule, LucideIconComponent],
   template: `
     <div class="add-supplier-container">
       <!-- Header Section -->
@@ -17,7 +17,7 @@ import { FeatherIconComponent } from '../../../shared/components/feather-icon/fe
         <div class="header-content">
           <div class="title-section">
             <button class="back-btn" routerLink="/suppliers/list">
-              <app-feather-icon name="arrow-left" size="20px"></app-feather-icon>
+              <app-lucide-icon name="arrow-left" size="20px"></app-lucide-icon>
             </button>
             <div class="title-text">
               <h1 class="page-title">Add New Supplier</h1>
@@ -64,7 +64,7 @@ import { FeatherIconComponent } from '../../../shared/components/feather-icon/fe
                       </select>
                     </div>
                     <div class="phone-number-section">
-                      <app-feather-icon name="phone" size="18px" class="input-icon"></app-feather-icon>
+                      <app-lucide-icon name="phone" size="18px" class="input-icon"></app-lucide-icon>
                       <input
                         type="tel"
                         id="phone"
