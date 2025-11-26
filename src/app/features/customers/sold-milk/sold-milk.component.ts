@@ -109,10 +109,12 @@ import { CustomerService, MilkSale } from '../../../core/services/customer.servi
             [striped]="false"
             [hover]="true"
             [loading]="loading"
+            [showActions]="false"
             (onSort)="handleSort($event)"
             (onSearch)="handleSearch($event)"
             (onPageChange)="handlePageChange($event)"
-            (onPageSizeChange)="handlePageSizeChange($event)">
+            (onPageSizeChange)="handlePageSizeChange($event)"
+            (onRowClick)="viewSale($event)">
           </app-data-table>
         </div>
       </div>

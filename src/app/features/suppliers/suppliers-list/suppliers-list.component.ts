@@ -8,11 +8,12 @@ import { LucideIconComponent } from '../../../shared/components/lucide-icon/luci
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
 import { SkeletonLoaderComponent } from '../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { AddSupplierModalComponent } from '../../../shared/components/add-supplier-modal/add-supplier-modal.component';
+import { ViewSupplierModalComponent } from '../../../shared/components/view-supplier-modal/view-supplier-modal.component';
 
 @Component({
   selector: 'app-suppliers-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, LucideIconComponent, DataTableComponent, SkeletonLoaderComponent, AddSupplierModalComponent],
+  imports: [CommonModule, RouterModule, FormsModule, LucideIconComponent, DataTableComponent, SkeletonLoaderComponent, AddSupplierModalComponent, ViewSupplierModalComponent],
   template: `
     <div class="suppliers-container">
       <!-- Skeleton Loader -->
@@ -89,7 +90,7 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
             [data]="filteredSuppliers"
             [striped]="false"
             [hover]="true"
-            [showActions]="true"
+            [showActions]="false"
             [showPagination]="true"
             [currentPage]="currentPage"
             [pageSize]="pageSize"
@@ -98,7 +99,8 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
             [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
-            (onPageSizeChange)="handlePageSizeChange($event)">
+            (onPageSizeChange)="handlePageSizeChange($event)"
+            (onRowClick)="viewSupplier($event)">
             
             <ng-template #rowActions let-supplier>
               <div class="dropdown" [class.show]="openDropdownId === supplier.id">
@@ -138,6 +140,15 @@ import { AddSupplierModalComponent } from '../../../shared/components/add-suppli
         (supplierAdded)="onSupplierAdded($event)"
         (modalClosed)="closeAddSupplierModal()">
       </app-add-supplier-modal>
+
+      <!-- View Supplier Modal -->
+      <app-view-supplier-modal
+        *ngIf="showViewSupplierModal && selectedSupplier"
+        [supplier]="selectedSupplier"
+        (modalClosed)="closeViewSupplierModal()"
+        (editRequested)="editSupplier($event)"
+        (deleteRequested)="deleteSupplier($event)">
+      </app-view-supplier-modal>
       </ng-container>
     </div>
   `,
@@ -150,6 +161,8 @@ export class SuppliersListComponent implements OnInit {
   loading = false;
   error: string | null = null;
   showAddSupplierModal = false;
+  showViewSupplierModal = false;
+  selectedSupplier: Supplier | null = null;
 
   columns: any[] = [];
   
@@ -241,7 +254,13 @@ export class SuppliersListComponent implements OnInit {
 
   viewSupplier(supplier: Supplier) {
     this.closeDropdown();
-    console.log('View supplier:', supplier);
+    this.selectedSupplier = supplier;
+    this.showViewSupplierModal = true;
+  }
+
+  closeViewSupplierModal() {
+    this.showViewSupplierModal = false;
+    this.selectedSupplier = null;
   }
 
   editSupplier(supplier: Supplier) {

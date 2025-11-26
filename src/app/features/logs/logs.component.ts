@@ -142,11 +142,11 @@ import { LogService, Log, LogLevel } from '../../core/services/log.service';
     }
 
     .btn-primary {
-      background-color: #1b2e4b;
-      border-color: #1b2e4b;
+      background-color: #004AAD;
+      border-color: #004AAD;
 
       &:hover {
-        background-color: #3498db;
+        background-color: #003d91;
         border-color: #3498db;
       }
 

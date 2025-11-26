@@ -32,24 +32,7 @@
   }
 }
 
-.btn-primary {
-  background: $primary;
-  color: white;
-  border: none;
-  padding: 0.625rem 1.25rem;
-  border-radius: $border-radius;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.875rem;
-  transition: $transition-base;
-
-  &:hover {
-    background: darken($primary, 8%);
-  }
-}
+// btn-primary uses global styles from styles.scss
 
 .stats-grid {
   display: grid;

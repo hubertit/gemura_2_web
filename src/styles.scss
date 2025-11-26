@@ -66,19 +66,210 @@ body {
 
 // Global button styling - no shadows, small radius (4px)
 .btn,
-.btn-primary,
-.btn-secondary,
-.btn-outline,
-.btn-success,
-.btn-danger,
-.btn-warning,
-.btn-info,
-button[class*="btn"] {
+button[class*="btn"]:not(.close-btn):not(.btn-close-custom) {
   box-shadow: none !important;
   border-radius: 4px !important;
   
   &:hover, &:focus, &:active, &:focus-visible {
     box-shadow: none !important;
+  }
+}
+
+// Reusable button styles across the app
+.btn-primary {
+  background: #004AAD !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #003d91 !important;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  background: #fff !important;
+  color: #495057 !important;
+  border: 1px solid #dee2e6 !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #f8f9fa !important;
+    border-color: #004AAD !important;
+    color: #004AAD !important;
+  }
+}
+
+.btn-outline {
+  background: #fff !important;
+  color: #495057 !important;
+  border: 1px solid #dee2e6 !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #f8f9fa !important;
+    border-color: #004AAD !important;
+    color: #004AAD !important;
+  }
+}
+
+.btn-success {
+  background: #1abc9c !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #16a085 !important;
+  }
+}
+
+.btn-danger {
+  background: #e74c3c !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #c0392b !important;
+  }
+}
+
+.btn-warning {
+  background: #f1c40f !important;
+  color: #1e293b !important;
+  border: none !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #d4ac0d !important;
+  }
+}
+
+.btn-info {
+  background: #3498db !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #2980b9 !important;
+  }
+}
+
+// Outline button variants
+.btn-primary-outline,
+.btn-outline-primary {
+  background: #fff !important;
+  color: #004AAD !important;
+  border: 1px solid #004AAD !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #004AAD !important;
+    color: #fff !important;
+  }
+}
+
+.btn-danger-outline,
+.btn-outline-danger {
+  background: #fff !important;
+  color: #495057 !important;
+  border: 1px solid #dee2e6 !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #f8f9fa !important;
+    border-color: #e74c3c !important;
+    color: #e74c3c !important;
+  }
+}
+
+.btn-success-outline,
+.btn-outline-success {
+  background: #fff !important;
+  color: #1abc9c !important;
+  border: 1px solid #1abc9c !important;
+  padding: 8px 16px;
+  border-radius: 4px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #1abc9c !important;
+    color: #fff !important;
   }
 }
 
@@ -100,6 +291,30 @@ textarea {
 .table-responsive,
 .table-container {
   border-radius: 4px !important;
+}
+
+// Modal close button - ESB style (circular, red on hover)
+.close-btn,
+.btn-close-custom {
+  background: #fff !important;
+  border: 2px solid #e5e7eb !important;
+  color: #475569 !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 !important;
+
+  &:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+    transform: scale(1.05);
+  }
 }
 
 .rounded { border-radius: $border-radius !important; }

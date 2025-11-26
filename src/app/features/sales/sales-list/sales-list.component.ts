@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideIconComponent } from '../../../shared/components/lucide-icon/lucide-icon.component';
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
 import { SkeletonLoaderComponent } from '../../../shared/components/skeleton-loader/skeleton-loader.component';
+import { ViewSaleModalComponent } from '../../../shared/components/view-sale-modal/view-sale-modal.component';
 import { SalesService } from '../sales.service';
 import { Sale, SaleStats } from '../sale.model';
 import { Subject, takeUntil } from 'rxjs';
@@ -20,6 +21,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
     LucideIconComponent,
     DataTableComponent,
     SkeletonLoaderComponent,
+    ViewSaleModalComponent,
     RecordSaleModalComponent,
   ],
   template: `
@@ -69,7 +71,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
             <app-lucide-icon name="check-circle" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ stats.statusCounts['accepted'] || 0 }}</div>
+            <div class="stat-value">{{ formatNumber(stats.statusCounts['accepted'] || 0) }}</div>
             <div class="stat-label">Accepted Sales</div>
           </div>
         </div>
@@ -78,7 +80,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
             <app-lucide-icon name="x-circle" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ stats.statusCounts['rejected'] || 0 }}</div>
+            <div class="stat-value">{{ formatNumber(stats.statusCounts['rejected'] || 0) }}</div>
             <div class="stat-label">Rejected Sales</div>
           </div>
         </div>
@@ -98,7 +100,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
             [data]="filteredSales"
             [striped]="false"
             [hover]="true"
-            [showActions]="true"
+            [showActions]="false"
             [showPagination]="true"
             [currentPage]="currentPage"
             [pageSize]="pageSize"
@@ -108,6 +110,7 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
             (onPageSizeChange)="handlePageSizeChange($event)"
+            (onRowClick)="viewSale($event)"
           >
             <ng-template #statusCell let-sale>
               <span class="status-badge" [ngClass]="'status-' + sale.status">
@@ -168,6 +171,15 @@ import { RecordSaleModalComponent } from '../../../shared/components/record-sale
         (saleRecorded)="onSaleRecorded($event)"
         (modalClosed)="closeRecordSaleModal()"
       ></app-record-sale-modal>
+
+      <!-- View Sale Modal -->
+      <app-view-sale-modal
+        *ngIf="showViewSaleModal && selectedSale"
+        [sale]="selectedSale"
+        (modalClosed)="closeViewSaleModal()"
+        (editRequested)="editSale($event)"
+        (cancelRequested)="cancelSale($event)"
+      ></app-view-sale-modal>
       </ng-container>
     </div>
   `,
@@ -182,6 +194,8 @@ export class SalesListComponent implements OnInit, OnDestroy {
   searchTerm: string = '';
   loading: boolean = false;
   error: string | null = null;
+  showViewSaleModal: boolean = false;
+  selectedSale: Sale | null = null;
 
   stats: SaleStats = {
     totalQuantity: 0,
@@ -398,14 +412,22 @@ export class SalesListComponent implements OnInit, OnDestroy {
   };
 
   viewSale(sale: Sale) {
-    console.log('View sale:', sale);
-    // TODO: Implement view sale modal/page
+    this.openDropdownId = null;
+    this.selectedSale = sale;
+    this.showViewSaleModal = true;
+  }
+
+  closeViewSaleModal() {
+    this.showViewSaleModal = false;
+    this.selectedSale = null;
   }
 
   editSale(sale: Sale) {
+    this.closeViewSaleModal();
     console.log('Edit sale:', sale);
     // TODO: Implement edit sale modal/page
   }
+
 
   approveSale(sale: Sale) {
     console.log('Approve sale:', sale);
@@ -441,7 +463,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
   }
 
   cancelSale(sale: Sale) {
-    console.log('Cancel sale:', sale);
+    this.closeViewSaleModal();
     if (confirm('Are you sure you want to cancel this sale?')) {
       this.salesService.cancelSale(sale.id)
         .pipe(takeUntil(this.destroy$))
@@ -483,7 +505,11 @@ export class SalesListComponent implements OnInit, OnDestroy {
   }
 
   formatVolume(volume: number): string {
-    return `${volume.toFixed(1)}L`;
+    return `${new Intl.NumberFormat('en-RW').format(volume)}L`;
+  }
+
+  formatNumber(value: number): string {
+    return new Intl.NumberFormat('en-RW').format(value);
   }
 
   getStatusLabel(status: string): string {

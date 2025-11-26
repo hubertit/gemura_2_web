@@ -6,13 +6,14 @@ import { LucideIconComponent } from '../../../shared/components/lucide-icon/luci
 import { DataTableComponent } from '../../../shared/components/data-table/data-table.component';
 import { SkeletonLoaderComponent } from '../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { RecordCollectionModalComponent } from '../../../shared/components/record-collection-modal/record-collection-modal.component';
+import { ViewCollectionModalComponent } from '../../../shared/components/view-collection-modal/view-collection-modal.component';
 import { CollectionsService } from '../collections.service';
 import { Collection } from '../collection.model';
 
 @Component({
   selector: 'app-collections-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, LucideIconComponent, DataTableComponent, SkeletonLoaderComponent, RecordCollectionModalComponent],
+  imports: [CommonModule, RouterModule, FormsModule, LucideIconComponent, DataTableComponent, SkeletonLoaderComponent, RecordCollectionModalComponent, ViewCollectionModalComponent],
   template: `
     <div class="collections-container">
       <!-- Skeleton Loader -->
@@ -60,7 +61,7 @@ import { Collection } from '../collection.model';
             <app-lucide-icon name="clock" size="24px"></app-lucide-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ stats.statusCounts.pending }}</div>
+            <div class="stat-value">{{ formatNumber(stats.statusCounts.pending) }}</div>
             <div class="stat-label">Pending</div>
           </div>
         </div>
@@ -89,7 +90,7 @@ import { Collection } from '../collection.model';
             [data]="filteredCollections"
             [striped]="false"
             [hover]="true"
-            [showActions]="true"
+            [showActions]="false"
             [showPagination]="true"
             [currentPage]="currentPage"
             [pageSize]="pageSize"
@@ -98,7 +99,8 @@ import { Collection } from '../collection.model';
             [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
-            (onPageSizeChange)="handlePageSizeChange($event)">
+            (onPageSizeChange)="handlePageSizeChange($event)"
+            (onRowClick)="viewCollection($event)">
             
             <ng-template #statusCell let-collection>
               <span class="status-badge" [ngClass]="'status-' + collection.status">
@@ -156,6 +158,15 @@ import { Collection } from '../collection.model';
         (collectionRecorded)="onCollectionRecorded($event)"
         (modalClosed)="closeRecordCollectionModal()">
       </app-record-collection-modal>
+
+      <!-- View Collection Modal -->
+      <app-view-collection-modal
+        *ngIf="showViewCollectionModal && selectedCollection"
+        [collection]="selectedCollection"
+        (modalClosed)="closeViewCollectionModal()"
+        (approveRequested)="approveCollection($event)"
+        (rejectRequested)="rejectCollection($event)">
+      </app-view-collection-modal>
       </ng-container>
     </div>
   `,
@@ -168,6 +179,8 @@ export class CollectionsListComponent implements OnInit {
   loading = false;
   error: string | null = null;
   showRecordCollectionModal = false;
+  showViewCollectionModal = false;
+  selectedCollection: Collection | null = null;
 
   columns: any[] = [];
   
@@ -315,7 +328,13 @@ export class CollectionsListComponent implements OnInit {
 
   viewCollection(collection: Collection) {
     this.closeDropdown();
-    console.log('View collection:', collection);
+    this.selectedCollection = collection;
+    this.showViewCollectionModal = true;
+  }
+
+  closeViewCollectionModal() {
+    this.showViewCollectionModal = false;
+    this.selectedCollection = null;
   }
 
   editCollection(collection: Collection) {
@@ -329,13 +348,22 @@ export class CollectionsListComponent implements OnInit {
   }
 
   approveCollection(collection: Collection) {
-    this.closeDropdown();
-    console.log('Approve collection:', collection);
+    this.closeViewCollectionModal();
+    this.collectionsService.approveCollection({ collectionId: collection.id }).subscribe({
+      next: () => this.loadCollections(),
+      error: (err) => console.error('Error approving collection:', err)
+    });
   }
 
   rejectCollection(collection: Collection) {
-    this.closeDropdown();
-    console.log('Reject collection:', collection);
+    this.closeViewCollectionModal();
+    const reason = prompt('Enter rejection reason:');
+    if (reason) {
+      this.collectionsService.rejectCollection({ collectionId: collection.id, rejectionReason: reason }).subscribe({
+        next: () => this.loadCollections(),
+        error: (err) => console.error('Error rejecting collection:', err)
+      });
+    }
   }
 
   toggleDropdown(collectionId: string, event: Event) {
@@ -373,7 +401,11 @@ export class CollectionsListComponent implements OnInit {
   }
 
   formatVolume(volume: number): string {
-    return `${volume.toFixed(1)}L`;
+    return `${new Intl.NumberFormat('en-RW').format(volume)}L`;
+  }
+
+  formatNumber(value: number): string {
+    return new Intl.NumberFormat('en-RW').format(value);
   }
 
   getStatusLabel(status: string): string {

@@ -188,7 +188,7 @@
 
   &:hover {
     color: white;
-    background: rgba(white, 0.1);
+    background: rgba(black, 0.15);
     
     app-lucide-icon {
       opacity: 1;
@@ -197,7 +197,7 @@
 
   &.active {
     color: white;
-    background: rgba(white, 0.1);
+    background: rgba(black, 0.25);
     
     app-lucide-icon {
       opacity: 1;

@@ -139,7 +139,7 @@ import { ImportInventoryModalComponent } from '../components/import-inventory-mo
             [data]="filteredItems"
             [striped]="false"
             [hover]="true"
-            [showActions]="true"
+            [showActions]="false"
             [showPagination]="true"
             [currentPage]="currentPage"
             [pageSize]="pageSize"
@@ -148,7 +148,8 @@ import { ImportInventoryModalComponent } from '../components/import-inventory-mo
             [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
-            (onPageSizeChange)="handlePageSizeChange($event)">
+            (onPageSizeChange)="handlePageSizeChange($event)"
+            (onRowClick)="viewItem($event)">
             
             <ng-template #rowActions let-item>
               <div class="dropdown" [class.show]="openDropdownId === item.id">

@@ -93,7 +93,7 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
             [data]="filteredCustomers"
             [striped]="false"
             [hover]="true"
-            [showActions]="true"
+            [showActions]="false"
             [showPagination]="true"
             [currentPage]="currentPage"
             [pageSize]="pageSize"
@@ -102,7 +102,8 @@ import { CustomerService, Customer } from '../../../core/services/customer.servi
             [loading]="loading"
             (onSort)="handleSort($event)"
             (onPageChange)="handlePageChange($event)"
-            (onPageSizeChange)="handlePageSizeChange($event)">
+            (onPageSizeChange)="handlePageSizeChange($event)"
+            (onRowClick)="viewCustomer($event)">
             
             <ng-template #rowActions let-customer>
               <div class="dropdown" [class.show]="openDropdownId === customer.id">
